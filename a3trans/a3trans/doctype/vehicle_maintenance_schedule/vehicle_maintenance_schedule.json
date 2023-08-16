@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:VEH-MAIN-{#######}",
+ "creation": "2023-08-16 19:48:56.191894",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "vehicle",
+  "last_maintenance_date",
+  "next_maintenance_date",
+  "column_break_2yf1h",
+  "reminder_date",
+  "reminder_description",
+  "maintenance_tasks_section",
+  "maintenance_tasks"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "label": "Vehicle",
+   "options": "Vehicle"
+  },
+  {
+   "fieldname": "last_maintenance_date",
+   "fieldtype": "Date",
+   "label": "Last Maintenance Date "
+  },
+  {
+   "fieldname": "next_maintenance_date",
+   "fieldtype": "Date",
+   "label": "Next Maintenance Date"
+  },
+  {
+   "fieldname": "column_break_2yf1h",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reminder_date",
+   "fieldtype": "Date",
+   "label": "Reminder Date"
+  },
+  {
+   "fieldname": "reminder_description",
+   "fieldtype": "Small Text",
+   "label": "Reminder Description"
+  },
+  {
+   "fieldname": "maintenance_tasks_section",
+   "fieldtype": "Section Break",
+   "label": "Maintenance Tasks"
+  },
+  {
+   "fieldname": "maintenance_tasks",
+   "fieldtype": "Table",
+   "label": "Maintenance Tasks",
+   "options": "Maintenance Tasks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 19:49:51.866089",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Vehicle Maintenance Schedule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

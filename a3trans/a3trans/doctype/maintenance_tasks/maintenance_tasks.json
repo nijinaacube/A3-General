@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-16 19:46:32.386660",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "task_name",
+  "task_description",
+  "task_frequency"
+ ],
+ "fields": [
+  {
+   "fieldname": "task_name",
+   "fieldtype": "Data",
+   "label": "Task Name"
+  },
+  {
+   "fieldname": "task_description",
+   "fieldtype": "Data",
+   "label": "Task Description"
+  },
+  {
+   "fieldname": "task_frequency",
+   "fieldtype": "Select",
+   "label": "Task Frequency",
+   "options": "Daily\nWeekly\nMonthly\nQuarterly\nAnnually"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-08-16 19:46:32.386660",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Maintenance Tasks",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}
