@@ -1,0 +1,145 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{agreement_number}-{rental_start_date}-{#####}",
+ "creation": "2023-08-11 13:32:28.939471",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "agreement_number",
+  "rental_company",
+  "rental_start_date",
+  "rental_end_date",
+  "rental_rate",
+  "rental_status",
+  "security_deposit",
+  "delivery_charges",
+  "column_break_alqg8",
+  "rental_insurance",
+  "cleaning_fees",
+  "total_amount",
+  "responsible_person",
+  "vehicle",
+  "payment_terms"
+ ],
+ "fields": [
+  {
+   "fieldname": "agreement_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Agreement Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rental_company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Rental Company",
+   "options": "Vehicle Service Providers",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rental_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Rental Start Date ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rental_end_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Rental End Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rental_rate",
+   "fieldtype": "Currency",
+   "label": "Rental Rate"
+  },
+  {
+   "fieldname": "rental_status",
+   "fieldtype": "Select",
+   "label": "Rental Status",
+   "options": "Rented\nReserved\nCompleted\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "security_deposit",
+   "fieldtype": "Currency",
+   "label": "Security Deposit"
+  },
+  {
+   "fieldname": "delivery_charges",
+   "fieldtype": "Currency",
+   "label": "Delivery Charges"
+  },
+  {
+   "fieldname": "column_break_alqg8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "rental_insurance",
+   "fieldtype": "Check",
+   "label": "Rental Insurance"
+  },
+  {
+   "fieldname": "cleaning_fees",
+   "fieldtype": "Currency",
+   "label": "Cleaning Fees"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "responsible_person",
+   "fieldtype": "Link",
+   "label": "Responsible Person",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "label": "Vehicle",
+   "options": "Vehicle",
+   "reqd": 1
+  },
+  {
+   "fieldname": "payment_terms",
+   "fieldtype": "Text",
+   "label": "Payment Terms "
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-11 13:33:55.462365",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Vehicle Rental Agreement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

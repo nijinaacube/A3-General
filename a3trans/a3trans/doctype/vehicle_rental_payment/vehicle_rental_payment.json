@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:PAY-{rental_agreement}-{#####}",
+ "creation": "2023-08-11 14:48:45.099628",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "rental_agreement",
+  "payment_date",
+  "paid_amount",
+  "column_break_wltpc",
+  "payment_mode",
+  "payment_reference",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "rental_agreement",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Rental Agreement",
+   "options": "Vehicle Rental Agreement",
+   "reqd": 1
+  },
+  {
+   "fieldname": "payment_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Payment Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "paid_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Paid Amount ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_wltpc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_mode",
+   "fieldtype": "Select",
+   "label": "Payment Mode",
+   "options": "Cash\nCredit Card\nBank Transfer\nCheque\nOther"
+  },
+  {
+   "fieldname": "payment_reference",
+   "fieldtype": "Data",
+   "label": "Payment Reference"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text",
+   "label": "Notes "
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-11 14:48:45.099628",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Vehicle Rental Payment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

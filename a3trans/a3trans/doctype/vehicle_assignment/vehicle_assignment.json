@@ -1,0 +1,148 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:VA-{#######}",
+ "creation": "2023-08-14 20:26:03.071318",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vehicle_id",
+  "driver_id",
+  "trip_id",
+  "assignment_date",
+  "trip_date",
+  "assignment_status",
+  "route_details_section",
+  "routes",
+  "section_break_wkz4t",
+  "package_details_section",
+  "package_detail",
+  "route_changes_details_section",
+  "route_changes",
+  "staff_changes_details_section",
+  "staff_changes",
+  "time_tracking_details_section",
+  "time_tracking"
+ ],
+ "fields": [
+  {
+   "fieldname": "vehicle_id",
+   "fieldtype": "Link",
+   "label": "Vehicle ID",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "driver_id",
+   "fieldtype": "Link",
+   "label": "Driver ID",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "trip_id",
+   "fieldtype": "Link",
+   "label": "Trip ID",
+   "options": "Trip List"
+  },
+  {
+   "fieldname": "assignment_date",
+   "fieldtype": "Date",
+   "label": "Assignment Date"
+  },
+  {
+   "fieldname": "trip_date",
+   "fieldtype": "Data",
+   "label": "Trip Date"
+  },
+  {
+   "fieldname": "assignment_status",
+   "fieldtype": "Select",
+   "label": "Assignment Status",
+   "options": "Assigned\nCompleted\nCancelled,"
+  },
+  {
+   "fieldname": "route_details_section",
+   "fieldtype": "Section Break",
+   "label": "Route Details"
+  },
+  {
+   "fieldname": "routes",
+   "fieldtype": "Table",
+   "label": "Routes",
+   "options": "Route Details Item"
+  },
+  {
+   "fieldname": "route_changes_details_section",
+   "fieldtype": "Section Break",
+   "label": "Route Changes Details"
+  },
+  {
+   "fieldname": "route_changes",
+   "fieldtype": "Table",
+   "label": "Route Changes",
+   "options": "Route Changes"
+  },
+  {
+   "fieldname": "staff_changes_details_section",
+   "fieldtype": "Section Break",
+   "label": "Staff changes Details"
+  },
+  {
+   "fieldname": "staff_changes",
+   "fieldtype": "Table",
+   "label": "Staff Changes",
+   "options": "Staff Changes Item"
+  },
+  {
+   "fieldname": "time_tracking_details_section",
+   "fieldtype": "Section Break",
+   "label": "Time Tracking Details"
+  },
+  {
+   "fieldname": "time_tracking",
+   "fieldtype": "Table",
+   "label": "Time Tracking ",
+   "options": "Time Tracking"
+  },
+  {
+   "fieldname": "section_break_wkz4t",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "package_details_section",
+   "fieldtype": "Section Break",
+   "label": "Package Details"
+  },
+  {
+   "fieldname": "package_detail",
+   "fieldtype": "Table",
+   "label": "Package Details",
+   "options": "Package Details"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-14 20:43:19.664513",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Vehicle Assignment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1
+}

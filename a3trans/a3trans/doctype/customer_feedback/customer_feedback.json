@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:FEEDBACK-{######}",
+ "creation": "2023-08-16 17:21:28.577478",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "feedback_details_section",
+  "trip_id",
+  "customer_id",
+  "customer_name",
+  "service_rating",
+  "driver_rating",
+  "vehicle_condition_rating",
+  "feedback_category",
+  "column_break_bsv5m",
+  "comments",
+  "response_needed",
+  "response_status",
+  "response_notes",
+  "feedback_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "trip_id",
+   "fieldtype": "Link",
+   "label": "Trip ID",
+   "options": "Trip List"
+  },
+  {
+   "fieldname": "customer_id",
+   "fieldtype": "Link",
+   "label": "Customer ID",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "label": "Customer Name"
+  },
+  {
+   "fieldname": "service_rating",
+   "fieldtype": "Select",
+   "label": "Service Rating",
+   "options": "1 - Very Dissatisfied\n2 - Dissatisfied\n3 - Neutral\n4 - Satisfied\n5 - Very Satisfied"
+  },
+  {
+   "fieldname": "driver_rating",
+   "fieldtype": "Select",
+   "label": "Driver Rating(Optional)",
+   "options": "1 - Very Dissatisfied\n2 - Dissatisfied\n3 - Neutral\n4 - Satisfied\n5 - Very Satisfied"
+  },
+  {
+   "fieldname": "vehicle_condition_rating",
+   "fieldtype": "Select",
+   "label": "Vehicle Condition Rating(Optional)",
+   "options": "1 - Very Dissatisfied\n2 - Dissatisfied\n3 - Neutral\n4 - Satisfied\n5 - Very Satisfied"
+  },
+  {
+   "fieldname": "feedback_category",
+   "fieldtype": "Select",
+   "label": "Feedback Category",
+   "options": "Compliment\nComplaint\nSuggestion\nQuestion"
+  },
+  {
+   "fieldname": "column_break_bsv5m",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "comments",
+   "fieldtype": "Small Text",
+   "label": "Comments"
+  },
+  {
+   "default": "0",
+   "fieldname": "response_needed",
+   "fieldtype": "Check",
+   "label": "Response Needed"
+  },
+  {
+   "fieldname": "response_status",
+   "fieldtype": "Select",
+   "label": "Response Status",
+   "options": "Pending\nResponded\nClosed"
+  },
+  {
+   "fieldname": "response_notes",
+   "fieldtype": "Small Text",
+   "label": "Response Notes"
+  },
+  {
+   "fieldname": "feedback_date",
+   "fieldtype": "Date",
+   "label": "Feedback Date"
+  },
+  {
+   "fieldname": "feedback_details_section",
+   "fieldtype": "Section Break",
+   "label": "Feedback Details"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 17:25:36.387032",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Customer Feedback",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

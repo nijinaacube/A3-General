@@ -1,0 +1,157 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:CBD-{#####}",
+ "creation": "2023-08-16 15:29:51.401793",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "trip_id",
+  "origin_country",
+  "date_of_submission",
+  "column_break_j9ugf",
+  "status",
+  "destination_country",
+  "date_of_clearance",
+  "attachments_section",
+  "customs_declaration_form",
+  "import_or_export_permits",
+  "insurance_documents",
+  "column_break_eb8zz",
+  "invoice_and_packing_list",
+  "vehicle_documents",
+  "driver_and_crew_visas_details_section",
+  "driver_and_crew_visas",
+  "other_legal_documents_section",
+  "other_legal_documents"
+ ],
+ "fields": [
+  {
+   "fieldname": "trip_id",
+   "fieldtype": "Link",
+   "label": "Trip ID",
+   "options": "Trip List"
+  },
+  {
+   "fieldname": "origin_country",
+   "fieldtype": "Link",
+   "label": "Origin Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "destination_country",
+   "fieldtype": "Link",
+   "label": "Destination Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "customs_declaration_form",
+   "fieldtype": "Attach",
+   "label": "Customs Declaration Form"
+  },
+  {
+   "fieldname": "import_or_export_permits",
+   "fieldtype": "Attach",
+   "label": "Import or Export Permits"
+  },
+  {
+   "fieldname": "insurance_documents",
+   "fieldtype": "Attach",
+   "label": "Insurance Documents"
+  },
+  {
+   "fieldname": "invoice_and_packing_list",
+   "fieldtype": "Attach",
+   "label": "Invoice and Packing List"
+  },
+  {
+   "fieldname": "vehicle_documents",
+   "fieldtype": "Attach",
+   "label": "Vehicle Documents"
+  },
+  {
+   "fieldname": "driver_and_crew_visas",
+   "fieldtype": "Table",
+   "label": "Driver and Crew Visas",
+   "options": "Driver and Crew Visas"
+  },
+  {
+   "fieldname": "other_legal_documents_section",
+   "fieldtype": "Section Break",
+   "label": "Other Legal Documents"
+  },
+  {
+   "fieldname": "other_legal_documents",
+   "fieldtype": "Table",
+   "label": "Other Legal Documents",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_j9ugf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "column_break_eb8zz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "driver_and_crew_visas_details_section",
+   "fieldtype": "Section Break",
+   "label": "Driver and Crew Visas Details"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Prepared\nSubmitted\nCleared\nFailed"
+  },
+  {
+   "fieldname": "date_of_submission",
+   "fieldtype": "Date",
+   "label": "Date of Submission"
+  },
+  {
+   "fieldname": "date_of_clearance",
+   "fieldtype": "Date",
+   "label": "Date of Clearance"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 15:43:30.133886",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Cross Border Documentation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

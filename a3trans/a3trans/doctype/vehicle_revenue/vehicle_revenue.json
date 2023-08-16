@@ -1,0 +1,88 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:REV-{revenue_type}-{vehicle}-{####}",
+ "creation": "2023-08-11 15:12:31.870293",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vehicle",
+  "service_date",
+  "revenue_type",
+  "column_break_xuplc",
+  "amount",
+  "customer",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Vehicle ",
+   "options": "Vehicle",
+   "reqd": 1
+  },
+  {
+   "fieldname": "service_date",
+   "fieldtype": "Date",
+   "label": "Service Date"
+  },
+  {
+   "fieldname": "revenue_type",
+   "fieldtype": "Select",
+   "label": "Revenue Type",
+   "options": "Rental Income\nService Income\nMaintenance Income\nDelivery Income\nAdvertising Income\nFuel Surcharge\nToll Income\nOther"
+  },
+  {
+   "fieldname": "column_break_xuplc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount ",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer ",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-11 15:12:31.870293",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Vehicle Revenue",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1
+}

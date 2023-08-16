@@ -1,0 +1,106 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:GPS-{vehicle}-{#######}",
+ "creation": "2023-08-11 15:26:11.109541",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vehicle",
+  "tracking_date_and_time",
+  "latitude",
+  "longitude",
+  "speed",
+  "column_break_sj5rv",
+  "altitude",
+  "heading",
+  "satellites",
+  "hdop"
+ ],
+ "fields": [
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Vehicle",
+   "options": "Vehicle",
+   "reqd": 1
+  },
+  {
+   "fieldname": "tracking_date_and_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Tracking Date and Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Latitude",
+   "reqd": 1
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Longitude",
+   "reqd": 1
+  },
+  {
+   "fieldname": "speed",
+   "fieldtype": "Float",
+   "label": "Speed"
+  },
+  {
+   "fieldname": "column_break_sj5rv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "altitude",
+   "fieldtype": "Float",
+   "label": "Altitude",
+   "reqd": 1
+  },
+  {
+   "fieldname": "heading",
+   "fieldtype": "Data",
+   "label": "Heading"
+  },
+  {
+   "fieldname": "satellites",
+   "fieldtype": "Int",
+   "label": "Satellites"
+  },
+  {
+   "fieldname": "hdop",
+   "fieldtype": "Float",
+   "label": "HDOP"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-11 15:26:11.109541",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Vehicle GPS Tracking",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

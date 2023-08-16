@@ -1,0 +1,155 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-16 12:42:19.292410",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "tracking_id",
+  "sender_name",
+  "recipient_name",
+  "column_break_elbvn",
+  "sender_address",
+  "sender_contact",
+  "parcel_details_section",
+  "parcel_contents",
+  "parcel_weight",
+  "column_break_rinlx",
+  "parcel_dimensions",
+  "special_instructions",
+  "receiver_details_section",
+  "receivers",
+  "pickup_and_dropoff_location_details_section",
+  "pickup_and_dropoff_locations",
+  "documents_section",
+  "attached_documents"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "tracking_id",
+   "fieldtype": "Link",
+   "label": "Tracking ID",
+   "options": "Parcel Tracking"
+  },
+  {
+   "fieldname": "sender_name",
+   "fieldtype": "Data",
+   "label": "Sender Name"
+  },
+  {
+   "fieldname": "recipient_name",
+   "fieldtype": "Data",
+   "label": "Recipient Name"
+  },
+  {
+   "fieldname": "column_break_elbvn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sender_address",
+   "fieldtype": "Link",
+   "label": "Sender Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "sender_contact",
+   "fieldtype": "Data",
+   "label": "Sender Contact"
+  },
+  {
+   "fieldname": "parcel_details_section",
+   "fieldtype": "Section Break",
+   "label": "Parcel Details"
+  },
+  {
+   "fieldname": "parcel_contents",
+   "fieldtype": "Small Text",
+   "label": "Parcel Contents"
+  },
+  {
+   "fieldname": "parcel_weight",
+   "fieldtype": "Float",
+   "label": "Parcel Weight"
+  },
+  {
+   "fieldname": "column_break_rinlx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "parcel_dimensions",
+   "fieldtype": "Data",
+   "label": "Parcel Dimensions"
+  },
+  {
+   "fieldname": "special_instructions",
+   "fieldtype": "Small Text",
+   "label": "Special Instructions"
+  },
+  {
+   "fieldname": "receiver_details_section",
+   "fieldtype": "Section Break",
+   "label": "Receiver Details"
+  },
+  {
+   "fieldname": "receivers",
+   "fieldtype": "Table",
+   "label": "Receivers",
+   "options": "Receivers"
+  },
+  {
+   "fieldname": "pickup_and_dropoff_location_details_section",
+   "fieldtype": "Section Break",
+   "label": "Pickup and Dropoff Location Details"
+  },
+  {
+   "fieldname": "pickup_and_dropoff_locations",
+   "fieldtype": "Table",
+   "label": "Pickup and Dropoff Locations",
+   "options": "Pickup and Dropoff Locations"
+  },
+  {
+   "fieldname": "documents_section",
+   "fieldtype": "Section Break",
+   "label": "Documents"
+  },
+  {
+   "fieldname": "attached_documents",
+   "fieldtype": "Table",
+   "label": "Attached Documents",
+   "options": "Attached Documents"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 13:56:54.512722",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Courier Parcel",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

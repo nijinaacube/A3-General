@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:TT-{######}",
+ "creation": "2023-08-12 18:53:18.755832",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "trip_type_name",
+  "column_break_ntq4y",
+  "description",
+  "participants_section",
+  "participants",
+  "procedures_section",
+  "procedures"
+ ],
+ "fields": [
+  {
+   "fieldname": "trip_type_name",
+   "fieldtype": "Link",
+   "label": "Trip Type Name",
+   "options": "Type of Trips"
+  },
+  {
+   "fieldname": "column_break_ntq4y",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "fieldname": "participants_section",
+   "fieldtype": "Section Break",
+   "label": "Participants"
+  },
+  {
+   "fieldname": "participants",
+   "fieldtype": "Table",
+   "label": "Participants",
+   "options": "Participants"
+  },
+  {
+   "fieldname": "procedures_section",
+   "fieldtype": "Section Break",
+   "label": "Procedures"
+  },
+  {
+   "fieldname": "procedures",
+   "fieldtype": "Table",
+   "label": "Procedures",
+   "options": "Procedures"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-12 18:53:18.755832",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Trip Type",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

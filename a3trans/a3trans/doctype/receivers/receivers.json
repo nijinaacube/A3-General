@@ -1,0 +1,67 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-16 12:56:09.247413",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "receiver_name",
+  "receiver_address",
+  "receiver_contact",
+  "expected_delivery_date",
+  "delivery_status",
+  "confirmation_method"
+ ],
+ "fields": [
+  {
+   "fieldname": "receiver_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Receiver Name"
+  },
+  {
+   "fieldname": "receiver_address",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Receiver Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "receiver_contact",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Receiver Contact"
+  },
+  {
+   "fieldname": "expected_delivery_date",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Expected Delivery Date"
+  },
+  {
+   "fieldname": "delivery_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Delivery Status",
+   "options": "Delivered\nFailed\nPending"
+  },
+  {
+   "fieldname": "confirmation_method",
+   "fieldtype": "Select",
+   "label": "Confirmation Method",
+   "options": "Signature\nPhoto\nCall\nSMS"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-08-16 15:13:42.481075",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Receivers",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

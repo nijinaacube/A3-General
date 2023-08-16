@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include a3trans *.css
+recursive-include a3trans *.csv
+recursive-include a3trans *.html
+recursive-include a3trans *.ico
+recursive-include a3trans *.js
+recursive-include a3trans *.json
+recursive-include a3trans *.md
+recursive-include a3trans *.png
+recursive-include a3trans *.py
+recursive-include a3trans *.svg
+recursive-include a3trans *.txt
+recursive-exclude a3trans *.pyc

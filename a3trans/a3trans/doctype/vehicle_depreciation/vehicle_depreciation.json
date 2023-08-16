@@ -1,0 +1,93 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:DEPR-{vehicle}-{#####}",
+ "creation": "2023-08-11 16:23:18.076390",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vehicle",
+  "purchase_date",
+  "purchase_amount",
+  "salvage_value",
+  "column_break_wljpv",
+  "depreciation_rate",
+  "accumulated_depreciation",
+  "current_value"
+ ],
+ "fields": [
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Vehicle",
+   "options": "Vehicle",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purchase_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Purchase Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "purchase_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Purchase Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "salvage_value",
+   "fieldtype": "Currency",
+   "label": "Salvage Value"
+  },
+  {
+   "fieldname": "column_break_wljpv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "depreciation_rate",
+   "fieldtype": "Float",
+   "label": "Depreciation Rate"
+  },
+  {
+   "fieldname": "accumulated_depreciation",
+   "fieldtype": "Currency",
+   "label": "Accumulated Depreciation"
+  },
+  {
+   "fieldname": "current_value",
+   "fieldtype": "Currency",
+   "label": "Current Value "
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-11 16:23:18.076390",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Vehicle Depreciation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

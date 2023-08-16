@@ -1,0 +1,89 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:TRIP-{########}",
+ "creation": "2023-08-16 16:51:39.023538",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "total_passengers",
+  "vehicle_id",
+  "status",
+  "column_break_iqnto",
+  "comments",
+  "passengers_details_section",
+  "passengers_details"
+ ],
+ "fields": [
+  {
+   "fieldname": "total_passengers",
+   "fieldtype": "Int",
+   "label": "Total Passengers"
+  },
+  {
+   "fieldname": "vehicle_id",
+   "fieldtype": "Link",
+   "label": "Vehicle ID",
+   "options": "Vehicle"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Scheduled\nIn Progress\nCompleted"
+  },
+  {
+   "fieldname": "comments",
+   "fieldtype": "Small Text",
+   "label": "Comments"
+  },
+  {
+   "fieldname": "passengers_details_section",
+   "fieldtype": "Section Break",
+   "label": "Passengers Details"
+  },
+  {
+   "fieldname": "passengers_details",
+   "fieldtype": "Table",
+   "label": "Passengers Details",
+   "options": "Passengers Details"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_iqnto",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 16:52:46.048666",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Trip Passengers",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

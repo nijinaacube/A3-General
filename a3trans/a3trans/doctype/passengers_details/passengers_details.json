@@ -1,0 +1,73 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-16 16:51:02.323704",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "passenger_id",
+  "full_name",
+  "mobile_number",
+  "pickup_location",
+  "dropoff_location",
+  "seat_number",
+  "fare"
+ ],
+ "fields": [
+  {
+   "fieldname": "passenger_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Passenger ID",
+   "options": "Passengers"
+  },
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Name"
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Mobile Number"
+  },
+  {
+   "fieldname": "pickup_location",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Pickup Location"
+  },
+  {
+   "fieldname": "dropoff_location",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Dropoff Location"
+  },
+  {
+   "fieldname": "seat_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Seat Number"
+  },
+  {
+   "fieldname": "fare",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Fare"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-08-16 16:51:02.323704",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Passengers Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

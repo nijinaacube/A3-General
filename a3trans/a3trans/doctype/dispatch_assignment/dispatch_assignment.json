@@ -1,0 +1,157 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:DIS-{######}",
+ "creation": "2023-08-16 10:28:25.296649",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "dispatch_request_id",
+  "vehicle_id",
+  "driver_id",
+  "helpers_id",
+  "scheduled_departure_date",
+  "scheduled_departure_time",
+  "scheduled_arrival_date",
+  "column_break_8y3o1",
+  "scheduled_arrival_time",
+  "actual_departure_date",
+  "actual_departure_time",
+  "actual_arrival_date",
+  "actual_arrival_time",
+  "status",
+  "staff_details_section",
+  "assignment_participants"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "dispatch_request_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Dispatch Request ID",
+   "options": "Dispatch Request",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vehicle_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Vehicle ID",
+   "options": "Vehicle",
+   "reqd": 1
+  },
+  {
+   "fieldname": "driver_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Driver ID",
+   "options": "Staff Member",
+   "reqd": 1
+  },
+  {
+   "fieldname": "helpers_id",
+   "fieldtype": "Link",
+   "label": "Helper(s) ID",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "scheduled_departure_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Scheduled Departure Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "scheduled_departure_time",
+   "fieldtype": "Time",
+   "label": "Scheduled Departure Time"
+  },
+  {
+   "fieldname": "scheduled_arrival_date",
+   "fieldtype": "Date",
+   "label": "Scheduled Arrival Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_8y3o1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "scheduled_arrival_time",
+   "fieldtype": "Time",
+   "label": "Scheduled Arrival Time"
+  },
+  {
+   "fieldname": "actual_departure_date",
+   "fieldtype": "Date",
+   "label": "Actual Departure Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "actual_departure_time",
+   "fieldtype": "Time",
+   "label": "Actual Departure Time"
+  },
+  {
+   "fieldname": "actual_arrival_date",
+   "fieldtype": "Date",
+   "label": "Actual Arrival Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "actual_arrival_time",
+   "fieldtype": "Time",
+   "label": "Actual Arrival Time"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Scheduled\nIn Progress\nCompleted\nCancelled"
+  },
+  {
+   "fieldname": "staff_details_section",
+   "fieldtype": "Section Break",
+   "label": "Staff Details"
+  },
+  {
+   "fieldname": "assignment_participants",
+   "fieldtype": "Table",
+   "label": "Assignment Participants",
+   "options": "Assignment Participants"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 10:36:17.641133",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Dispatch Assignment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

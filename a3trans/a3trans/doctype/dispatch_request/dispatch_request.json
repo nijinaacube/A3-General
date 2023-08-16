@@ -1,0 +1,133 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:DREQ-{#####}",
+ "creation": "2023-08-14 20:57:15.060320",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "requester_id",
+  "request_date",
+  "request_time",
+  "pickup_location",
+  "delivery_location",
+  "vehicle_type_required",
+  "status",
+  "column_break_g9c1j",
+  "scheduled_pickup_date",
+  "scheduled_pickup_time",
+  "scheduled_delivery_date",
+  "scheduled_delivery_time",
+  "urgency_level",
+  "special_instructions",
+  "dispatch_items"
+ ],
+ "fields": [
+  {
+   "fieldname": "requester_id",
+   "fieldtype": "Link",
+   "label": "Requester ID",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "request_date",
+   "fieldtype": "Date",
+   "label": "Request Date"
+  },
+  {
+   "fieldname": "request_time",
+   "fieldtype": "Time",
+   "label": "Request Time"
+  },
+  {
+   "fieldname": "pickup_location",
+   "fieldtype": "Data",
+   "label": "Pickup Location"
+  },
+  {
+   "fieldname": "delivery_location",
+   "fieldtype": "Data",
+   "label": "Delivery Location"
+  },
+  {
+   "fieldname": "vehicle_type_required",
+   "fieldtype": "Link",
+   "label": "Vehicle Type Required",
+   "options": "Vehicle Type"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "label": "Status",
+   "options": "Pending\nAssigned\nCompleted\nCancelled"
+  },
+  {
+   "fieldname": "column_break_g9c1j",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "scheduled_pickup_date",
+   "fieldtype": "Date",
+   "label": "Scheduled Pickup Date"
+  },
+  {
+   "fieldname": "scheduled_pickup_time",
+   "fieldtype": "Time",
+   "label": "Scheduled Pickup Time"
+  },
+  {
+   "fieldname": "scheduled_delivery_date",
+   "fieldtype": "Date",
+   "label": "Scheduled Delivery Date"
+  },
+  {
+   "fieldname": "scheduled_delivery_time",
+   "fieldtype": "Time",
+   "label": "Scheduled Delivery Time"
+  },
+  {
+   "fieldname": "urgency_level",
+   "fieldtype": "Select",
+   "label": "Urgency Level",
+   "options": "Normal\nUrgent\nCritical"
+  },
+  {
+   "fieldname": "special_instructions",
+   "fieldtype": "Section Break",
+   "label": "Dispatch Items"
+  },
+  {
+   "fieldname": "dispatch_items",
+   "fieldtype": "Table",
+   "label": "Dispatch Items",
+   "options": "Dispatch Items"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-14 21:02:34.057080",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Dispatch Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

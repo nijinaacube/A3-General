@@ -1,0 +1,135 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:RETURN-{######}",
+ "creation": "2023-08-16 14:16:38.809380",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "associated_trip_id",
+  "vehicle_assignment_id",
+  "trip_type",
+  "status",
+  "column_break_33hnz",
+  "trip_purpose",
+  "departure_date_and_time",
+  "arrival_date_and_time",
+  "route_details_section",
+  "routes",
+  "visited_locations_details_section",
+  "visited_locations",
+  "expenses_section",
+  "expenses_incurred"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "associated_trip_id",
+   "fieldtype": "Link",
+   "label": "Associated Trip ID",
+   "options": "Trip List"
+  },
+  {
+   "fieldname": "vehicle_assignment_id",
+   "fieldtype": "Link",
+   "label": "Vehicle Assignment ID",
+   "options": "Vehicle Assignment"
+  },
+  {
+   "fieldname": "trip_type",
+   "fieldtype": "Select",
+   "label": "Trip Type",
+   "options": "Cargo\nPassenger Transport\nRental\nMaintenance"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Scheduled\nIn Progress\nCompleted\nCancelled"
+  },
+  {
+   "fieldname": "column_break_33hnz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "trip_purpose",
+   "fieldtype": "Data",
+   "label": "Trip Purpose"
+  },
+  {
+   "fieldname": "departure_date_and_time",
+   "fieldtype": "Datetime",
+   "label": "Departure Date and Time"
+  },
+  {
+   "fieldname": "arrival_date_and_time",
+   "fieldtype": "Datetime",
+   "label": "Arrival Date and Time"
+  },
+  {
+   "fieldname": "route_details_section",
+   "fieldtype": "Section Break",
+   "label": "Route Details"
+  },
+  {
+   "fieldname": "routes",
+   "fieldtype": "Table",
+   "label": "Routes",
+   "options": "Route Details Item"
+  },
+  {
+   "fieldname": "visited_locations_details_section",
+   "fieldtype": "Section Break",
+   "label": "Visited Locations Details"
+  },
+  {
+   "fieldname": "visited_locations",
+   "fieldtype": "Table",
+   "label": "Visited Locations",
+   "options": "Visited Locations"
+  },
+  {
+   "fieldname": "expenses_section",
+   "fieldtype": "Section Break",
+   "label": "Expenses"
+  },
+  {
+   "fieldname": "expenses_incurred",
+   "fieldtype": "Table",
+   "label": "Expenses Incurred",
+   "options": "Expenses"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 14:20:51.719434",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Return Trip",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

@@ -1,0 +1,132 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:VEHR-{######}",
+ "creation": "2023-08-16 16:02:13.338032",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "location",
+  "vehicle_type",
+  "weight_limit",
+  "height_limit",
+  "width_limit",
+  "column_break_dwmgq",
+  "special_permits_required",
+  "access_hours",
+  "status",
+  "effective_date",
+  "expiration_date",
+  "section_break_f2tot",
+  "restricted_materials",
+  "additional_restrictions"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "vehicle_type",
+   "fieldtype": "Link",
+   "label": "Vehicle Type",
+   "options": "Vehicle Type"
+  },
+  {
+   "fieldname": "weight_limit",
+   "fieldtype": "Float",
+   "label": "Weight Limit"
+  },
+  {
+   "fieldname": "height_limit",
+   "fieldtype": "Float",
+   "label": "Height Limit"
+  },
+  {
+   "fieldname": "width_limit",
+   "fieldtype": "Float",
+   "label": "Width Limit"
+  },
+  {
+   "fieldname": "access_hours",
+   "fieldtype": "Time",
+   "label": "Access Hours"
+  },
+  {
+   "default": "0",
+   "fieldname": "special_permits_required",
+   "fieldtype": "Check",
+   "label": "Special Permits Required"
+  },
+  {
+   "fieldname": "effective_date",
+   "fieldtype": "Date",
+   "label": "Effective Date"
+  },
+  {
+   "fieldname": "expiration_date",
+   "fieldtype": "Date",
+   "label": "Expiration Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive\nArchived"
+  },
+  {
+   "fieldname": "restricted_materials",
+   "fieldtype": "Small Text",
+   "label": "Restricted Materials"
+  },
+  {
+   "fieldname": "additional_restrictions",
+   "fieldtype": "Small Text",
+   "label": "Additional Restrictions"
+  },
+  {
+   "fieldname": "column_break_dwmgq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_f2tot",
+   "fieldtype": "Section Break",
+   "label": "Additional Details"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 16:06:02.211801",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Vehicle Restrictions",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

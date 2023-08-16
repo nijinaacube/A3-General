@@ -1,0 +1,147 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:DL-{######}",
+ "creation": "2023-08-16 10:49:08.290972",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "dispatch_assignment_id",
+  "trip_id",
+  "delivery_type",
+  "total_packages",
+  "total_weight",
+  "column_break_lvonc",
+  "delivery_date",
+  "delivery_time",
+  "delivery_status",
+  "total_receivers",
+  "delivery_details_section",
+  "delivery_details",
+  "delivery_items",
+  "attachments_section",
+  "attached_documents"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "dispatch_assignment_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Dispatch Assignment ID",
+   "options": "Dispatch Assignment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "trip_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Trip ID",
+   "options": "Trip List",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_lvonc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "delivery_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Delivery Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "delivery_time",
+   "fieldtype": "Time",
+   "label": "Delivery Time"
+  },
+  {
+   "fieldname": "delivery_status",
+   "fieldtype": "Select",
+   "label": "Delivery Status",
+   "options": "Scheduled\nIn Progress\nDelivered\nFailed\nReturned"
+  },
+  {
+   "fieldname": "delivery_details_section",
+   "fieldtype": "Section Break",
+   "label": "Delivery Details"
+  },
+  {
+   "fieldname": "delivery_items",
+   "fieldtype": "Table",
+   "label": "Delivery Items",
+   "options": "Delivery Items"
+  },
+  {
+   "fieldname": "delivery_details",
+   "fieldtype": "Table",
+   "label": "Delivery Details",
+   "options": "Delivery Details"
+  },
+  {
+   "fieldname": "delivery_type",
+   "fieldtype": "Select",
+   "label": "Delivery Type",
+   "options": "Standard\nExpress\nOvernight"
+  },
+  {
+   "fieldname": "total_packages",
+   "fieldtype": "Int",
+   "label": "Total Packages"
+  },
+  {
+   "fieldname": "total_weight",
+   "fieldtype": "Float",
+   "label": "Total Weight"
+  },
+  {
+   "fieldname": "total_receivers",
+   "fieldtype": "Int",
+   "label": "Total Receivers"
+  },
+  {
+   "fieldname": "attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "attached_documents",
+   "fieldtype": "Table",
+   "label": "Attached Documents",
+   "options": "Attached Documents"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 15:03:16.373784",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Delivery Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

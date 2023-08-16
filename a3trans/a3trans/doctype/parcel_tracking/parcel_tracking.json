@@ -1,0 +1,103 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:PTR-{#####}",
+ "creation": "2023-08-16 11:39:42.006175",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "dispatch_assignment_id",
+  "delivery_log_id",
+  "parcel_status",
+  "column_break_rebzb",
+  "recipient_name",
+  "recipient_address",
+  "expected_delivery_date",
+  "location_details_section",
+  "parcel_locations"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "dispatch_assignment_id",
+   "fieldtype": "Link",
+   "label": "Dispatch Assignment ID",
+   "options": "Dispatch Assignment"
+  },
+  {
+   "fieldname": "delivery_log_id",
+   "fieldtype": "Link",
+   "label": "Delivery Log ID",
+   "options": "Delivery Log"
+  },
+  {
+   "fieldname": "parcel_status",
+   "fieldtype": "Select",
+   "label": "Parcel Status",
+   "options": "In Transit\nOut for Delivery\nDelivered\nReturned\nFailed"
+  },
+  {
+   "fieldname": "column_break_rebzb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "recipient_name",
+   "fieldtype": "Data",
+   "label": "Recipient Name"
+  },
+  {
+   "fieldname": "recipient_address",
+   "fieldtype": "Link",
+   "label": "Recipient Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "expected_delivery_date",
+   "fieldtype": "Data",
+   "label": "Expected Delivery Date"
+  },
+  {
+   "fieldname": "location_details_section",
+   "fieldtype": "Section Break",
+   "label": "Location Details"
+  },
+  {
+   "fieldname": "parcel_locations",
+   "fieldtype": "Table",
+   "label": "Parcel Locations",
+   "options": "Parcel Locations"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 11:40:11.997608",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Parcel Tracking",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

@@ -1,0 +1,101 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:EXP-{#####}",
+ "creation": "2023-08-14 20:49:43.379165",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vehicle_assignment_id",
+  "expense_type",
+  "amount",
+  "date",
+  "time",
+  "column_break_twhwx",
+  "location",
+  "paid_by",
+  "receipt_attachment",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "vehicle_assignment_id",
+   "fieldtype": "Link",
+   "label": "Vehicle Assignment ID",
+   "options": "Vehicle Assignment"
+  },
+  {
+   "fieldname": "expense_type",
+   "fieldtype": "Select",
+   "label": "Expense Type",
+   "options": "Toll Fees\nFuel\nMaintenance\nAccommodation\nMeals"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "label": "Time"
+  },
+  {
+   "fieldname": "column_break_twhwx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
+  },
+  {
+   "fieldname": "paid_by",
+   "fieldtype": "Link",
+   "label": "Paid By",
+   "options": "User"
+  },
+  {
+   "fieldname": "receipt_attachment",
+   "fieldtype": "Attach",
+   "label": "Receipt Attachment"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nReimbursed\nApproved"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-14 20:49:43.379165",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Expenses Incurred",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1
+}

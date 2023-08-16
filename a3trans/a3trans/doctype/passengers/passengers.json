@@ -1,0 +1,150 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{full_name}-{contact_number}",
+ "creation": "2023-08-16 16:41:04.892441",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "full_name",
+  "date_of_birth",
+  "gender",
+  "national_id_or_passport",
+  "contact_number",
+  "email_address",
+  "emergency_contact",
+  "status",
+  "column_break_wrbci",
+  "address_line_1",
+  "address_line_2",
+  "city",
+  "pin_code",
+  "passenger_type",
+  "frequent_traveler_number",
+  "special_requirements_or_notes",
+  "photo"
+ ],
+ "fields": [
+  {
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "label": "Full Name"
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth"
+  },
+  {
+   "fieldname": "gender",
+   "fieldtype": "Select",
+   "label": "Gender",
+   "options": "Male\nFemale\nOther"
+  },
+  {
+   "fieldname": "national_id_or_passport",
+   "fieldtype": "Data",
+   "label": "National ID or Passport"
+  },
+  {
+   "fieldname": "contact_number",
+   "fieldtype": "Data",
+   "label": "Contact Number",
+   "options": "Phone"
+  },
+  {
+   "fieldname": "email_address",
+   "fieldtype": "Data",
+   "label": "Email Address",
+   "options": "Email"
+  },
+  {
+   "fieldname": "emergency_contact",
+   "fieldtype": "Data",
+   "label": "Emergency Contact"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive\nBlacklisted"
+  },
+  {
+   "fieldname": "column_break_wrbci",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "address_line_1",
+   "fieldtype": "Data",
+   "label": "Address Line 1"
+  },
+  {
+   "fieldname": "address_line_2",
+   "fieldtype": "Data",
+   "label": "Address Line 2"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "pin_code",
+   "fieldtype": "Data",
+   "label": "PIN Code"
+  },
+  {
+   "fieldname": "passenger_type",
+   "fieldtype": "Select",
+   "label": "Passenger Type",
+   "options": "Regular\nVIP\nEmployee\nGuest"
+  },
+  {
+   "fieldname": "frequent_traveler_number",
+   "fieldtype": "Data",
+   "label": "Frequent Traveler Number"
+  },
+  {
+   "fieldname": "special_requirements_or_notes",
+   "fieldtype": "Data",
+   "label": "Special Requirements Or Notes"
+  },
+  {
+   "fieldname": "photo",
+   "fieldtype": "Attach",
+   "label": "Photo"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-16 16:43:18.554933",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Passengers",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1
+}
