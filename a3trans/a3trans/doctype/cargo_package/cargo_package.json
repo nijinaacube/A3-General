@@ -1,0 +1,153 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:CARGO-{########}",
+ "creation": "2023-08-17 18:25:35.072902",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "package_type",
+  "contents_description",
+  "weight",
+  "weight_unit",
+  "length",
+  "width",
+  "column_break_do3oo",
+  "height",
+  "dimension_unit",
+  "shipping_details",
+  "tracking_number",
+  "status",
+  "image",
+  "sender_information_section",
+  "sender_information",
+  "recipient_information_section",
+  "recipient_information"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "package_type",
+   "fieldtype": "Link",
+   "label": "Package Type",
+   "options": "Package Type"
+  },
+  {
+   "fieldname": "contents_description",
+   "fieldtype": "Small Text",
+   "label": "Contents Description"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Float",
+   "label": "Weight"
+  },
+  {
+   "fieldname": "weight_unit",
+   "fieldtype": "Link",
+   "label": "Weight Unit",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "length",
+   "fieldtype": "Float",
+   "label": "Length"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Float",
+   "label": "Width"
+  },
+  {
+   "fieldname": "column_break_do3oo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Float",
+   "label": "Height"
+  },
+  {
+   "fieldname": "dimension_unit",
+   "fieldtype": "Link",
+   "label": "Dimension Unit",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "shipping_details",
+   "fieldtype": "Small Text",
+   "label": "Shipping Details"
+  },
+  {
+   "fieldname": "tracking_number",
+   "fieldtype": "Link",
+   "label": "Tracking Number",
+   "options": "Parcel Tracking"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nIn Transit\nDelivered\nReturned"
+  },
+  {
+   "fieldname": "image",
+   "fieldtype": "Attach",
+   "label": "Image"
+  },
+  {
+   "fieldname": "sender_information_section",
+   "fieldtype": "Section Break",
+   "label": "Sender Information"
+  },
+  {
+   "fieldname": "sender_information",
+   "fieldtype": "Table",
+   "label": "Sender Information",
+   "options": "Sender or Receiver Information"
+  },
+  {
+   "fieldname": "recipient_information_section",
+   "fieldtype": "Section Break",
+   "label": "Recipient Information"
+  },
+  {
+   "fieldname": "recipient_information",
+   "fieldtype": "Table",
+   "label": "Recipient Information",
+   "options": "Sender or Receiver Information"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 18:26:00.780687",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Cargo Package",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

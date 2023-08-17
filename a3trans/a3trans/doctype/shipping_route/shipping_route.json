@@ -1,0 +1,113 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:ROUTE-{start_location}-{end_location}-{######}",
+ "creation": "2023-08-17 19:03:03.719462",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "start_location",
+  "end_location",
+  "total_distance",
+  "column_break_7jtlx",
+  "estimated_total_time",
+  "associated_vehicle",
+  "preferred_time_of_day",
+  "intermediate_stops_section",
+  "intermediate_stops",
+  "comments",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "start_location",
+   "fieldtype": "Link",
+   "label": "Start Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "end_location",
+   "fieldtype": "Link",
+   "label": "End Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "total_distance",
+   "fieldtype": "Float",
+   "label": "Total Distance"
+  },
+  {
+   "fieldname": "column_break_7jtlx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "estimated_total_time",
+   "fieldtype": "Duration",
+   "label": "Estimated Total Time"
+  },
+  {
+   "fieldname": "associated_vehicle",
+   "fieldtype": "Link",
+   "label": "Associated Vehicle",
+   "options": "Vehicle"
+  },
+  {
+   "fieldname": "preferred_time_of_day",
+   "fieldtype": "Time",
+   "label": "Preferred Time of Day"
+  },
+  {
+   "fieldname": "intermediate_stops_section",
+   "fieldtype": "Section Break",
+   "label": "Intermediate Stops"
+  },
+  {
+   "fieldname": "intermediate_stops",
+   "fieldtype": "Table",
+   "label": "Intermediate Stops",
+   "options": "Intermediate Stops"
+  },
+  {
+   "fieldname": "comments",
+   "fieldtype": "Section Break",
+   "label": "Comments/Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Comments/Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 19:04:07.679230",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Shipping Route",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1
+}

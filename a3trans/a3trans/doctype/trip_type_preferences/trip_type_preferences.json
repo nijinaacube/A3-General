@@ -1,0 +1,124 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:TYPE-{personnel}-{###}",
+ "creation": "2023-08-17 12:43:32.346674",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "personnel",
+  "preferred_trip_type",
+  "reason_for_preference",
+  "column_break_vph5e",
+  "experience_in_preferred_type",
+  "previous_employers_or_companies",
+  "status",
+  "certifications_section",
+  "certifications",
+  "section_break_hb0dc",
+  "last_updated",
+  "column_break_ikhgn",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "personnel",
+   "fieldtype": "Link",
+   "label": "Personnel",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "preferred_trip_type",
+   "fieldtype": "Link",
+   "label": "Preferred Trip Type",
+   "options": "Type of Trips"
+  },
+  {
+   "fieldname": "reason_for_preference",
+   "fieldtype": "Small Text",
+   "label": "Reason for Preference"
+  },
+  {
+   "fieldname": "certifications_section",
+   "fieldtype": "Section Break",
+   "label": "Certifications"
+  },
+  {
+   "fieldname": "certifications",
+   "fieldtype": "Table",
+   "label": "Certifications",
+   "options": "Certifications"
+  },
+  {
+   "fieldname": "experience_in_preferred_type",
+   "fieldtype": "Int",
+   "label": "Experience in Preferred Type"
+  },
+  {
+   "fieldname": "previous_employers_or_companies",
+   "fieldtype": "Data",
+   "label": "Previous Employers or Companies"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Data",
+   "label": "Notes/Additional Information"
+  },
+  {
+   "fieldname": "last_updated",
+   "fieldtype": "Datetime",
+   "label": "Last Updated"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_vph5e",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_hb0dc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_ikhgn",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 12:49:54.078272",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Trip Type Preferences",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

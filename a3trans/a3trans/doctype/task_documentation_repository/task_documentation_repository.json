@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:REPO-{document_title}-{####}",
+ "creation": "2023-08-17 17:27:01.243937",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "document_title",
+  "task_associated",
+  "document_type",
+  "version",
+  "document_description",
+  "column_break_ogcix",
+  "upload_document",
+  "document_status",
+  "last_updated_date",
+  "author",
+  "review_comments_section",
+  "review_comments"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "document_title",
+   "fieldtype": "Data",
+   "label": "Document Title"
+  },
+  {
+   "fieldname": "task_associated",
+   "fieldtype": "Link",
+   "label": "Task Associated",
+   "options": "Task"
+  },
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "label": "Document Type",
+   "options": "Manual\nProcedure Guide\nTraining Material\nSafety Guidelines\nOperational Blueprint\nOthers"
+  },
+  {
+   "fieldname": "version",
+   "fieldtype": "Data",
+   "label": "Version"
+  },
+  {
+   "fieldname": "document_description",
+   "fieldtype": "Small Text",
+   "label": "Document Description"
+  },
+  {
+   "fieldname": "column_break_ogcix",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "upload_document",
+   "fieldtype": "Attach",
+   "label": "Upload Document"
+  },
+  {
+   "fieldname": "document_status",
+   "fieldtype": "Select",
+   "label": "Document Status",
+   "options": "Active\nArchived\nUnder Review\nDeprecated"
+  },
+  {
+   "fieldname": "last_updated_date",
+   "fieldtype": "Date",
+   "label": "Last Updated Date"
+  },
+  {
+   "fieldname": "author",
+   "fieldtype": "Link",
+   "label": "Author/Uploader",
+   "options": "User"
+  },
+  {
+   "fieldname": "review_comments_section",
+   "fieldtype": "Section Break",
+   "label": "Review Comments"
+  },
+  {
+   "fieldname": "review_comments",
+   "fieldtype": "Table",
+   "label": "Review Comments",
+   "options": "Review Comments"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 17:27:41.106026",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Task Documentation Repository",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

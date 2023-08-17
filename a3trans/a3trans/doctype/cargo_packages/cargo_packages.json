@@ -1,0 +1,39 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-17 18:33:39.692098",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "cargo_package",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "cargo_package",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Cargo Package",
+   "options": "Cargo Package",
+   "reqd": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-08-17 18:33:39.692098",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Cargo Packages",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

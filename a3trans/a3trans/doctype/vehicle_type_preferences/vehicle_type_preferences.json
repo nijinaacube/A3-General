@@ -1,0 +1,104 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:PREF-{######}",
+ "creation": "2023-08-17 10:17:08.185274",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "person_id",
+  "role",
+  "vehicle_type",
+  "experience_level",
+  "column_break_dxvc0",
+  "certification_required",
+  "certification_details",
+  "preference_rank",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "person_id",
+   "fieldtype": "Link",
+   "label": "Person ID",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "role",
+   "fieldtype": "Link",
+   "label": "Role",
+   "options": "Role"
+  },
+  {
+   "fieldname": "vehicle_type",
+   "fieldtype": "Link",
+   "label": "Vehicle Type",
+   "options": "Vehicle Type"
+  },
+  {
+   "fieldname": "experience_level",
+   "fieldtype": "Select",
+   "label": "Experience Level",
+   "options": "Beginner\nIntermediate\nExpert"
+  },
+  {
+   "default": "0",
+   "fieldname": "certification_required",
+   "fieldtype": "Check",
+   "label": "Certification Required"
+  },
+  {
+   "fieldname": "certification_details",
+   "fieldtype": "Small Text",
+   "label": "Certification Details"
+  },
+  {
+   "fieldname": "preference_rank",
+   "fieldtype": "Int",
+   "label": "Preference Rank"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_dxvc0",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 10:18:21.164241",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Vehicle Type Preferences",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

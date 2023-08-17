@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:ASSIGN-{#######}",
+ "creation": "2023-08-17 13:45:47.612892",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "route_name",
+  "personnel",
+  "assignment_date",
+  "estimated_duration",
+  "shift_time",
+  "vehicle_assigned",
+  "column_break_vjq77",
+  "status",
+  "feedback",
+  "backup_personnel",
+  "last_updated",
+  "assigned_by"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "route_name",
+   "fieldtype": "Data",
+   "label": "Route Name/ID"
+  },
+  {
+   "fieldname": "personnel",
+   "fieldtype": "Link",
+   "label": "Personnel",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "assignment_date",
+   "fieldtype": "Date",
+   "label": "Assignment Date"
+  },
+  {
+   "fieldname": "estimated_duration",
+   "fieldtype": "Duration",
+   "label": "Estimated Duration"
+  },
+  {
+   "fieldname": "shift_time",
+   "fieldtype": "Time",
+   "label": "Shift Time"
+  },
+  {
+   "fieldname": "vehicle_assigned",
+   "fieldtype": "Link",
+   "label": "Vehicle Assigned",
+   "options": "Vehicle"
+  },
+  {
+   "fieldname": "column_break_vjq77",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Scheduled\nIn Progress\nCompleted\nCancelled"
+  },
+  {
+   "fieldname": "feedback",
+   "fieldtype": "Data",
+   "label": "Feedback/Notes"
+  },
+  {
+   "fieldname": "backup_personnel",
+   "fieldtype": "Link",
+   "label": "Backup Personnel",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "last_updated",
+   "fieldtype": "Datetime",
+   "label": "Last Updated"
+  },
+  {
+   "fieldname": "assigned_by",
+   "fieldtype": "Link",
+   "label": "Assigned By",
+   "options": "User"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 13:46:37.251035",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Route Assignment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

@@ -1,0 +1,156 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SHIP-{#########}",
+ "creation": "2023-08-17 18:35:42.162021",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "shipment_details_section",
+  "shipment_date",
+  "source_location",
+  "destination_location",
+  "column_break_55fsk",
+  "estimated_arrival_date",
+  "shipment_tracking_number",
+  "status",
+  "cargo_packages_section",
+  "cargo_packages",
+  "other_details_section",
+  "carrier_information",
+  "cost_of_shipment",
+  "column_break_opdzq",
+  "special_instructions",
+  "documentation_section",
+  "attachments",
+  "notes_section",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "shipment_date",
+   "fieldtype": "Date",
+   "label": "Shipment Date"
+  },
+  {
+   "fieldname": "source_location",
+   "fieldtype": "Link",
+   "label": "Source Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "destination_location",
+   "fieldtype": "Link",
+   "label": "Destination Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "estimated_arrival_date",
+   "fieldtype": "Date",
+   "label": "Estimated Arrival Date"
+  },
+  {
+   "fieldname": "shipment_tracking_number",
+   "fieldtype": "Data",
+   "label": "Shipment Tracking Number"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nIn Transit\nDelivered\nReturned\nDelayed"
+  },
+  {
+   "fieldname": "cargo_packages_section",
+   "fieldtype": "Section Break",
+   "label": "Cargo Packages"
+  },
+  {
+   "fieldname": "cargo_packages",
+   "fieldtype": "Table",
+   "label": "Cargo Packages",
+   "options": "Cargo Packages"
+  },
+  {
+   "fieldname": "carrier_information",
+   "fieldtype": "Data",
+   "label": "Carrier Information"
+  },
+  {
+   "fieldname": "special_instructions",
+   "fieldtype": "Small Text",
+   "label": "Special Instructions"
+  },
+  {
+   "fieldname": "cost_of_shipment",
+   "fieldtype": "Currency",
+   "label": "Cost of Shipment"
+  },
+  {
+   "fieldname": "documentation_section",
+   "fieldtype": "Section Break",
+   "label": "Documentation"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Comments/Notes"
+  },
+  {
+   "fieldname": "shipment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Shipment Details"
+  },
+  {
+   "fieldname": "column_break_55fsk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "column_break_opdzq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 18:37:56.791021",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Cargo Shipment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{personnel_id}-{shift_start_date__time}",
+ "creation": "2023-08-17 12:05:50.561934",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "personnel_id",
+  "shift_start_date__time",
+  "shift_end_date__time",
+  "shift_type",
+  "location_or_department",
+  "status",
+  "column_break_xq8nd",
+  "created_by",
+  "confirmed_by_personnel",
+  "shift_supervisor",
+  "duties_responsibilities",
+  "break_time_details_section",
+  "break_time"
+ ],
+ "fields": [
+  {
+   "fieldname": "personnel_id",
+   "fieldtype": "Link",
+   "label": "Personnel ID",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "shift_start_date__time",
+   "fieldtype": "Date",
+   "label": "Shift Start Date  & Time"
+  },
+  {
+   "fieldname": "shift_end_date__time",
+   "fieldtype": "Date",
+   "label": "Shift End Date  & Time"
+  },
+  {
+   "fieldname": "shift_type",
+   "fieldtype": "Select",
+   "label": "Shift Type",
+   "options": "Morning\nAfternoon\nEvening\nNight\nOvertime"
+  },
+  {
+   "fieldname": "location_or_department",
+   "fieldtype": "Link",
+   "label": "Location or Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "duties_responsibilities",
+   "fieldtype": "Small Text",
+   "label": "Duties / Responsibilities"
+  },
+  {
+   "fieldname": "break_time_details_section",
+   "fieldtype": "Section Break",
+   "label": "Break Time Details"
+  },
+  {
+   "fieldname": "break_time",
+   "fieldtype": "Table",
+   "label": "Break Time ",
+   "options": "Break Time Item"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Scheduled\nIn Progress\nCompleted\nMissed\nCancelled"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_xq8nd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "created_by",
+   "fieldtype": "Link",
+   "label": "Created By",
+   "options": "User"
+  },
+  {
+   "default": "0",
+   "fieldname": "confirmed_by_personnel",
+   "fieldtype": "Check",
+   "label": "Confirmed By Personnel"
+  },
+  {
+   "fieldname": "shift_supervisor",
+   "fieldtype": "Link",
+   "label": "Shift Supervisor",
+   "options": "User"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 12:23:00.560803",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Shift Schedule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

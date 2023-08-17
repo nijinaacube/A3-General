@@ -1,0 +1,117 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:DOC-{document_name}-{######}",
+ "creation": "2023-08-17 19:17:53.946103",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "document_name",
+  "document_type",
+  "column_break_fyvac",
+  "order_id",
+  "document_file_attachments_section",
+  "document_file",
+  "other_details_section",
+  "date_of_issue",
+  "expiry_date",
+  "column_break_pm0uz",
+  "issued_by",
+  "document_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "document_name",
+   "fieldtype": "Data",
+   "label": "Document Name"
+  },
+  {
+   "fieldname": "document_type",
+   "fieldtype": "Select",
+   "label": "Document Type",
+   "options": "Shipment\nOrder\nCompliance\nOthers"
+  },
+  {
+   "fieldname": "column_break_fyvac",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "order_id",
+   "fieldtype": "Link",
+   "label": "Associated Shipment/Order ID",
+   "options": "Cargo Shipment"
+  },
+  {
+   "fieldname": "document_file_attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Document File Attachments"
+  },
+  {
+   "fieldname": "document_file",
+   "fieldtype": "Table",
+   "label": "Document File",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "date_of_issue",
+   "fieldtype": "Date",
+   "label": "Date of Issue"
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Date",
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "column_break_pm0uz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "issued_by",
+   "fieldtype": "Data",
+   "label": "Issued By"
+  },
+  {
+   "fieldname": "document_status",
+   "fieldtype": "Select",
+   "label": "Document Status",
+   "options": "Active\nExpired\nArchived"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 19:18:23.778377",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Document Management",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

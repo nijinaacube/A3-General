@@ -1,0 +1,169 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:OPER-{#######}",
+ "creation": "2023-08-17 16:00:34.709265",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "incident_date",
+  "incident_time",
+  "reported_by",
+  "location",
+  "column_break_yqzk7",
+  "incident_description",
+  "incident_type",
+  "immediate_actions_taken",
+  "affected_personnel_section",
+  "affected_personnel",
+  "witnesses_section",
+  "witnesses",
+  "attachments_section",
+  "attachments",
+  "others_section",
+  "investigation_findings",
+  "followup",
+  "column_break_wsuzw",
+  "corrective_actions_recommended",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "incident_date",
+   "fieldtype": "Date",
+   "label": "Incident Date"
+  },
+  {
+   "fieldname": "incident_time",
+   "fieldtype": "Time",
+   "label": "Incident Time"
+  },
+  {
+   "fieldname": "reported_by",
+   "fieldtype": "Link",
+   "label": "Reported By",
+   "options": "User"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Location"
+  },
+  {
+   "fieldname": "incident_description",
+   "fieldtype": "Small Text",
+   "label": "Incident Description"
+  },
+  {
+   "fieldname": "incident_type",
+   "fieldtype": "Select",
+   "label": "Incident Type",
+   "options": "Safety\nOperational Deviation\nEquipment Failure\nEnvironmental\nOther"
+  },
+  {
+   "fieldname": "immediate_actions_taken",
+   "fieldtype": "Small Text",
+   "label": "Immediate Actions Taken"
+  },
+  {
+   "fieldname": "affected_personnel_section",
+   "fieldtype": "Section Break",
+   "label": "Affected Personnel"
+  },
+  {
+   "fieldname": "affected_personnel",
+   "fieldtype": "Table",
+   "label": "Affected Personnel",
+   "options": "Affected Personnel"
+  },
+  {
+   "fieldname": "witnesses_section",
+   "fieldtype": "Section Break",
+   "label": "Witnesses"
+  },
+  {
+   "fieldname": "witnesses",
+   "fieldtype": "Table",
+   "label": "Witnesses",
+   "options": "Witnesses"
+  },
+  {
+   "fieldname": "attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments/Images",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "investigation_findings",
+   "fieldtype": "Small Text",
+   "label": "Investigation Findings"
+  },
+  {
+   "fieldname": "corrective_actions_recommended",
+   "fieldtype": "Small Text",
+   "label": "Corrective Actions Recommended"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Reported\nUnder Investigation\nResolved\nClosed"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_yqzk7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "others_section",
+   "fieldtype": "Section Break",
+   "label": "Others"
+  },
+  {
+   "fieldname": "followup",
+   "fieldtype": "Date",
+   "label": "Follow-up Date"
+  },
+  {
+   "fieldname": "column_break_wsuzw",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 16:03:21.470735",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Operational Incident Report",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

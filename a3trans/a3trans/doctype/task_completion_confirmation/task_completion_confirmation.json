@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:TASK-{task_reference}-{###}",
+ "creation": "2023-08-17 11:50:32.794790",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "task_reference",
+  "personnel_who_completed_the_task",
+  "confirmation_by",
+  "date_of_confirmation",
+  "level_of_satisfaction",
+  "column_break_t0pwx",
+  "completion_remarks",
+  "recommendations_for_future",
+  "completion_attachments_section",
+  "completion_attachments",
+  "followup_tasks"
+ ],
+ "fields": [
+  {
+   "fieldname": "task_reference",
+   "fieldtype": "Link",
+   "label": "Task Reference",
+   "options": "Task Assignment"
+  },
+  {
+   "fieldname": "personnel_who_completed_the_task",
+   "fieldtype": "Link",
+   "label": "Personnel Who Completed The Task",
+   "options": "User"
+  },
+  {
+   "fieldname": "confirmation_by",
+   "fieldtype": "Link",
+   "label": "Confirmation By",
+   "options": "User"
+  },
+  {
+   "fieldname": "date_of_confirmation",
+   "fieldtype": "Date",
+   "label": "Date of Confirmation"
+  },
+  {
+   "fieldname": "completion_remarks",
+   "fieldtype": "Small Text",
+   "label": "Completion Remarks"
+  },
+  {
+   "fieldname": "completion_attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Completion Attachments"
+  },
+  {
+   "fieldname": "completion_attachments",
+   "fieldtype": "Table",
+   "label": "Completion Attachments",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "level_of_satisfaction",
+   "fieldtype": "Select",
+   "label": "Level of Satisfaction",
+   "options": "Highly Satisfied\nSatisfied\nNeutral\nUnsatisfied\nHighly Unsatisfied"
+  },
+  {
+   "fieldname": "recommendations_for_future",
+   "fieldtype": "Small Text",
+   "label": "Recommendations for Future"
+  },
+  {
+   "fieldname": "followup_tasks",
+   "fieldtype": "Link",
+   "label": "Followup Tasks",
+   "options": "Task Assignment"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_t0pwx",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 11:59:35.216830",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Task Completion Confirmation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

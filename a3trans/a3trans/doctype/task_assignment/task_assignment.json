@@ -1,0 +1,141 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:TASK-{######}",
+ "creation": "2023-08-17 10:28:10.384884",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "task_title",
+  "task_description",
+  "assigned_to",
+  "start_date",
+  "end_datedeadline",
+  "priority",
+  "status",
+  "column_break_2yuxd",
+  "task_category",
+  "attachments_section",
+  "attachments",
+  "associated_project_or_operation",
+  "hours_estimated",
+  "hours_logged",
+  "feedback_notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "task_title",
+   "fieldtype": "Link",
+   "label": "Task Title",
+   "options": "Task"
+  },
+  {
+   "fieldname": "task_description",
+   "fieldtype": "Data",
+   "label": "Task Description"
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "label": "Assigned To",
+   "options": "User"
+  },
+  {
+   "fieldname": "start_date",
+   "fieldtype": "Date",
+   "label": "Start Date"
+  },
+  {
+   "fieldname": "end_datedeadline",
+   "fieldtype": "Date",
+   "label": "End Date/Deadline"
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "label": "Priority",
+   "options": "Low\nMedium\nHigh\nUrgent"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Not Started\nIn Progress\nCompleted\nOn Hold\nCancelled"
+  },
+  {
+   "fieldname": "task_category",
+   "fieldtype": "Select",
+   "label": "Task Category/Type",
+   "options": "Operational\nAdministrative\nMaintenance\nTraining"
+  },
+  {
+   "fieldname": "attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "feedback_notes",
+   "fieldtype": "Small Text",
+   "label": "Feedback Notes"
+  },
+  {
+   "fieldname": "hours_estimated",
+   "fieldtype": "Float",
+   "label": "Hours Estimated"
+  },
+  {
+   "fieldname": "hours_logged",
+   "fieldtype": "Float",
+   "label": "Hours Logged"
+  },
+  {
+   "fieldname": "associated_project_or_operation",
+   "fieldtype": "Link",
+   "label": "Associated Project or Operation",
+   "options": "Project"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_2yuxd",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 17:19:45.382538",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Task Assignment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

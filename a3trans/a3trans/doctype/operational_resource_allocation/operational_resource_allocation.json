@@ -1,0 +1,152 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:RESOURE-{######}",
+ "creation": "2023-08-17 17:05:59.710661",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "allocation_date",
+  "allocation_time",
+  "column_break_9jq0c",
+  "allocated_by",
+  "task_name",
+  "vehicles_allocation_section",
+  "vehicles_allocated",
+  "equipment_allocation_section",
+  "equipment_allocation",
+  "personnel_allocation_section",
+  "personnel_allocation",
+  "other_details_section",
+  "completion_date",
+  "status",
+  "notes",
+  "attachments_section",
+  "attachments"
+ ],
+ "fields": [
+  {
+   "fieldname": "allocation_date",
+   "fieldtype": "Date",
+   "label": "Allocation Date"
+  },
+  {
+   "fieldname": "allocation_time",
+   "fieldtype": "Time",
+   "label": "Allocation Time"
+  },
+  {
+   "fieldname": "allocated_by",
+   "fieldtype": "Link",
+   "label": "Allocated By",
+   "options": "User"
+  },
+  {
+   "fieldname": "task_name",
+   "fieldtype": "Data",
+   "label": "Operation/Task Name"
+  },
+  {
+   "fieldname": "vehicles_allocation_section",
+   "fieldtype": "Section Break",
+   "label": "Vehicles Allocation"
+  },
+  {
+   "fieldname": "vehicles_allocated",
+   "fieldtype": "Table",
+   "label": "Vehicles Allocated",
+   "options": "Vehicles Allocated"
+  },
+  {
+   "fieldname": "equipment_allocation_section",
+   "fieldtype": "Section Break",
+   "label": "Equipment Allocation"
+  },
+  {
+   "fieldname": "equipment_allocation",
+   "fieldtype": "Table",
+   "label": "Equipment Allocation",
+   "options": "Equipment Allocation"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "personnel_allocation_section",
+   "fieldtype": "Section Break",
+   "label": "Personnel Allocation"
+  },
+  {
+   "fieldname": "personnel_allocation",
+   "fieldtype": "Table",
+   "label": "Personnel Allocation",
+   "options": "Personnel Allocation"
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "completion_date",
+   "fieldtype": "Datetime",
+   "label": "Expected Completion Date/Time"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nIn Progress\nCompleted\nCancelled"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "column_break_9jq0c",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 17:13:10.250392",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Operational Resource Allocation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

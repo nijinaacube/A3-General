@@ -1,0 +1,140 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:INVENTORY-{#######}",
+ "creation": "2023-08-17 14:31:39.163812",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "activity_date",
+  "activity_time",
+  "activity_type",
+  "column_break_nrmfq",
+  "warehouse",
+  "location",
+  "items_handled_section",
+  "items_handled",
+  "section_break_tps1r",
+  "vehicle_reference",
+  "document",
+  "column_break_9wscn",
+  "status",
+  "attachments_section",
+  "attachments"
+ ],
+ "fields": [
+  {
+   "fieldname": "activity_date",
+   "fieldtype": "Date",
+   "label": "Activity Date"
+  },
+  {
+   "fieldname": "activity_time",
+   "fieldtype": "Time",
+   "label": "Activity Time"
+  },
+  {
+   "fieldname": "activity_type",
+   "fieldtype": "Link",
+   "label": "Activity Type",
+   "options": "Type of Activity"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Link",
+   "label": "Location",
+   "options": "Location"
+  },
+  {
+   "fieldname": "items_handled_section",
+   "fieldtype": "Section Break",
+   "label": "Items Handled"
+  },
+  {
+   "fieldname": "items_handled",
+   "fieldtype": "Table",
+   "label": "Items Handled",
+   "options": "Items Handled"
+  },
+  {
+   "fieldname": "section_break_tps1r",
+   "fieldtype": "Section Break",
+   "label": "Reference Details"
+  },
+  {
+   "fieldname": "vehicle_reference",
+   "fieldtype": "Link",
+   "label": "Vehicle Reference",
+   "options": "Vehicle"
+  },
+  {
+   "fieldname": "document",
+   "fieldtype": "Data",
+   "label": "Document/Reference Number"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nIn Progress\nCompleted\nError/Issue"
+  },
+  {
+   "fieldname": "attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Attachments"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments/Images",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "column_break_9wscn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_nrmfq",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 15:25:41.943958",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Inventory Handling Record",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

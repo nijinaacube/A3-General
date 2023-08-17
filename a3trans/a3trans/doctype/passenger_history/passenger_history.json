@@ -1,0 +1,109 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:passenger_id",
+ "creation": "2023-08-17 11:00:55.431605",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "passenger_id",
+  "total_trips",
+  "last_travel_date",
+  "frequent_destination",
+  "column_break_kbvvk",
+  "status",
+  "loyalty_points",
+  "origin",
+  "travel_history_section",
+  "travel_history"
+ ],
+ "fields": [
+  {
+   "fieldname": "passenger_id",
+   "fieldtype": "Link",
+   "label": "Passenger ID",
+   "options": "Passengers",
+   "unique": 1
+  },
+  {
+   "fieldname": "total_trips",
+   "fieldtype": "Int",
+   "label": "Total Trips"
+  },
+  {
+   "fieldname": "last_travel_date",
+   "fieldtype": "Date",
+   "label": "Last Travel Date"
+  },
+  {
+   "fieldname": "frequent_destination",
+   "fieldtype": "Link",
+   "label": "Frequent Destination",
+   "options": "Location"
+  },
+  {
+   "fieldname": "origin",
+   "fieldtype": "Small Text",
+   "label": "Feedback"
+  },
+  {
+   "fieldname": "loyalty_points",
+   "fieldtype": "Float",
+   "label": "Loyalty Points"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nInactive"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_kbvvk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "travel_history_section",
+   "fieldtype": "Section Break",
+   "label": "Travel History"
+  },
+  {
+   "fieldname": "travel_history",
+   "fieldtype": "Table",
+   "label": "Travel History",
+   "options": "Travel History"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 11:17:06.592478",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Passenger History",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}
