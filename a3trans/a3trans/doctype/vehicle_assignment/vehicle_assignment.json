@@ -7,12 +7,19 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "vehicle_id",
-  "driver_id",
-  "trip_id",
-  "assignment_date",
-  "trip_date",
+  "basic_details_section",
   "assignment_status",
+  "vehicle_id",
+  "make",
+  "model",
+  "column_break_1zuxd",
+  "driver_id",
+  "driver_name",
+  "mobile_number",
+  "column_break_egbgn",
+  "trip_id",
+  "trip_date",
+  "assignment_date",
   "route_details_section",
   "routes",
   "section_break_wkz4t",
@@ -30,7 +37,7 @@
    "fieldname": "vehicle_id",
    "fieldtype": "Link",
    "label": "Vehicle ID",
-   "options": "Staff Member"
+   "options": "Vehicle"
   },
   {
    "fieldname": "driver_id",
@@ -118,11 +125,44 @@
    "fieldtype": "Table",
    "label": "Package Details",
    "options": "Package Details"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "make",
+   "fieldtype": "Data",
+   "label": "make"
+  },
+  {
+   "fieldname": "model",
+   "fieldtype": "Data",
+   "label": "model"
+  },
+  {
+   "fieldname": "column_break_1zuxd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "driver_name",
+   "fieldtype": "Data",
+   "label": "Driver Name"
+  },
+  {
+   "fieldname": "mobile_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number"
+  },
+  {
+   "fieldname": "column_break_egbgn",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-14 20:43:19.664513",
+ "modified": "2023-08-18 12:17:02.099082",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Assignment",
