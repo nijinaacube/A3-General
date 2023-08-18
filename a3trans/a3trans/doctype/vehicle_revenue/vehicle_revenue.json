@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "basic_details_section",
   "vehicle",
   "service_date",
   "revenue_type",
@@ -58,11 +59,16 @@
    "fieldname": "notes",
    "fieldtype": "Text",
    "label": "Notes"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-11 15:12:31.870293",
+ "modified": "2023-08-18 13:20:18.593659",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Revenue",

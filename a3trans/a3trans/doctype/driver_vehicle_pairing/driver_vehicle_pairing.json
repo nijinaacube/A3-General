@@ -1,13 +1,16 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:driver_id",
  "creation": "2023-08-17 11:31:59.303638",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "basic_details_section",
   "driver_id",
   "training_status",
+  "column_break_p6qzz",
   "eligibility_status",
   "date_verified"
  ],
@@ -17,7 +20,8 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Driver ID",
-   "options": "Staff Member"
+   "options": "Staff Member",
+   "unique": 1
   },
   {
    "fieldname": "training_status",
@@ -38,12 +42,21 @@
    "fieldtype": "Date",
    "in_list_view": 1,
    "label": "Date Verified"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_p6qzz",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-08-17 11:31:59.303638",
+ "modified": "2023-08-18 13:31:15.869766",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Driver Vehicle Pairing",

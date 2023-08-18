@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "basic_details_section",
   "vehicle",
   "incident_date",
   "location",
@@ -50,11 +51,16 @@
    "fieldname": "incident_report",
    "fieldtype": "Small Text",
    "label": "Incident Report"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-11 12:30:22.636973",
+ "modified": "2023-08-18 12:36:25.878835",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Incidents",

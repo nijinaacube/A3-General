@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "basic_details_section",
   "agreement_number",
   "rental_company",
   "rental_start_date",
@@ -14,8 +15,8 @@
   "rental_rate",
   "rental_status",
   "security_deposit",
-  "delivery_charges",
   "column_break_alqg8",
+  "delivery_charges",
   "rental_insurance",
   "cleaning_fees",
   "total_amount",
@@ -114,11 +115,16 @@
    "fieldname": "payment_terms",
    "fieldtype": "Text",
    "label": "Payment Terms "
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-11 13:33:55.462365",
+ "modified": "2023-08-18 13:36:35.155545",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Rental Agreement",

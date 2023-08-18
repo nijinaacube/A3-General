@@ -21,6 +21,7 @@
   "expiration_date",
   "section_break_f2tot",
   "restricted_materials",
+  "column_break_tpsuo",
   "additional_restrictions"
  ],
  "fields": [
@@ -101,11 +102,15 @@
    "fieldname": "section_break_f2tot",
    "fieldtype": "Section Break",
    "label": "Additional Details"
+  },
+  {
+   "fieldname": "column_break_tpsuo",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-16 16:06:02.211801",
+ "modified": "2023-08-18 13:35:39.929914",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Restrictions",
