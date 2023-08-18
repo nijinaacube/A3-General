@@ -1,0 +1,142 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-18 11:16:50.363249",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "original_shipment_id",
+  "requestor",
+  "request_date",
+  "original_scheduled_date",
+  "reason_for_rescheduling",
+  "column_break_a3qdz",
+  "new_requested_date",
+  "status",
+  "remarks",
+  "approval_by",
+  "attachments_section",
+  "attachments",
+  "other_details_section",
+  "impact_assessment",
+  "column_break_rv7ru",
+  "additional_costs"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "original_shipment_id",
+   "fieldtype": "Link",
+   "label": "Original Shipment ID",
+   "options": "Cargo Shipment"
+  },
+  {
+   "fieldname": "requestor",
+   "fieldtype": "Link",
+   "label": "Requestor",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "request_date",
+   "fieldtype": "Date",
+   "label": "Request Date"
+  },
+  {
+   "fieldname": "original_scheduled_date",
+   "fieldtype": "Date",
+   "label": "Original Scheduled Date"
+  },
+  {
+   "fieldname": "new_requested_date",
+   "fieldtype": "Date",
+   "label": "New Requested Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Pending\nApproved\nRejected\nRescheduled"
+  },
+  {
+   "fieldname": "reason_for_rescheduling",
+   "fieldtype": "Small Text",
+   "label": "Reason for Rescheduling"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks/Notes"
+  },
+  {
+   "fieldname": "approval_by",
+   "fieldtype": "Link",
+   "label": "Approval By",
+   "options": "User"
+  },
+  {
+   "fieldname": "attachments_section",
+   "fieldtype": "Section Break",
+   "label": "Attachments/Supporting Documentation"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "impact_assessment",
+   "fieldtype": "Small Text",
+   "label": "Impact Assessment "
+  },
+  {
+   "fieldname": "column_break_rv7ru",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "additional_costs",
+   "fieldtype": "Currency",
+   "label": "Additional Costs"
+  },
+  {
+   "fieldname": "column_break_a3qdz",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-18 11:19:09.798316",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Cargo Rescheduling Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1
+}

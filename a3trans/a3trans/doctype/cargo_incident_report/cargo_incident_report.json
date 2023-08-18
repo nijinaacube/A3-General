@@ -1,0 +1,163 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{cargo_reference}-{incident_type}-{###}",
+ "creation": "2023-08-18 10:37:46.185964",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "cargo_reference",
+  "report_date",
+  "incident_date",
+  "reported_by",
+  "incident_description",
+  "column_break_abygk",
+  "incident_type",
+  "incident_location",
+  "incident_cause",
+  "incident_impact",
+  "photos_section",
+  "attachments",
+  "other_details_section",
+  "status",
+  "investigation_findings",
+  "responsible_party",
+  "column_break_ckmzr",
+  "corrective_actions_taken",
+  "estimated_losses"
+ ],
+ "fields": [
+  {
+   "fieldname": "cargo_reference",
+   "fieldtype": "Link",
+   "label": "Cargo Reference",
+   "options": "Cargo Shipment"
+  },
+  {
+   "fieldname": "report_date",
+   "fieldtype": "Date",
+   "label": "Report Date"
+  },
+  {
+   "fieldname": "incident_date",
+   "fieldtype": "Datetime",
+   "label": "Incident Date & Time"
+  },
+  {
+   "fieldname": "reported_by",
+   "fieldtype": "Link",
+   "label": "Reported By",
+   "options": "User"
+  },
+  {
+   "fieldname": "incident_location",
+   "fieldtype": "Data",
+   "label": "Incident Location"
+  },
+  {
+   "fieldname": "incident_description",
+   "fieldtype": "Small Text",
+   "label": "Incident Description"
+  },
+  {
+   "fieldname": "incident_type",
+   "fieldtype": "Select",
+   "label": "Incident Type",
+   "options": "Damage\nTheft\nSpillage\nDelay"
+  },
+  {
+   "fieldname": "incident_cause",
+   "fieldtype": "Select",
+   "label": "Incident Cause",
+   "options": "Human Error\nEquipment Failure\nNatural Causes"
+  },
+  {
+   "fieldname": "incident_impact",
+   "fieldtype": "Small Text",
+   "label": "Incident Impact"
+  },
+  {
+   "fieldname": "photos_section",
+   "fieldtype": "Section Break",
+   "label": "Photos"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Reported\nUnder Investigation\nResolved\nClosed"
+  },
+  {
+   "fieldname": "investigation_findings",
+   "fieldtype": "Small Text",
+   "label": "Investigation Findings"
+  },
+  {
+   "fieldname": "corrective_actions_taken",
+   "fieldtype": "Small Text",
+   "label": "Corrective Actions Taken"
+  },
+  {
+   "fieldname": "responsible_party",
+   "fieldtype": "Data",
+   "label": "Responsible Party"
+  },
+  {
+   "fieldname": "estimated_losses",
+   "fieldtype": "Currency",
+   "label": "Estimated Losses"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_abygk",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "column_break_ckmzr",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-18 10:41:03.440205",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Cargo Incident Report",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

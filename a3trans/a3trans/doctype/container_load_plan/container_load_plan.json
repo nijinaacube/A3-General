@@ -1,0 +1,135 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{container_number}-{####}",
+ "creation": "2023-08-17 21:12:27.332963",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "container_number",
+  "column_break_ginyb",
+  "container_type",
+  "cargo_details_section",
+  "cargo_packages",
+  "section_break_bwjsh",
+  "total_weight",
+  "estimated_volume_utilization",
+  "loading_date",
+  "loading_time",
+  "loading_point",
+  "column_break_v32dz",
+  "destination",
+  "status",
+  "special_instructions"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "container_number",
+   "fieldtype": "Data",
+   "label": "Container Number"
+  },
+  {
+   "fieldname": "column_break_ginyb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "container_type",
+   "fieldtype": "Link",
+   "label": "Container Type",
+   "options": "Container Type"
+  },
+  {
+   "fieldname": "cargo_details_section",
+   "fieldtype": "Section Break",
+   "label": "Cargo Details"
+  },
+  {
+   "fieldname": "cargo_packages",
+   "fieldtype": "Table",
+   "label": "Cargo Packages ",
+   "options": "Cargo Packages Item"
+  },
+  {
+   "fieldname": "section_break_bwjsh",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "total_weight",
+   "fieldtype": "Float",
+   "label": "Total Weight"
+  },
+  {
+   "fieldname": "estimated_volume_utilization",
+   "fieldtype": "Percent",
+   "label": "Estimated Volume Utilization"
+  },
+  {
+   "fieldname": "loading_date",
+   "fieldtype": "Date",
+   "label": "Loading Date"
+  },
+  {
+   "fieldname": "loading_time",
+   "fieldtype": "Time",
+   "label": "Loading Time"
+  },
+  {
+   "fieldname": "loading_point",
+   "fieldtype": "Data",
+   "label": "Loading Point"
+  },
+  {
+   "fieldname": "column_break_v32dz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "destination",
+   "fieldtype": "Link",
+   "label": "Destination",
+   "options": "Location"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nPlanned\nIn Progress\nCompleted\nCancelled"
+  },
+  {
+   "fieldname": "special_instructions",
+   "fieldtype": "Small Text",
+   "label": "Special Instructions"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 21:12:59.507346",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Container Load Plan",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1
+}

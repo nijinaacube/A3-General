@@ -1,0 +1,140 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{shipment_reference}-{######}",
+ "creation": "2023-08-18 10:00:10.842171",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "shipment_reference",
+  "report_date",
+  "reporting_party",
+  "description_of_damage",
+  "location_of_damage",
+  "estimated_damage_value",
+  "photographic_evidence",
+  "column_break_reuic",
+  "agent",
+  "carrier_details",
+  "insurance_claim_reference",
+  "claim_status",
+  "remarks",
+  "affected_items_section",
+  "affected_items"
+ ],
+ "fields": [
+  {
+   "fieldname": "shipment_reference",
+   "fieldtype": "Link",
+   "label": "Shipment Reference",
+   "options": "Cargo Shipment"
+  },
+  {
+   "fieldname": "report_date",
+   "fieldtype": "Date",
+   "label": "Report Date"
+  },
+  {
+   "fieldname": "reporting_party",
+   "fieldtype": "Link",
+   "label": "Reporting Party",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "description_of_damage",
+   "fieldtype": "Small Text",
+   "label": "Description of Damage"
+  },
+  {
+   "fieldname": "location_of_damage",
+   "fieldtype": "Data",
+   "label": "Location of Damage"
+  },
+  {
+   "fieldname": "estimated_damage_value",
+   "fieldtype": "Currency",
+   "label": "Estimated Damage Value"
+  },
+  {
+   "fieldname": "photographic_evidence",
+   "fieldtype": "Attach",
+   "label": "Photographic Evidence"
+  },
+  {
+   "fieldname": "agent",
+   "fieldtype": "Link",
+   "label": "Inspection Officer/Agent",
+   "options": "User"
+  },
+  {
+   "fieldname": "carrier_details",
+   "fieldtype": "Link",
+   "label": "Carrier Details",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "insurance_claim_reference",
+   "fieldtype": "Data",
+   "label": "Insurance Claim Reference"
+  },
+  {
+   "fieldname": "claim_status",
+   "fieldtype": "Select",
+   "label": "Claim Status",
+   "options": "Not Claimed\nClaimed\nUnder Review\nApproved\nRejected\nSettled"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "affected_items_section",
+   "fieldtype": "Section Break",
+   "label": "Affected Items"
+  },
+  {
+   "fieldname": "affected_items",
+   "fieldtype": "Table",
+   "label": "Affected Items",
+   "options": "Affected Items"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_reuic",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-18 10:16:57.422447",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Cargo Damage Report",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

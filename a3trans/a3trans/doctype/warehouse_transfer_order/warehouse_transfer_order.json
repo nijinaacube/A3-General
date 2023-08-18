@@ -1,0 +1,151 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:TRANSFER-{#######}",
+ "creation": "2023-08-18 10:59:54.296632",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "source_warehouse",
+  "destination_warehouse",
+  "column_break_mw5oc",
+  "transfer_date",
+  "status",
+  "items_to_transfer_section",
+  "items_to_transfer",
+  "other_details_section",
+  "reason_for_transfer",
+  "total_weight",
+  "transport_details",
+  "expected_arrival_date",
+  "column_break_qubnb",
+  "attachmentsdocumentation",
+  "confirmed_by",
+  "received_by",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "source_warehouse",
+   "fieldtype": "Link",
+   "label": "Source Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "destination_warehouse",
+   "fieldtype": "Link",
+   "label": "Destination Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "column_break_mw5oc",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "transfer_date",
+   "fieldtype": "Date",
+   "label": "Transfer Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nApproved\nIn Transit\nReceived\nClosed"
+  },
+  {
+   "fieldname": "items_to_transfer_section",
+   "fieldtype": "Section Break",
+   "label": "Items to Transfer"
+  },
+  {
+   "fieldname": "items_to_transfer",
+   "fieldtype": "Table",
+   "label": "Items to Transfer",
+   "options": "Items to Transfer"
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "reason_for_transfer",
+   "fieldtype": "Small Text",
+   "label": "Reason for Transfer"
+  },
+  {
+   "fieldname": "total_weight",
+   "fieldtype": "Float",
+   "label": "Total Weight"
+  },
+  {
+   "fieldname": "transport_details",
+   "fieldtype": "Link",
+   "label": "Transport Details",
+   "options": "Vehicle"
+  },
+  {
+   "fieldname": "expected_arrival_date",
+   "fieldtype": "Date",
+   "label": "Expected Arrival Date"
+  },
+  {
+   "fieldname": "column_break_qubnb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "attachmentsdocumentation",
+   "fieldtype": "Attach",
+   "label": "Attachments/Documentation"
+  },
+  {
+   "fieldname": "confirmed_by",
+   "fieldtype": "Link",
+   "label": "Confirmed By",
+   "options": "User"
+  },
+  {
+   "fieldname": "received_by",
+   "fieldtype": "Link",
+   "label": "Received By",
+   "options": "Staff Member"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks/Notes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-18 11:05:09.437813",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Warehouse Transfer Order",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1
+}

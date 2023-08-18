@@ -1,0 +1,158 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{cargo_item_id}-{inspection_date}-{#####}",
+ "creation": "2023-08-17 21:31:10.364810",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "cargo_item_id",
+  "inspection_date",
+  "inspection_time",
+  "inspector_name",
+  "column_break_jbblw",
+  "cargo_description",
+  "cargo_status",
+  "inspection_notes",
+  "photos_section",
+  "attachments",
+  "other_details_section",
+  "recommended_actions",
+  "followup_required",
+  "expected_date",
+  "column_break_cgxta",
+  "report_approved_by",
+  "approval_date",
+  "report_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "cargo_item_id",
+   "fieldtype": "Link",
+   "label": "Cargo Item ID",
+   "options": "Cargo Package"
+  },
+  {
+   "fieldname": "inspection_date",
+   "fieldtype": "Date",
+   "label": "Inspection Date"
+  },
+  {
+   "fieldname": "inspection_time",
+   "fieldtype": "Time",
+   "label": "Inspection Time"
+  },
+  {
+   "fieldname": "inspector_name",
+   "fieldtype": "Link",
+   "label": "Inspector Name",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_jbblw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cargo_description",
+   "fieldtype": "Small Text",
+   "label": "Cargo Description"
+  },
+  {
+   "fieldname": "cargo_status",
+   "fieldtype": "Select",
+   "label": "Cargo Status",
+   "options": "Acceptable\nMinor Issues\nMajor Issues\nNot Acceptable"
+  },
+  {
+   "fieldname": "inspection_notes",
+   "fieldtype": "Small Text",
+   "label": "Inspection Notes"
+  },
+  {
+   "fieldname": "photos_section",
+   "fieldtype": "Section Break",
+   "label": "Photos/Attachments"
+  },
+  {
+   "fieldname": "attachments",
+   "fieldtype": "Table",
+   "label": "Attachments",
+   "options": "Attached Documents"
+  },
+  {
+   "fieldname": "other_details_section",
+   "fieldtype": "Section Break",
+   "label": "Other Details"
+  },
+  {
+   "fieldname": "recommended_actions",
+   "fieldtype": "Small Text",
+   "label": "Recommended Actions"
+  },
+  {
+   "default": "0",
+   "fieldname": "followup_required",
+   "fieldtype": "Check",
+   "label": "Follow-up Inspection Required"
+  },
+  {
+   "fieldname": "expected_date",
+   "fieldtype": "Date",
+   "label": "Expected Follow-up Date"
+  },
+  {
+   "fieldname": "column_break_cgxta",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "report_approved_by",
+   "fieldtype": "Link",
+   "label": "Report Approved By",
+   "options": "User"
+  },
+  {
+   "fieldname": "approval_date",
+   "fieldtype": "Date",
+   "label": "Approval Date"
+  },
+  {
+   "fieldname": "report_status",
+   "fieldtype": "Select",
+   "label": "Report Status",
+   "options": "Draft\nSubmitted\nApproved\nRejected"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 21:31:53.227704",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Cargo Inspection Report",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

@@ -70,7 +70,7 @@
    "fieldname": "cargo_packages",
    "fieldtype": "Table",
    "label": "Cargo Packages",
-   "options": "Cargo Packages"
+   "options": "Cargo Packages Item"
   },
   {
    "fieldname": "carrier_information",
@@ -129,7 +129,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-17 18:37:56.791021",
+ "modified": "2023-08-17 20:54:15.711586",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Cargo Shipment",

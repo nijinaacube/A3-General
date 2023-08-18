@@ -1,0 +1,171 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:DECL-{declaration_number}-{####}",
+ "creation": "2023-08-17 21:56:28.092145",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "declaration_number",
+  "shipment_reference",
+  "date_of_declaration",
+  "shipper",
+  "importer",
+  "description_of_goods",
+  "hs_code",
+  "total_value",
+  "column_break_l8a3c",
+  "country_of_origin",
+  "destination_country",
+  "total_weight",
+  "packing_list",
+  "customs_duties_paid",
+  "declaration_status",
+  "customs_officer_remarks",
+  "goods_details_section",
+  "goods_details",
+  "duties_and_taxes_section",
+  "duties_and_taxes"
+ ],
+ "fields": [
+  {
+   "fieldname": "declaration_number",
+   "fieldtype": "Data",
+   "label": "Declaration Number"
+  },
+  {
+   "fieldname": "shipment_reference",
+   "fieldtype": "Link",
+   "label": "Shipment Reference",
+   "options": "Cargo Shipment"
+  },
+  {
+   "fieldname": "date_of_declaration",
+   "fieldtype": "Date",
+   "label": "Date of Declaration"
+  },
+  {
+   "fieldname": "shipper",
+   "fieldtype": "Link",
+   "label": "Exporter/Shipper Details",
+   "options": "Supplier"
+  },
+  {
+   "fieldname": "importer",
+   "fieldtype": "Link",
+   "label": "Importer/Receiver Details",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "description_of_goods",
+   "fieldtype": "Small Text",
+   "label": "Description of Goods"
+  },
+  {
+   "fieldname": "hs_code",
+   "fieldtype": "Data",
+   "label": "HS Code (Harmonized System Code)"
+  },
+  {
+   "fieldname": "total_value",
+   "fieldtype": "Currency",
+   "label": "Total Value"
+  },
+  {
+   "fieldname": "country_of_origin",
+   "fieldtype": "Link",
+   "label": "Country of Origin",
+   "options": "Country"
+  },
+  {
+   "fieldname": "destination_country",
+   "fieldtype": "Link",
+   "label": "Destination Country",
+   "options": "Country"
+  },
+  {
+   "fieldname": "total_weight",
+   "fieldtype": "Data",
+   "label": "Total Weight"
+  },
+  {
+   "fieldname": "packing_list",
+   "fieldtype": "Attach",
+   "label": "Packing List"
+  },
+  {
+   "fieldname": "customs_duties_paid",
+   "fieldtype": "Currency",
+   "label": "Customs Duties Paid"
+  },
+  {
+   "fieldname": "declaration_status",
+   "fieldtype": "Select",
+   "label": "Declaration Status",
+   "options": "Draft\nSubmitted\nApproved\nRejected"
+  },
+  {
+   "fieldname": "customs_officer_remarks",
+   "fieldtype": "Small Text",
+   "label": "Customs Officer Remarks"
+  },
+  {
+   "fieldname": "goods_details_section",
+   "fieldtype": "Section Break",
+   "label": "Goods Details"
+  },
+  {
+   "fieldname": "goods_details",
+   "fieldtype": "Table",
+   "label": "Goods Details",
+   "options": "Goods Details"
+  },
+  {
+   "fieldname": "duties_and_taxes_section",
+   "fieldtype": "Section Break",
+   "label": "Duties and Taxes"
+  },
+  {
+   "fieldname": "duties_and_taxes",
+   "fieldtype": "Table",
+   "label": "Duties and Taxes",
+   "options": "Duties and Taxes"
+  },
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "column_break_l8a3c",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-17 21:58:49.143367",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Customs Declaration",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1,
+ "track_seen": 1
+}
