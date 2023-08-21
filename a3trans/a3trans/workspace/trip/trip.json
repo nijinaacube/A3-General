@@ -13,7 +13,7 @@
  "is_standard": 1,
  "label": "Trip",
  "links": [],
- "modified": "2023-08-18 14:28:35.537523",
+ "modified": "2023-08-21 13:05:35.621943",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Trip",
@@ -49,12 +49,6 @@
    "doc_view": "New",
    "label": "Trip Type Preferences",
    "link_to": "Trip Type Preferences",
-   "type": "DocType"
-  },
-  {
-   "doc_view": "New",
-   "label": "Trip Drivers",
-   "link_to": "Trip Drivers",
    "type": "DocType"
   },
   {
