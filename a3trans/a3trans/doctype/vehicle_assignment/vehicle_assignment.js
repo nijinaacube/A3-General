@@ -8,7 +8,7 @@ frappe.ui.form.on('Vehicle Assignment', {
 		frm.set_value('assignment_date', formattedDate);
 		
 				frm.add_custom_button(__('Get Orders'), function() {
-			
+					frm.clear_table('routes');
 					var dialog = new frappe.ui.form.MultiSelectDialog({
 						doctype: 'Opportunity', 
 						target: frm,
@@ -26,13 +26,16 @@ frappe.ui.form.on('Vehicle Assignment', {
 							if (selections && selections.length > 0) {
 								selections.forEach(function(opportunity) {
 									console.log(selections)
+									console.log(opportunity)
 									var child = frm.add_child('routes', {});
-									child.order_id = opportunity.name;
+									child.order_id = opportunity;
 								});
 								frm.refresh_field('routes');
-								dialog.hide();
+								
+								dialog.dialog.hide(); // Hide the dialog immediately after processing the selections
 							}
 						}
+						
 					})
 				});
 		
