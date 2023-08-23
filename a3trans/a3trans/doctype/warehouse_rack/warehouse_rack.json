@@ -1,0 +1,67 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{warehouse_shelf}-{rack_level}",
+ "creation": "2023-08-22 12:05:25.555854",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "warehouse_shelf",
+  "rack_level",
+  "column_break_nfeij",
+  "rack_capacity",
+  "rack_usage"
+ ],
+ "fields": [
+  {
+   "fieldname": "rack_level",
+   "fieldtype": "Float",
+   "label": "Rack Level"
+  },
+  {
+   "fieldname": "column_break_nfeij",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rack_capacity",
+   "fieldtype": "Float",
+   "label": "Rack Capacity"
+  },
+  {
+   "fieldname": "rack_usage",
+   "fieldtype": "Float",
+   "label": "Rack Usage"
+  },
+  {
+   "fieldname": "warehouse_shelf",
+   "fieldtype": "Link",
+   "label": "Warehouse Shelf",
+   "options": "Warehouse Shelf"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-22 12:26:19.976570",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Warehouse Rack",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -13,7 +13,7 @@
  "is_standard": 1,
  "label": "Trip",
  "links": [],
- "modified": "2023-08-21 13:05:35.621943",
+ "modified": "2023-08-23 12:15:14.961092",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Trip",
@@ -31,12 +31,6 @@
    "doc_view": "New",
    "label": "GPS Tracking",
    "link_to": "Vehicle GPS Tracking",
-   "type": "DocType"
-  },
-  {
-   "doc_view": "New",
-   "label": "Trip List",
-   "link_to": "Trip List",
    "type": "DocType"
   },
   {

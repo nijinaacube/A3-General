@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:shelf_name",
+ "creation": "2023-08-22 12:33:14.294007",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "warehouse_shelf",
+  "column_break_u7lxe",
+  "shelf_name"
+ ],
+ "fields": [
+  {
+   "fieldname": "warehouse_shelf",
+   "fieldtype": "Link",
+   "label": "Warehouse Shelf",
+   "options": "Warehouse Shelf"
+  },
+  {
+   "fieldname": "column_break_u7lxe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shelf_name",
+   "fieldtype": "Data",
+   "label": "Shelf Name",
+   "unique": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-22 12:33:36.588025",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Shelves",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

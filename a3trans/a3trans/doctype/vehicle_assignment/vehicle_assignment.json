@@ -7,8 +7,9 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "basic_details_section",
   "assignment_status",
+  "assignment_date",
+  "basic_details_section",
   "vehicle_id",
   "make",
   "model",
@@ -17,9 +18,9 @@
   "driver_name",
   "mobile_number",
   "column_break_egbgn",
-  "trip_id",
-  "trip_date",
-  "assignment_date",
+  "helper_id",
+  "helper_name",
+  "phone_number",
   "route_details_section",
   "routes",
   "section_break_wkz4t",
@@ -46,26 +47,11 @@
    "options": "Staff Member"
   },
   {
-   "fieldname": "trip_id",
-   "fieldtype": "Link",
-   "label": "Trip ID",
-   "options": "Trip List"
-  },
-  {
-   "fieldname": "assignment_date",
-   "fieldtype": "Date",
-   "label": "Assignment Date"
-  },
-  {
-   "fieldname": "trip_date",
-   "fieldtype": "Data",
-   "label": "Trip Date"
-  },
-  {
+   "depends_on": "eval:!doc.__islocal",
    "fieldname": "assignment_status",
    "fieldtype": "Select",
    "label": "Assignment Status",
-   "options": "Assigned\nCompleted\nCancelled,"
+   "options": "Vehicle Assigned\nCompleted\nCancelled"
   },
   {
    "fieldname": "route_details_section",
@@ -79,6 +65,7 @@
    "options": "Route Details Item"
   },
   {
+   "collapsible": 1,
    "fieldname": "route_changes_details_section",
    "fieldtype": "Section Break",
    "label": "Route Changes Details"
@@ -90,6 +77,7 @@
    "options": "Route Changes"
   },
   {
+   "collapsible": 1,
    "fieldname": "staff_changes_details_section",
    "fieldtype": "Section Break",
    "label": "Staff changes Details"
@@ -101,6 +89,7 @@
    "options": "Staff Changes Item"
   },
   {
+   "collapsible": 1,
    "fieldname": "time_tracking_details_section",
    "fieldtype": "Section Break",
    "label": "Time Tracking Details"
@@ -132,11 +121,13 @@
    "label": "Basic Details"
   },
   {
+   "fetch_from": "vehicle_id.make",
    "fieldname": "make",
    "fieldtype": "Data",
    "label": "make"
   },
   {
+   "fetch_from": "vehicle_id.model",
    "fieldname": "model",
    "fieldtype": "Data",
    "label": "model"
@@ -146,11 +137,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "driver_id.full_name",
    "fieldname": "driver_name",
    "fieldtype": "Data",
    "label": "Driver Name"
   },
   {
+   "fetch_from": "driver_id.contact_number",
    "fieldname": "mobile_number",
    "fieldtype": "Data",
    "label": "Mobile Number"
@@ -158,11 +151,34 @@
   {
    "fieldname": "column_break_egbgn",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "helper_id",
+   "fieldtype": "Link",
+   "label": "Helper ID",
+   "options": "Staff Member"
+  },
+  {
+   "fetch_from": "helper_id.full_name",
+   "fieldname": "helper_name",
+   "fieldtype": "Data",
+   "label": "Helper Name"
+  },
+  {
+   "fetch_from": "helper_id.contact_number",
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Mobile Number"
+  },
+  {
+   "fieldname": "assignment_date",
+   "fieldtype": "Data",
+   "label": "Assignment Date"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-18 12:17:02.099082",
+ "modified": "2023-08-23 14:04:20.734646",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Assignment",

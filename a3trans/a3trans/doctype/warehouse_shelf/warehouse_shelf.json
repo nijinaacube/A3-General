@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:floor_id",
+ "creation": "2023-08-22 12:24:05.391671",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "floor_id",
+  "column_break_7z2hr",
+  "shelf_name",
+  "column_break_4bhdp",
+  "racks"
+ ],
+ "fields": [
+  {
+   "fieldname": "floor_id",
+   "fieldtype": "Link",
+   "label": "Floor ID",
+   "options": "Warehouse Floor",
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_7z2hr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "shelf_name",
+   "fieldtype": "Data",
+   "label": "Shelf Name"
+  },
+  {
+   "fieldname": "column_break_4bhdp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "racks",
+   "fieldtype": "Link",
+   "label": "Racks",
+   "options": "Racks"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-22 12:24:05.391671",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Warehouse Shelf",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

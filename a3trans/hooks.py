@@ -102,7 +102,14 @@ app_license = "MIT"
 #		"on_trash": "method"
 #	}
 # }
-
+doc_events = {
+	 "Customer": {
+		"after_insert":"a3trans.a3trans.events.customer.after_insert"
+	 },
+	 "Opportunity":{
+		"after_insert":"a3trans.a3trans.events.opportunity.after_insert"
+	 }
+}
 # Scheduled Tasks
 # ---------------
 
