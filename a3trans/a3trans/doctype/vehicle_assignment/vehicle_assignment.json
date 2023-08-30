@@ -7,8 +7,10 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "assignment_status",
+  "type_of_booking",
   "assignment_date",
+  "column_break_4mamg",
+  "assignment_status",
   "basic_details_section",
   "vehicle_id",
   "make",
@@ -24,8 +26,6 @@
   "route_details_section",
   "routes",
   "section_break_wkz4t",
-  "package_details_section",
-  "package_detail",
   "route_changes_details_section",
   "route_changes",
   "staff_changes_details_section",
@@ -51,7 +51,7 @@
    "fieldname": "assignment_status",
    "fieldtype": "Select",
    "label": "Assignment Status",
-   "options": "Vehicle Assigned\nCompleted\nCancelled"
+   "options": "Vehicle Assigned\nIn-Transit\nArrived\nDelivered\nClosed"
   },
   {
    "fieldname": "route_details_section",
@@ -103,17 +103,6 @@
   {
    "fieldname": "section_break_wkz4t",
    "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "package_details_section",
-   "fieldtype": "Section Break",
-   "label": "Package Details"
-  },
-  {
-   "fieldname": "package_detail",
-   "fieldtype": "Table",
-   "label": "Package Details",
-   "options": "Package Details"
   },
   {
    "fieldname": "basic_details_section",
@@ -174,11 +163,22 @@
    "fieldname": "assignment_date",
    "fieldtype": "Data",
    "label": "Assignment Date"
+  },
+  {
+   "fieldname": "column_break_4mamg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "type_of_booking",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Type of Booking",
+   "options": "Booking Type"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-23 14:04:20.734646",
+ "modified": "2023-08-30 13:26:35.105226",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Assignment",

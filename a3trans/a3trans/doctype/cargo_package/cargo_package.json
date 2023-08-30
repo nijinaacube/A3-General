@@ -110,7 +110,7 @@
    "fieldname": "sender_information",
    "fieldtype": "Table",
    "label": "Sender Information",
-   "options": "Sender or Receiver Information"
+   "options": "Receiver Information"
   },
   {
    "fieldname": "recipient_information_section",
@@ -121,12 +121,12 @@
    "fieldname": "recipient_information",
    "fieldtype": "Table",
    "label": "Recipient Information",
-   "options": "Sender or Receiver Information"
+   "options": "Receiver Information"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-17 18:26:00.780687",
+ "modified": "2023-08-24 17:12:00.436571",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Cargo Package",

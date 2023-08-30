@@ -1,40 +1,36 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:shelf_name",
- "creation": "2023-08-22 12:24:05.391671",
+ "autoname": "field:type",
+ "creation": "2023-08-25 10:09:08.980168",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "floor_id",
-  "column_break_7z2hr",
-  "shelf_name"
+  "type",
+  "description"
  ],
  "fields": [
   {
-   "fieldname": "floor_id",
-   "fieldtype": "Link",
-   "label": "Floor ID",
-   "options": "Warehouse Floor"
-  },
-  {
-   "fieldname": "column_break_7z2hr",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "shelf_name",
+   "fieldname": "type",
    "fieldtype": "Data",
-   "label": "Shelf Name",
+   "in_list_view": 1,
+   "label": "Type",
+   "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-25 13:50:22.963288",
+ "modified": "2023-08-25 10:09:08.980168",
  "modified_by": "Administrator",
  "module": "A3Trans",
- "name": "Warehouse Shelf",
+ "name": "Type of Accomadation",
  "owner": "Administrator",
  "permissions": [
   {

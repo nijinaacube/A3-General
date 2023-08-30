@@ -17,7 +17,9 @@
   {
    "fieldname": "rack_level",
    "fieldtype": "Float",
-   "label": "Rack Level"
+   "in_list_view": 1,
+   "label": "Rack Level",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_nfeij",
@@ -37,12 +39,13 @@
    "fieldname": "warehouse_shelf",
    "fieldtype": "Link",
    "label": "Warehouse Shelf",
-   "options": "Warehouse Shelf"
+   "options": "Warehouse Shelf",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-22 12:26:19.976570",
+ "modified": "2023-08-23 22:43:12.703075",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Rack",

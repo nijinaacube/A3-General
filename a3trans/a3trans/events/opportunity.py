@@ -4,7 +4,7 @@ from datetime import date
 def after_insert(doc,method):
 	if doc.opportunity_from=="Customer":
 		if doc.party_name:
-			customer=frappe.get_doc("Customer",doc.party_name)
+			
 			#Create sales order
 			sales_order=frappe.new_doc("Sales Order")
 			sales_order.customer = doc.party_name
@@ -21,7 +21,7 @@ def after_insert(doc,method):
 					sales_order.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
 			if doc.booking_type=="Packing and Moving":
 				for packing in doc.packing_items:
-					sales_order.append("items",{"item_code":packing.item,"qty":1,"rate":doc.payment_amount})			
+					sales_order.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})			
 			sales_order.insert()
 			sales_order.submit()
 
@@ -42,7 +42,7 @@ def after_insert(doc,method):
 					sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
 			if doc.booking_type=="Packing and Moving":
 				for packing in doc.packing_items:
-					sales_invoice.append("items",{"item_code":packing.item,"qty":1,"rate":doc.payment_amount})
+					sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
 		
 			sales_invoice.save()
 			sales_invoice.submit()
@@ -97,4 +97,90 @@ def after_insert(doc,method):
 					user.flags.ignore_password_policy = True
 					user.insert()
 					frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
+			
+
+
+
+
+			linked_addresses = frappe.get_all('Dynamic Link', filters={
+				'link_doctype': 'Customer',
+				'link_name': doc.party_name,
+				'parenttype': 'Address'
+			}, fields=['parent'])
+
+			# Getting the Address docs and storing them with phone as the key.
+			# I'm assuming 'phone' (from info.contact) is the field in the Address DocType that is supposed to be unique.
+			existing_addresses = {address_doc.phone: address_doc for address_doc in [frappe.get_doc('Address', address.parent) for address in linked_addresses]}
+
+			for info in doc.receiver_information:
+				# Checking if the current info.contact exists as a phone in the existing_addresses
+				if info.contact not in existing_addresses:
+					address = frappe.new_doc("Address")
+					if info.name1:
+						address.address_title = info.name1
+					if info.address_line1:
+						address.address_line1 = info.address_line1
+					if info.address_line2:
+						address.address_line2 = info.address_line2
+					if info.city:
+						address.city = info.city
+					if info.latitude:
+						address.latitude = info.latitude
+					if info.longitude:
+						address.longitude = info.longitude
+					if info.contact:
+						address.phone = info.contact
+					if info.email:
+						address.email_id = info.email
+
+					address.address_type = "Shipping"
+					address.append("links", {
+						"link_doctype": "Customer",
+						"link_name": doc.party_name
+					})
+					address.insert()
+
+
+
+			if doc.booking_type == "Warehouse":
+			
+				for war in doc.warehouse_space_details:
+					for itm in doc.shipment_details:
+						if war.warehouse:
+							warehouses = frappe.get_doc("Warehouse", war.warehouse)
+							warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"required_space":war.required_space,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"status":"Pending"})		
+							warehouses.save()
+					
+
+
+
+
+#API
+			
+@frappe.whitelist()
+def get_addresses(doc):
+	print(doc)
+	linked_addresses = frappe.get_all('Dynamic Link', filters={
+					'link_doctype': 'Customer',
+					'link_name': doc,
+					'parenttype': 'Address'
+				}, fields=['parent'])
+	addresses = [frappe.get_doc('Address', address.parent) for address in linked_addresses]
+	
+	print(addresses)
+	return addresses 
+
+
+
+
+
+
+
+				
+
+
+
+
+				
+
 			

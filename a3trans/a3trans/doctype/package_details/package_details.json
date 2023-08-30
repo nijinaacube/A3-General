@@ -6,38 +6,11 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "tracking_number",
-  "dimensions",
-  "weight",
-  "value",
+  "item_name",
   "package_status",
-  "expected_delivery_date"
+  "pickup_time"
  ],
  "fields": [
-  {
-   "fieldname": "tracking_number",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Tracking Number"
-  },
-  {
-   "fieldname": "dimensions",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Dimensions"
-  },
-  {
-   "fieldname": "weight",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Weight"
-  },
-  {
-   "fieldname": "value",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Value"
-  },
   {
    "fieldname": "package_status",
    "fieldtype": "Select",
@@ -46,16 +19,23 @@
    "options": "Picked Up\nIn Transit\nDelivered\nReturned"
   },
   {
-   "fieldname": "expected_delivery_date",
-   "fieldtype": "Date",
+   "fieldname": "pickup_time",
+   "fieldtype": "Datetime",
    "in_list_view": 1,
-   "label": "Expected Delivery Date"
+   "label": "Pickup Time"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Item Name",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-08-14 20:41:11.164456",
+ "modified": "2023-08-23 21:55:34.665487",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Package Details",

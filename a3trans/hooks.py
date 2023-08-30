@@ -102,13 +102,21 @@ app_license = "MIT"
 #		"on_trash": "method"
 #	}
 # }
+doctype_js = {
+	"Opportunity": "a3trans/client_scripts/opportunity.js",
+	
+ }
 doc_events = {
 	 "Customer": {
 		"after_insert":"a3trans.a3trans.events.customer.after_insert"
 	 },
 	 "Opportunity":{
 		"after_insert":"a3trans.a3trans.events.opportunity.after_insert"
+	 },
+	 "Warehouse":{
+		"validate":"a3trans.a3trans.events.warehouse.validate"
 	 }
+	
 }
 # Scheduled Tasks
 # ---------------
