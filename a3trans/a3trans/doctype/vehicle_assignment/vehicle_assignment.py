@@ -15,8 +15,11 @@ class VehicleAssignment(Document):
 			if helper.status=="Available":
 				helper.status="On Duty"
 				helper.save()
-
-
+		if self.vehicle_id:
+			vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+			if vehicle.vehicle_status=="Available":
+				vehicle.vehicle_status="On Duty"
+				vehicle.save()
 
 		if self.routes:
 			for order in self.routes:
@@ -46,6 +49,30 @@ class VehicleAssignment(Document):
 						sales_order.booking_status = "Closed"
 						sales_invoice.order_status = "Closed"
 					opportunity.status="Converted"
-					opportunity.save()
+					
 					sales_order.save()
 					sales_invoice.save()
+	def after_insert(self):
+		if self.routes:
+			for order in self.routes:
+				if order.order_id:
+					opportunity = frappe.get_doc("Opportunity", order.order_id)
+					if self.vehicle_id:
+						opportunity.vehicle=self.vehicle_id
+					if self.make:
+						opportunity.make=self.make
+					if self.model:
+						opportunity.model=self.model
+					if self.driver_id:
+						opportunity.driver=self.driver_id
+					if self.driver_name:
+						opportunity.driver_name=self.driver_name
+					if self.mobile_number:
+						opportunity.driver_phone_number=self.mobile_number
+					if self.helper_id:
+						opportunity.helper=self.helper_id
+					if self.helper_name:
+						opportunity.helper_name=self.helper_name
+					if self.phone_number:
+						opportunity.helper_phone_number=self.phone_number
+					opportunity.save()

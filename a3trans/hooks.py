@@ -102,6 +102,19 @@ app_license = "MIT"
 #		"on_trash": "method"
 #	}
 # }
+
+
+
+fixtures = [
+
+{'dt':"Role","filters":[
+	['name',"in",
+	["Driver","Helper"]
+	]
+]}
+]
+
+
 doctype_js = {
 	"Opportunity": "a3trans/client_scripts/opportunity.js",
 	
