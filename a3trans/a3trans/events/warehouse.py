@@ -7,7 +7,6 @@ def validate(doc,methods):
                 mat=frappe.new_doc("Stock Entry")
                 mat.purpose="Material Receipt"
                 mat.stock_entry_type="Material Receipt"
-
                 mat.append("items",{"t_warehouse":doc.name,
                 "item_code":items.item,"qty":items.quantity,"allow_zero_valuation_rate":1 })
                 mat.save(ignore_permissions=True)
