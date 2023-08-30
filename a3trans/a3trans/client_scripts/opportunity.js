@@ -1,7 +1,7 @@
 frappe.ui.form.on('Opportunity', {
 
     onload: function(frm) {
-        if (frm.doc.booking_type = "Packing and Moving") {
+        if (frm.doc.booking_type == "Packing and Moving") {
 
             
             frm.fields_dict['packing_items'].grid.get_field('item_name').get_query = function(doc, cdt, cdn) {
