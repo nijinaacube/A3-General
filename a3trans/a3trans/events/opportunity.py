@@ -54,6 +54,8 @@ def after_insert(doc,method):
 				payment.party_type="Customer"
 				payment.party=doc.party_name
 				payment.party_name=doc.customer_name
+				payment.order_id=doc.name
+				payment.booking_type=doc.booking_type
 				if sales_order.company:
 					company=frappe.get_doc("Company",sales_order.company)
 					print(company)
