@@ -36,6 +36,7 @@ frappe.ui.form.on('Vehicle Assignment', {
                            
                             frappe.model.with_doc('Opportunity', opportunity, function() {
                                 let oppo = frappe.model.get_doc('Opportunity', opportunity);
+                                if (oppo.from_warehouse==0){
                                 
                                     oppo.receiver_information.forEach(function(pickupRow) {
                                         var child = frm.add_child('routes', {});
@@ -44,8 +45,31 @@ frappe.ui.form.on('Vehicle Assignment', {
         
                                         child.type_of_location = pickupRow.type_of_location;
                                     });
+                                }
+                                else if (oppo.from_warehouse==1){
+                                    if (oppo.pickup_from_warehouse){
+                                        oppo.pickup_from_warehouse.forEach(function(Row) {
+                                            var child = frm.add_child('routes', {});
+                                            child.order_id = opportunity;
+                                            child.location = Row.warehouse;
+            
+                                            child.type_of_location = "Pickup";
+                                        });
+                                    }
+                                    if (oppo.receiver_information){
+                                    oppo.receiver_information.forEach(function(pickupRow) {
+                                        var child = frm.add_child('routes', {});
+                                        child.order_id = opportunity;
+                                        child.location = pickupRow.location;
+        
+                                        child.type_of_location = pickupRow.type_of_location;
+                                    });
+                                }
+
+                                }
 
                                     frm.refresh_field('routes');
+
                                 
                             });
                         });

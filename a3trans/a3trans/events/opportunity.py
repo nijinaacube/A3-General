@@ -154,7 +154,7 @@ def after_insert(doc,method):
 							warehouses.save()
 					
 
-			# if doc.from_warehouse==1:
+		
 
 
 
