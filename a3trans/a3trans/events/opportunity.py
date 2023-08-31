@@ -17,12 +17,12 @@ def after_insert(doc,method):
 				for shipment in doc.shipment_details:
 					sales_order.append("items",{"item_code":shipment.item,"qty":1,"rate":doc.payment_amount})
 			if doc.booking_type=="Diesel":
-				for shipment in doc.shipment_details:
-					sales_order.append("items",{"item_code":shipment.item,"qty":1,"rate":doc.payment_amount})
+				
+				sales_order.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
 			if doc.booking_type=="Packing and Moving":
 				for packing in doc.packing_items:
 					sales_order.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})			
-			sales_order.insert()
+			sales_order.save()
 			sales_order.submit()
 
 
@@ -38,8 +38,8 @@ def after_insert(doc,method):
 				for shipment in doc.shipment_details:
 					sales_invoice.append("items",{"item_code":shipment.item,"qty":1,"rate":doc.payment_amount})
 			if doc.booking_type=="Diesel":
-				for shipment in doc.shipment_details:
-					sales_invoice.append("items",{"item_code":shipment.item,"qty":1,"rate":doc.payment_amount})
+				
+				sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
 			if doc.booking_type=="Packing and Moving":
 				for packing in doc.packing_items:
 					sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})

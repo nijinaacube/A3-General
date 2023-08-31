@@ -15,9 +15,9 @@ frappe.ui.form.on('Opportunity', {
         }
       
         if (frm.doc.booking_type !== "Diesel") {
-            console.log("Filtering item groups");
+           
             frm.fields_dict['shipment_details'].grid.get_field('item').get_query = function(doc, cdt, cdn) {
-                console.log("Querying items");
+                
                 return {
                     filters: {
                         "item_group": ["not in", ["Diesel", "Packing and Moving"]]
