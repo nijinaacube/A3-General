@@ -22,7 +22,7 @@ frappe.ui.form.on('Vehicle Assignment', {
                 add_filters_group: 1,
                 allow_child_item_selection: 1,
                 child_fieldname: 'receiver_information',
-                child_columns: ['location', 'address', 'type_of_location'],
+                child_columns: ['location','type_of_location'],
                 get_query() {
                     return {
                         filters: { status: ['=', 'open'] }
