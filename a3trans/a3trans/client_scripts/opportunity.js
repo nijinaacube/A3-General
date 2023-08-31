@@ -4,11 +4,11 @@ frappe.ui.form.on('Opportunity', {
         if (frm.doc.booking_type == "Packing and Moving") {
 
             
-            frm.fields_dict['packing_items'].grid.get_field('item_name').get_query = function(doc, cdt, cdn) {
-                var child = locals[cdt][cdn]
+            frm.fields_dict['packing_items'].grid.get_field('item').get_query = function(doc, cdt, cdn) {
+               
                 return {
                     filters: {
-                        "item_group": ["=", "Packing and Moving"]
+                        "item_group": ["in", "Packing and Moving"]
                     }
                 };
             };

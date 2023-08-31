@@ -20,9 +20,9 @@ frappe.ui.form.on('Vehicle Assignment', {
                     status: 'Converted'
                 },
                 add_filters_group: 1,
-                allow_child_item_selection: 1,
-                child_fieldname: 'receiver_information',
-                child_columns: ['location','type_of_location'],
+                // allow_child_item_selection: 1,
+                // child_fieldname: 'receiver_information',
+                columns: ['status'],
                 get_query() {
                     return {
                         filters: { status: ['=', 'open'] }
