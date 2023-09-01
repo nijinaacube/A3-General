@@ -31,28 +31,49 @@ frappe.ui.form.on('Opportunity', {
 })
 frappe.ui.form.on('Opportunity', {
     party_name: function(frm) {
-        if (frm.doc.party_name) {
+        if (frm.doc.party_name && frm.doc.booking_type) {
             frappe.call({
                 method: "a3trans.a3trans.events.opportunity.get_addresses",
                 args: {
-                    "doc": frm.doc.party_name
+                    "doc": frm.doc.party_name,
+                    "type":frm.doc.booking_type
                 },
                 callback: function(r) {
                     console.log(r.message);
 
-                    var addressNames = r.message.map(function(address) {
-                        return address.name;
+                    // Create arrays to hold multiple values
+                    var addressNames = [];
+                    var warehousenames = [];
+
+                    // Loop to populate addressNames array
+                    r.message.forEach(function(address) {
+                        addressNames.push(address.name);
+
+                        frm.fields_dict['receiver_information'].grid.get_field('address').get_query = function(doc, cdt, cdn) {
+                            var child = locals[cdt][cdn];
+                            return {
+                                filters: {
+                                    "name": ["in", addressNames],
+                                    "address_type":"Shipping"
+                                }
+                            };
+                        };
                     });
 
-                    frm.fields_dict['receiver_information'].grid.get_field('address').get_query = function(doc, cdt, cdn) {
-                        var child = locals[cdt][cdn];
-                        return {
-                            filters: {
-                                "name": ["in", addressNames],
-                                "address_type":"Shipping"
-                            }
+                    // Loop to populate warehousenames array
+                    r.message.forEach(function(details) {
+                        console.log("Details:", details.warehouse);
+                        warehousenames.push(details.warehouse);
+
+                        frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
+                            var child = locals[cdt][cdn];
+                            return {
+                                filters: {
+                                    "name": ["in", warehousenames]
+                                }
+                            };
                         };
-                    };
+                    });
                 }
             });
         }
@@ -73,23 +94,8 @@ frappe.call({
     callback: (r) => {
         console.log(r.message)
         cur_frm.set_value("party_name", r.message["customer_name"]);
-        // cur_frm.set_value("type_of_id", r.message["id_proof_type"]);
-        // cur_frm.set_value("id_number1", r.message["id_proof_number"]);
-        // cur_frm.set_value("id_proof1", r.message["attach_id"]);
-        // cur_frm.set_value("email_id", r.message["email"]);
-        // cur_frm.set_value("address_line1", r.message["ad1"]);
-        // cur_frm.set_value("address_line_b", r.message["ad2"]);
-        // cur_frm.set_value("city1", r.message["ad3"]);
-        // cur_frm.set_value("pin_code1", r.message["pin"]);
         frm.refresh_field('party_name');
-        // frm.refresh_field('address_line_b');
-        // frm.refresh_field('city1');
-        // frm.refresh_field('pin_code1');
-        // frm.refresh_field('email_id');
-        // frm.refresh_field('type_of_id');
-        // frm.refresh_field('name1');
-        // frm.refresh_field('id_number1');
-        // frm.refresh_field('id_proof1');
+    
     }
 })
 }

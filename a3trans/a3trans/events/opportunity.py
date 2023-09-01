@@ -156,18 +156,22 @@ def after_insert(doc,method):
 
 						if doc.party_name:
 							customer=frappe.get_doc("Customer",doc.party_name)
+							print(customer)
 							fromdate=frappe.utils.nowdate()
 							dur=int(war.duration)
-							todate=add_to_date(fromdate,days=dur,as_string=True)
+							todate=add_to_date(fromdate,days=dur,as_string=True)	
+							table_len=len(customer.customer_warehouse_details)                            
+							if table_len ==0:                                
+								customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
+							else:                                
+								for warehouses_det in customer.customer_warehouse_details:                                    
+									if  war.warehouse not in warehouses_det.warehouse:                                        
+										customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
+							customer.save()	
+							
 						
-							print(todate,fromdate)
-							
-							for warehouses in customer.customer_warehouse_details:
-							
-								if  war.warehouse not in warehouses.warehouse:
-									customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})
-							customer.save()
-					
+			
+			
 					
 
 		
@@ -177,17 +181,24 @@ def after_insert(doc,method):
 #API
 			
 @frappe.whitelist()
-def get_addresses(doc):
+def get_addresses(doc,type):
 	print(doc)
+	data=[]
 	linked_addresses = frappe.get_all('Dynamic Link', filters={
 					'link_doctype': 'Customer',
 					'link_name': doc,
 					'parenttype': 'Address'
 				}, fields=['parent'])
 	addresses = [frappe.get_doc('Address', address.parent) for address in linked_addresses]
-	
-	print(addresses)
-	return addresses 
+	data.append(addresses)
+	if type=="Warehouse":
+		customer=frappe.get_doc("Customer",doc)
+		if customer.customer_warehouse_details:
+			for details in customer.customer_warehouse_details:
+				data.append(details)
+
+	print(data)
+	return data 
 @frappe.whitelist()
 def get_sender_data(mobile_number):
 	print(mobile_number)
