@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-09-01 13:18:43.148992",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "warehouse",
+  "from",
+  "to",
+  "floor",
+  "zone",
+  "rack",
+  "shelf",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "From "
+  },
+  {
+   "fieldname": "to",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "To"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Active\nInactive\nCancelled"
+  },
+  {
+   "fieldname": "floor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Floor",
+   "options": "Warehouse Floor"
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Zone",
+   "options": "Zone"
+  },
+  {
+   "fieldname": "rack",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Rack",
+   "options": "Warehouse Rack"
+  },
+  {
+   "fieldname": "shelf",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Shelf",
+   "options": "Warehouse Shelf"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-09-01 14:51:03.345638",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Customer Warehouse Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

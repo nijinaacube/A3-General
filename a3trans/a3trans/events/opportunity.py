@@ -1,6 +1,7 @@
 import frappe
 from datetime import date
 
+from frappe.utils import add_to_date
 def after_insert(doc,method):
 	if doc.opportunity_from=="Customer":
 		if doc.party_name:
@@ -152,6 +153,21 @@ def after_insert(doc,method):
 							warehouses = frappe.get_doc("Warehouse", war.warehouse)
 							warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"required_space":war.required_space,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"status":"Pending"})		
 							warehouses.save()
+
+						if doc.party_name:
+							customer=frappe.get_doc("Customer",doc.party_name)
+							fromdate=frappe.utils.nowdate()
+							dur=int(war.duration)
+							todate=add_to_date(fromdate,days=dur,as_string=True)
+						
+							print(todate,fromdate)
+							
+							for warehouses in customer.customer_warehouse_details:
+							
+								if  war.warehouse not in warehouses.warehouse:
+									customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})
+							customer.save()
+					
 					
 
 		
