@@ -172,6 +172,14 @@ def get_addresses(doc):
 	
 	print(addresses)
 	return addresses 
+@frappe.whitelist()
+def get_sender_data(mobile_number):
+	print(mobile_number)
+	if frappe.db.exists("Customer", { "mobile_number": mobile_number}):
+		customer = frappe.get_doc("Customer", {"mobile_number": mobile_number})
+		return customer.as_dict()
+	else:
+		pass
 
 
 

@@ -58,3 +58,40 @@ frappe.ui.form.on('Opportunity', {
         }
     }
 });
+
+
+frappe.ui.form.on('Opportunity', {
+mobile_number: function(frm){
+		
+    if (frm.doc.mobile_number){
+frappe.call({
+    method:"a3trans.a3trans.events.opportunity.get_sender_data",
+    args: {
+
+        mobile_number: frm.doc.mobile_number,
+    },
+    callback: (r) => {
+        console.log(r.message)
+        cur_frm.set_value("party_name", r.message["customer_name"]);
+        // cur_frm.set_value("type_of_id", r.message["id_proof_type"]);
+        // cur_frm.set_value("id_number1", r.message["id_proof_number"]);
+        // cur_frm.set_value("id_proof1", r.message["attach_id"]);
+        // cur_frm.set_value("email_id", r.message["email"]);
+        // cur_frm.set_value("address_line1", r.message["ad1"]);
+        // cur_frm.set_value("address_line_b", r.message["ad2"]);
+        // cur_frm.set_value("city1", r.message["ad3"]);
+        // cur_frm.set_value("pin_code1", r.message["pin"]);
+        frm.refresh_field('party_name');
+        // frm.refresh_field('address_line_b');
+        // frm.refresh_field('city1');
+        // frm.refresh_field('pin_code1');
+        // frm.refresh_field('email_id');
+        // frm.refresh_field('type_of_id');
+        // frm.refresh_field('name1');
+        // frm.refresh_field('id_number1');
+        // frm.refresh_field('id_proof1');
+    }
+})
+}
+}
+})

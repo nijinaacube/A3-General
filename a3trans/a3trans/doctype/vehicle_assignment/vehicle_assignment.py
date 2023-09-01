@@ -5,6 +5,7 @@ from frappe.model.document import Document
 
 class VehicleAssignment(Document):
 	def validate(self):
+		
 		if self.driver_id:
 			driver=frappe.get_doc("Staff Member",self.driver_id)
 			if driver.status=="Available":
@@ -25,6 +26,14 @@ class VehicleAssignment(Document):
 			for order in self.routes:
 				if order.order_id:
 					opportunity = frappe.get_doc("Opportunity", order.order_id)
+					if self.vehicle_id:
+						vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+						for type in vehicle.allowed_booking_type:
+							if opportunity.booking_type in  type.booking_type:
+								pass
+							else:
+								frappe.throw("You are not allowed to choose the vehicle for this booking.")
+
 					sales_order = frappe.get_doc("Sales Order", {"booking_id": opportunity.name})
 					sales_invoice = frappe.get_doc("Sales Invoice", {"order_id": opportunity.name})
 					
