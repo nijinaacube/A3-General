@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{from_city}-{to_city}-{vehicle_type}",
+ "creation": "2023-09-04 19:05:45.089175",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "from_city",
+  "to_city",
+  "vehicle_type",
+  "column_break_ouwej",
+  "amount",
+  "weight",
+  "uom"
+ ],
+ "fields": [
+  {
+   "fieldname": "from_city",
+   "fieldtype": "Link",
+   "label": "From City",
+   "options": "Location"
+  },
+  {
+   "fieldname": "to_city",
+   "fieldtype": "Link",
+   "label": "To City",
+   "options": "Location"
+  },
+  {
+   "fieldname": "column_break_ouwej",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vehicle_type",
+   "fieldtype": "Link",
+   "label": "Vehicle Type",
+   "options": "Vehicle Type"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Float",
+   "hidden": 1,
+   "label": "Weight"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "UOM",
+   "options": "UOM"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-09-04 19:07:10.816759",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Tariff Details",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

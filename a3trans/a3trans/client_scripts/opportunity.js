@@ -36,63 +36,60 @@ frappe.ui.form.on('Opportunity', {
                 method: "a3trans.a3trans.events.opportunity.get_addresses",
                 args: {
                     "doc": frm.doc.party_name,
-                    "type":frm.doc.booking_type
+                    "type": frm.doc.booking_type
                 },
                 callback: function(r) {
-                    console.log(r.message);
-
-                    // Create arrays to hold multiple values
+                    console.log("Callback received:", r.message);
+                    
                     var addressNames = [];
                     var warehousenames = [];
 
-                    // Loop to populate addressNames array
-                    r.message.forEach(function(address) {
-                        addressNames.push(address.name);
+                    if (Array.isArray(r.message)) {
+                        r.message.forEach(function(detail) {
+                            if (detail.name) {
+                                addressNames.push(detail.name);
+                            }
+                            if (detail.warehouse) {
+                                warehousenames.push(detail.warehouse);
+                            }
+                        });
+                    }
 
-                        frm.fields_dict['receiver_information'].grid.get_field('address').get_query = function(doc, cdt, cdn) {
-                            var child = locals[cdt][cdn];
-                            return {
-                                filters: {
-                                    "name": ["in", addressNames],
-                                    "address_type":"Shipping"
-                                }
-                            };
+                    console.log("Address Names:", addressNames);
+                    console.log("Warehouse Names:", warehousenames);
+
+                    frm.fields_dict['receiver_information'].grid.get_field('address').get_query = function(doc, cdt, cdn) {
+                        console.log("Setting query for Address");
+                        return {
+                            filters: {
+                                "name": ["in", addressNames],
+                                "address_type": "Shipping"
+                            }
                         };
-                    });
+                    };
 
-                    // Loop to populate warehousenames array
-                    r.message.forEach(function(details) {
-                        console.log("Details:", details.warehouse);
-                        warehousenames.push(details.warehouse);
-                        if (warehousenames != ""){
-
-                        frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
-                            var child = locals[cdt][cdn];
+                    frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
+                        console.log("Setting query for Warehouse");
+                        if (warehousenames.length > 0) {
                             return {
                                 filters: {
                                     "name": ["in", warehousenames]
                                 }
                             };
-                        };
-                    }
-                    else{
-
-                        frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
-                            var child = locals[cdt][cdn];
+                        } else {
                             return {
                                 filters: {
-                                    "disabled":0
+                                    "disabled": 0
                                 }
                             };
-                        };
-
-                    }
-                    });
+                        }
+                    };
                 }
             });
         }
     }
 });
+
 
 
 frappe.ui.form.on('Opportunity', {

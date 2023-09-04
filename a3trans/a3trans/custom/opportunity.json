@@ -341,7 +341,7 @@
    "name": "Opportunity-receiver_information",
    "no_copy": 0,
    "non_negative": 0,
-   "options": "Receiver Information",
+   "options": "Transit Details",
    "owner": "Administrator",
    "parent": null,
    "parentfield": null,

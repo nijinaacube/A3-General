@@ -1,0 +1,209 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-17 18:22:57.587148",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "order_no",
+  "transit_type",
+  "location_type",
+  "warehouse",
+  "city",
+  "point_of_contact_section",
+  "name1",
+  "contact",
+  "email",
+  "address",
+  "address_line1",
+  "address_line2",
+  "latitude",
+  "longitude",
+  "location",
+  "company",
+  "tax_id",
+  "section_break_reqqi",
+  "handling_charges",
+  "handling_cost",
+  "labour_charges",
+  "labour_cost",
+  "transportation_chargess",
+  "transportation_cost"
+ ],
+ "fields": [
+  {
+   "fetch_from": "address.address_title",
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Address",
+   "options": "Address"
+  },
+  {
+   "fetch_from": "address.phone",
+   "fieldname": "contact",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Contact",
+   "options": "Phone",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "address.email_id",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "options": "Email"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Company"
+  },
+  {
+   "fieldname": "tax_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tax ID"
+  },
+  {
+   "fetch_from": "address.address_line2",
+   "fieldname": "address_line2",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Address Line2"
+  },
+  {
+   "fetch_from": "address.city",
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "City"
+  },
+  {
+   "fetch_from": "address.latitude",
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Latitude"
+  },
+  {
+   "fetch_from": "address.longitude",
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Longitude"
+  },
+  {
+   "fetch_from": "address.address_line1",
+   "fieldname": "address_line1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Address Line1"
+  },
+  {
+   "fetch_from": "address.city",
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Location"
+  },
+  {
+   "fieldname": "order_no",
+   "fieldtype": "Int",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order No"
+  },
+  {
+   "fieldname": "transit_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Transit Type",
+   "options": "\nPickup\nDropoff"
+  },
+  {
+   "fieldname": "location_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Location Type",
+   "options": "\nWarehouse\nCity"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Customer Warehouses"
+  },
+  {
+   "fieldname": "point_of_contact_section",
+   "fieldtype": "Section Break",
+   "label": "Point of Contact"
+  },
+  {
+   "fieldname": "section_break_reqqi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "handling_charges",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Handling Charges",
+   "options": "Item"
+  },
+  {
+   "fieldname": "handling_cost",
+   "fieldtype": "Currency",
+   "label": "Handling Cost"
+  },
+  {
+   "fieldname": "labour_charges",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Labour Charges",
+   "options": "Item"
+  },
+  {
+   "fieldname": "labour_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Labour Cost"
+  },
+  {
+   "fieldname": "transportation_chargess",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Transportation Chargess",
+   "options": "Item"
+  },
+  {
+   "fieldname": "transportation_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Transportation Cost"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-09-04 19:18:28.969419",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Transit Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
