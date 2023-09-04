@@ -93,7 +93,7 @@ def get_staff_data(vehicle_id):
 	print(vehicle_id)
 	if frappe.db.exists("Vehicle", vehicle_id):
 		vehicle = frappe.get_doc("Vehicle", vehicle_id)
-		print(vehicle_id,"llll")
+		
 		return vehicle.as_dict()
 	else:
 		pass

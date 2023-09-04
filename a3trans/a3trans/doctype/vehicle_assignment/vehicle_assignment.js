@@ -119,6 +119,7 @@ vehicle_id:function(frm) {
 
 
     if (frm.doc.vehicle_id){
+
         frappe.call({
             method:"a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.get_staff_data",
             args: {
@@ -134,6 +135,12 @@ vehicle_id:function(frm) {
             
             }
         })
+        }
+        else{
+            cur_frm.set_value("driver_id", "");
+            frm.refresh_field('driver_id');
+            cur_frm.set_value("helper_id", "");
+            frm.refresh_field('helper_id');
         }
 }
 });
