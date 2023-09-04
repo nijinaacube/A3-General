@@ -81,7 +81,7 @@ frappe.ui.form.on('Opportunity', {
                             var child = locals[cdt][cdn];
                             return {
                                 filters: {
-                                    "status":"Enabled"
+                                    "disabled":0
                                 }
                             };
                         };
