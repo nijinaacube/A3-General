@@ -64,6 +64,7 @@ frappe.ui.form.on('Opportunity', {
                     r.message.forEach(function(details) {
                         console.log("Details:", details.warehouse);
                         warehousenames.push(details.warehouse);
+                        if (warehousenames != ""){
 
                         frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
                             var child = locals[cdt][cdn];
@@ -73,6 +74,19 @@ frappe.ui.form.on('Opportunity', {
                                 }
                             };
                         };
+                    }
+                    else{
+
+                        frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
+                            var child = locals[cdt][cdn];
+                            return {
+                                filters: {
+                                    "status": ["=","Enabled"]
+                                }
+                            };
+                        };
+
+                    }
                     });
                 }
             });
