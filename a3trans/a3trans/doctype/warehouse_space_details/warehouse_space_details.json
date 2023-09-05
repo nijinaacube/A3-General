@@ -10,7 +10,13 @@
   "floor_id",
   "zone",
   "shelf_id",
-  "rack_id"
+  "rack_id",
+  "column_break_hitzy",
+  "item",
+  "quantity",
+  "rental_cost",
+  "date_from",
+  "date_to"
  ],
  "fields": [
   {
@@ -47,12 +53,47 @@
    "fieldtype": "Link",
    "label": "Zone",
    "options": "Zone"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Rental Charges",
+   "options": "Item"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "date_from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date From"
+  },
+  {
+   "fieldname": "date_to",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date To"
+  },
+  {
+   "fieldname": "rental_cost",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rental Cost"
+  },
+  {
+   "fieldname": "column_break_hitzy",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-01 14:39:14.347910",
+ "modified": "2023-09-05 13:34:11.973625",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Space Details",

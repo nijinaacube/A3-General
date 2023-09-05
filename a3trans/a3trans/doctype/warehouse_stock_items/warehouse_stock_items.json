@@ -1,17 +1,23 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2023-09-04 19:35:13.404727",
+ "creation": "2023-09-05 13:53:19.770055",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "movement_type",
   "item",
-  "quantity",
-  "amount",
-  "average_rate"
+  "quantity"
  ],
  "fields": [
+  {
+   "fieldname": "movement_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Movement Type",
+   "options": "\nStock-IN\nStock-OUT"
+  },
   {
    "fieldname": "item",
    "fieldtype": "Link",
@@ -21,30 +27,18 @@
   },
   {
    "fieldname": "quantity",
-   "fieldtype": "Int",
+   "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Quantity"
-  },
-  {
-   "fieldname": "amount",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Amount"
-  },
-  {
-   "fieldname": "average_rate",
-   "fieldtype": "Currency",
-   "in_list_view": 1,
-   "label": "Average Rate"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-05 10:28:45.703000",
+ "modified": "2023-09-05 13:53:19.770055",
  "modified_by": "Administrator",
  "module": "A3Trans",
- "name": "Opportunity Line Items",
+ "name": "Warehouse Stock Items",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",
