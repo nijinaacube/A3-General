@@ -138,10 +138,12 @@
    "options": "\nWarehouse\nCity"
   },
   {
+   "depends_on": "eval:doc.location_type==\"Warehouse\"",
    "fieldname": "warehouse",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Warehouse",
-   "options": "Customer Warehouses"
+   "options": "Warehouse"
   },
   {
    "fieldname": "point_of_contact_section",
@@ -174,7 +176,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-05 13:10:28.488352",
+ "modified": "2023-09-05 15:18:50.069790",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Details",

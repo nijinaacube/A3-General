@@ -20,11 +20,60 @@ frappe.ui.form.on('Opportunity', {
                 
                 return {
                     filters: {
-                        "item_group": ["not in", ["Diesel", "Packing and Moving"]]
+                        "item_group": ["not in", ["Diesel", "Packing and Moving"]],
+                        "is_stock_item": 1
                     }
                 };
             };
         }
+
+        
+           
+            frm.fields_dict['additional_charges'].grid.get_field('charges').get_query = function(doc, cdt, cdn) {
+                
+                return {
+                    filters: {
+                        "is_stock_item": 0
+                    }
+                };
+            }
+
+
+
+          
+           
+                frm.fields_dict['warehouse_stock_items'].grid.get_field('item').get_query = function(doc, cdt, cdn) {
+                    
+                    return {
+                        filters: {
+                            "item_group": ["not in", ["Diesel", "Packing and Moving"]],
+                            "is_stock_item": 1
+                        }
+                    };
+                };
+                frm.fields_dict['receiver_information'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
+                    
+                    return {
+                        filters: {
+                           
+                            "is_group": 1,
+                            "disabled":0
+                        }
+                    };
+                };
+
+                frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
+                    
+                    return {
+                        filters: {
+                           
+                            "is_group": 0,
+                            "disabled":0
+                        }
+                    };
+                };
+            
+        
         
     }
         

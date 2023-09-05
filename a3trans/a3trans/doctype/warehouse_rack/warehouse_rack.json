@@ -16,9 +16,10 @@
  "fields": [
   {
    "fieldname": "rack_level",
-   "fieldtype": "Data",
+   "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Rack Level",
+   "options": "\nLow Level\nMedium Level\nHigh Level",
    "reqd": 1
   },
   {
@@ -45,7 +46,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-31 10:40:33.723978",
+ "modified": "2023-09-05 16:12:41.885655",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Rack",
