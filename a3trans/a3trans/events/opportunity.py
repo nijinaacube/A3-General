@@ -191,13 +191,13 @@ def get_addresses(doc,type):
 				}, fields=['parent'])
 	addresses = [frappe.get_doc('Address', address.parent) for address in linked_addresses]
 	data.append(addresses)
-	if type=="Warehouse":
-		customer=frappe.get_doc("Customer",doc)
-		if customer.customer_warehouse_details:
-			for details in customer.customer_warehouse_details:
-				data.append(details)
+	# if type=="Warehouse":
+	# 	customer=frappe.get_doc("Customer",doc)
+	# 	if customer.customer_warehouse_details:
+	# 		for details in customer.customer_warehouse_details:
+	# 			data.append(details)
 
-	print(data)
+	# print(data)
 	return data 
 @frappe.whitelist()
 def get_sender_data(mobile_number):
@@ -207,6 +207,17 @@ def get_sender_data(mobile_number):
 		return customer.as_dict()
 	else:
 		pass
+
+@frappe.whitelist()
+def get_warehouse(doc):
+    if frappe.db.exists("Warehouse", {"customer": doc}):
+        warehouses = frappe.get_list("Warehouse", fields=["name"], filters={"customer": doc})
+        return [d.name for d in warehouses]
+    else:
+        return []
+
+		
+
 
 
 

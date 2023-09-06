@@ -1,6 +1,7 @@
 import frappe, json
 import random
 from frappe.auth import clear_cookies
+from frappe.exceptions import ValidationError
 from frappe.utils.pdf import get_pdf
 from frappe.utils import cint
 from datetime import datetime
@@ -10,6 +11,10 @@ import requests
 
 @frappe.whitelist(allow_guest=True)
 def get(mobile_no=None):
+    data = {}
+    message = ""
+    status_code = 0
+    valid = True
     def generate_otp():
         otp = ''.join(["{}".format(random.randint(0, 9)) for i in range(0, otp_length)])
         return {"id": key, "otp": otp, "timestamp": str(frappe.utils.get_datetime().utcnow())}
@@ -17,12 +22,19 @@ def get(mobile_no=None):
     if not mobile_no:
         mobile_no = frappe.form_dict.get("mobile_no")
         if not mobile_no:
-            frappe.throw("NOMOBILE", exc=LookupError)
+            data = 'Please enter your mobile number'
+            message = "Mobile Number not found"
+            status_code = 420
+            valid = False
+           
 
     u = frappe.db.get_value("User", {"mobile_no": mobile_no}, "name")
 
     if not u:
-        frappe.throw("USERNOTFOUND", exc=LookupError)
+        data = 'User with this number is not found'
+        message = "User not found"
+        status_code = 500
+        valid = False
 
     key = mobile_no + "_otp"
     otp_length = 6  # 6 digit OTP
@@ -56,14 +68,22 @@ def get(mobile_no=None):
     # })
 
     # return otp_json.get("otp")  # MUST DISABLE IN PRODUCTION!!
-    out = {
-        "OTPGENERATED":otp_json.get("otp"),
-        }
+    if(valid):
+        
+        out = {
+            "OTPGENERATED":otp_json.get("otp"),
+            }
+    else:
+        frappe.throw(data, title=message, exc=LookupError)
     frappe.local.response = frappe._dict(out)
 
 
 @frappe.whitelist(allow_guest=True)
 def get_for_signup(mobile_no=None, first_name=None, last_name=None, email=None):
+    data = {}
+    message = ""
+    status_code = 0
+    valid = True
     def generate_otp_for_signup():
         otp = ''.join(["{}".format(random.randint(0, 9)) for i in range(0, otp_length)])
         return {"id": key, "otp": otp, "timestamp": str(frappe.utils.get_datetime().utcnow())}
@@ -71,27 +91,42 @@ def get_for_signup(mobile_no=None, first_name=None, last_name=None, email=None):
     if not mobile_no:
         mobile_no = frappe.form_dict.get("mobile_no")
         if not mobile_no:
-            frappe.throw("NOMOBILE", exc=LookupError)
-
+            data = 'Please enter your mobile number'
+            message = "Mobile Number not provided"
+            status_code = 420
+            valid = False
+           
     if not first_name:
         first_name = frappe.form_dict.get("first_name")
         if not first_name:
-            frappe.throw("NOFIRSTNAME", exc=LookupError)
-    
+            data = 'Please enter your first name'
+            message = "First name not provided"
+            status_code = 420
+            valid = False
+            
     if not last_name:
         last_name = frappe.form_dict.get("last_name")
         if not last_name:
-            frappe.throw("NOLASTNAME", exc=LookupError)
+            data = 'Please enter your last name'
+            message = "Last name not provided"
+            status_code = 420
+            valid = False
 
     if not email:
         email = frappe.form_dict.get("email")
         if not email:
-            frappe.throw("NOEMAIL", exc=LookupError)
+            data = 'Please enter your email'
+            message = "Email not provided"
+            status_code = 420
+            valid = False
 
     u = frappe.db.get_value("User", {"mobile_no": mobile_no}, "name")
 
     if u:
-        frappe.throw("MOBILEALREADYEXIST", exc=LookupError)
+        data = 'Mobile Number you have entered already exists'
+        message = "Mobile Number already exists"
+        status_code = 421
+        valid = False
 
     key = mobile_no + "_otp"
     otp_length = 6  # 6 digit OTP
@@ -110,73 +145,79 @@ def get_for_signup(mobile_no=None, first_name=None, last_name=None, email=None):
     FIRE SMS FOR OTP
         "{0} is your OTP for AgriNext. Do not share OTP with anybody. Thanks.".format(otp_json.get("otp"))
     """
-
-    out = {
-        "OTPGENERATED":otp_json.get("otp"),
-        }
     
-    # sms_settings = frappe.get_single("SMS Settings")
-    # apikey = ""
-    # sender = ""
-    # otp = otp_json.get("otp")
-    # for params in sms_settings.parameters:
-    #     if params.parameter == "apikey":
-    #         apikey = params.value
-    #     elif params.parameter == "sender":
-    #         sender = params.value
-
-    # requests.post(sms_settings.sms_gateway_url, data={
-    #     "apikey":apikey,
-    #     "sender": sender,
-    #     "number": mobile_no,
-    #     "message": f"KEMDEL UPDATES: Click on the link to initiate payment for your order no: {otp} - SN83. For more info: www.google.com - COFBA NETWORKS"
-    # })
-
-    # return "OTPGENERATED:{0}".format(otp_json.get("otp"))  # MUST DISABLE IN PRODUCTION!!
+    if valid:
+        out = {
+            "OTPGENERATED":otp_json.get("otp"),
+            }
+    else:
+        frappe.throw(data, title=message, exc=ValidationError)
+    
     frappe.local.response = frappe._dict(out)
 
 
 @frappe.whitelist(allow_guest=True)
 def authenticate(otp=None, mobile_no=None, client_id=None):
+    data = {}
+    message = ""
+    status_code = 0
+    valid = True
     if not otp:
         otp = frappe.form_dict.get("otp")
         if not otp:
-            frappe.throw("NOOTP")
-
+            data = 'You have not entered OTP'
+            message = "OTP not found"
+            status_code = 420
+            valid = False
+           
     if not mobile_no:
         mobile_no = frappe.form_dict.get("mobile_no")
         if not mobile_no:
-            frappe.throw("NOMOBILENO")
-
+            data = 'You have not entered Mobile number'
+            message = "Mobile number not found"
+            status_code = 420
+            valid = False
+            
     if not client_id:
         client_id = frappe.form_dict.get("client_id")
         if not client_id:
-            frappe.throw("NOCLIENTID")
+            data = 'Client ID is not provided'
+            message = "Client ID not found"
+            status_code = 420
+            valid = False
 
     rs = frappe.cache()
     otp_json = rs.get_value("{0}_otp".format(mobile_no))
 
     if otp_json.get("otp") != otp:
-        frappe.throw("OTPNOTFOUND")
+        data = 'OTP you have entered is not found'
+        message = "OTP not found"
+        status_code = 420
+        valid = False
 
     if not otp_not_expired(otp_json):
-        frappe.throw("OTPEXPIRED")
+        data = 'You have entered expired OTP'
+        message = "OTP is expired"
+        status_code = 420
+        valid = False
 
     otoken = create_bearer_token(mobile_no, client_id)
     user_roles = frappe.get_roles(otoken.user)
-        
-
-    out = {
-        "access_token": otoken.access_token,
-        "refresh_token": otoken.refresh_token,
-        "expires_in": otoken.expires_in,
-        "scope": otoken.scopes,
-        "user_details": {
-            "user": otoken.user,
-            "roles": user_roles,
-            "user_type": frappe.get_value("User", otoken.user, "user_type")
+    
+    if(valid):
+        out = {
+            "access_token": otoken.access_token,
+            "refresh_token": otoken.refresh_token,
+            "expires_in": otoken.expires_in,
+            "scope": otoken.scopes,
+            "user_details": {
+                "user": otoken.user,
+                "roles": user_roles,
+                "user_type": frappe.get_value("User", otoken.user, "user_type")
+            }
         }
-    }
+    else:
+        frappe.throw(data, title=message, exc=ValidationError)
 
     # Delete consumed otp
     rs.delete_key(mobile_no + "_otp")
@@ -185,29 +226,48 @@ def authenticate(otp=None, mobile_no=None, client_id=None):
 
 @frappe.whitelist(allow_guest=True)
 def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
+    data = {}
+    message = ""
+    status_code = 0
+    valid = True
     if not otp:
         otp = frappe.form_dict.get("otp")
         if not otp:
-            frappe.throw("NOOTP")
+            data = "You have not entered OTP"
+            message = "OTP not found"
+            status_code = 420
+            valid = False
 
     if not mobile_no:
         mobile_no = frappe.form_dict.get("mobile_no")
         if not mobile_no:
-            frappe.throw("NOMOBILENO")
+            data = "You have not entered Mobile number"
+            message = "Mobile number not found"
+            status_code = 420
+            valid = False
 
     if not client_id:
         client_id = frappe.form_dict.get("client_id")
         if not client_id:
-            frappe.throw("NOCLIENTID")
+            data = "Client ID is not provided"
+            message = "Client ID not found"
+            status_code = 420
+            valid = False
 
     rs = frappe.cache()
     otp_json = rs.get_value("{0}_otp".format(mobile_no))
 
     if otp_json.get("otp") != otp:
-        frappe.throw("OTPNOTFOUND")
+        data = "OTP you have entered is not found"
+        message = "OTP not found"
+        status_code = 420
+        valid = False
 
     if not otp_not_expired(otp_json):
-        frappe.throw("OTPEXPIRED")
+        data = "You have entered expired OTP"
+        message = "OTP is expired"
+        status_code = 420
+        valid = False
 
     user = frappe.new_doc("User")
     user.first_name = rs.get_value("{0}_firstname".format(mobile_no))
@@ -219,18 +279,22 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
 
     otoken = create_bearer_token(mobile_no, client_id)
     user_roles = frappe.get_roles(otoken.user)
+    
+    if valid:
 
-    out = {
-        "access_token": otoken.access_token,
-        "refresh_token": otoken.refresh_token,
-        "expires_in": otoken.expires_in,
-        "scope": otoken.scopes,
-         "user_details": {
-            "user": otoken.user,
-            "roles": user_roles,
-            "user_type": frappe.get_value("User", otoken.user, "user_type")
+        out = {
+            "access_token": otoken.access_token,
+            "refresh_token": otoken.refresh_token,
+            "expires_in": otoken.expires_in,
+            "scope": otoken.scopes,
+            "user_details": {
+                "user": otoken.user,
+                "roles": user_roles,
+                "user_type": frappe.get_value("User", otoken.user, "user_type")
+            }
         }
-    }
+    else:
+        frappe.throw(data, title=message, exe=ValidationError)
 
     # Delete consumed otp
     rs.delete_key(mobile_no + "_otp")
