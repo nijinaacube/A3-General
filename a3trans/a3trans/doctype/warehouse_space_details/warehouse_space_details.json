@@ -12,7 +12,7 @@
   "shelf_id",
   "rack_id",
   "column_break_hitzy",
-  "item",
+  "rental_charges",
   "no_of_days",
   "rental_cost",
   "date_from",
@@ -55,13 +55,6 @@
    "options": "Zone"
   },
   {
-   "fieldname": "item",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Rental Charges",
-   "options": "Item"
-  },
-  {
    "fieldname": "date_from",
    "fieldtype": "Date",
    "in_list_view": 1,
@@ -88,12 +81,19 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "No of Days"
+  },
+  {
+   "fieldname": "rental_charges",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Rental Charges",
+   "options": "Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-05 15:01:14.439294",
+ "modified": "2023-09-05 17:40:52.842934",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Space Details",

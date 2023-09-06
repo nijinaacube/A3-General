@@ -1,14 +1,16 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2023-09-05 13:14:08.379647",
+ "creation": "2023-09-06 09:58:44.342010",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "charges",
   "quantity",
-  "cost"
+  "cost",
+  "area",
+  "uom"
  ],
  "fields": [
   {
@@ -29,15 +31,28 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Cost"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Area"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "UOM",
+   "options": "UOM"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-05 13:14:08.379647",
+ "modified": "2023-09-06 09:58:44.342010",
  "modified_by": "Administrator",
  "module": "A3Trans",
- "name": "Additional Charges",
+ "name": "Warehouse Charges",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

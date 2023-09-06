@@ -39,7 +39,14 @@ frappe.ui.form.on('Opportunity', {
             }
 
 
-
+            frm.fields_dict['warehouse_space_details'].grid.get_field('rental_charges').get_query = function(doc, cdt, cdn) {
+                
+                return {
+                    filters: {
+                        "item_group": "Space Rent"
+                    }
+                };
+            }
           
            
                 frm.fields_dict['warehouse_stock_items'].grid.get_field('item').get_query = function(doc, cdt, cdn) {
@@ -56,7 +63,7 @@ frappe.ui.form.on('Opportunity', {
                     return {
                         filters: {
                            
-                            "is_group": 1,
+                            "is_group": 0,
                             "disabled":0
                         }
                     };

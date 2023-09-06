@@ -8,9 +8,9 @@
  "engine": "InnoDB",
  "field_order": [
   "from_city",
-  "to_city",
   "vehicle_type",
   "column_break_ouwej",
+  "to_city",
   "amount",
   "weight",
   "uom"
@@ -59,7 +59,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-04 19:07:10.816759",
+ "modified": "2023-09-05 16:27:49.842836",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Tariff Details",

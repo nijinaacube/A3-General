@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{warehouse}-{floor}-{zone}",
+ "autoname": "format:{floor}-{zone}",
  "creation": "2023-09-01 14:37:25.073156",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -34,7 +34,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-01 14:37:25.073156",
+ "modified": "2023-09-05 17:28:26.082223",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Zone",

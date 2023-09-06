@@ -8,7 +8,6 @@
  "field_order": [
   "booking_id",
   "quantity",
-  "required_space",
   "floor_id",
   "zone",
   "rack_id",
@@ -36,12 +35,6 @@
    "in_list_view": 1,
    "label": "Shelf ID",
    "options": "Warehouse Shelf"
-  },
-  {
-   "fieldname": "required_space",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Required Space"
   },
   {
    "fieldname": "booking_id",
@@ -74,7 +67,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-01 14:47:07.579418",
+ "modified": "2023-09-05 17:32:40.752826",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Item",

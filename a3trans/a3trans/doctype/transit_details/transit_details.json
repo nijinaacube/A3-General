@@ -6,20 +6,21 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "location_details_section",
   "order_no",
   "transit_type",
-  "location_type",
-  "column_break_vtuj2",
+  "column_break_wye28",
   "warehouse",
   "city",
   "point_of_contact_section",
   "name1",
   "contact",
   "email",
+  "column_break_pp1jg",
   "address",
   "address_line1",
   "address_line2",
-  "column_break_pp1jg",
+  "column_break_xqpe6",
   "latitude",
   "longitude",
   "location",
@@ -131,14 +132,6 @@
    "options": "\nPickup\nDropoff"
   },
   {
-   "fieldname": "location_type",
-   "fieldtype": "Select",
-   "in_list_view": 1,
-   "label": "Location Type",
-   "options": "\nWarehouse\nCity"
-  },
-  {
-   "depends_on": "eval:doc.location_type==\"Warehouse\"",
    "fieldname": "warehouse",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -149,10 +142,6 @@
    "fieldname": "point_of_contact_section",
    "fieldtype": "Section Break",
    "label": "Point of Contact"
-  },
-  {
-   "fieldname": "column_break_vtuj2",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "column_break_pp1jg",
@@ -171,12 +160,25 @@
    "fieldtype": "Check",
    "in_list_view": 1,
    "label": "Labour Required"
+  },
+  {
+   "fieldname": "column_break_xqpe6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_wye28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "location_details_section",
+   "fieldtype": "Section Break",
+   "label": "Location Details"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-05 15:18:50.069790",
+ "modified": "2023-09-05 18:46:51.494256",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Details",

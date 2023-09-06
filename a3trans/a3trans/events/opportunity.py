@@ -148,26 +148,26 @@ def after_insert(doc,method):
 			if doc.booking_type == "Warehouse":
 			
 				for war in doc.warehouse_space_details:
-					for itm in doc.shipment_details:
+					for itm in doc.warehouse_stock_items:
 						if war.warehouse:
 							warehouses = frappe.get_doc("Warehouse", war.warehouse)
-							warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"required_space":war.required_space,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"status":"Pending"})		
+							warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"status":"Pending"})		
 							warehouses.save()
 
-						if doc.party_name:
-							customer=frappe.get_doc("Customer",doc.party_name)
-							print(customer)
-							fromdate=frappe.utils.nowdate()
-							dur=int(war.duration)
-							todate=add_to_date(fromdate,days=dur,as_string=True)	
-							table_len=len(customer.customer_warehouse_details)                            
-							if table_len ==0:                                
-								customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
-							else:                                
-								for warehouses_det in customer.customer_warehouse_details:                                    
-									if  war.warehouse not in warehouses_det.warehouse:                                        
-										customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
-							customer.save()	
+						# if doc.party_name:
+						# 	customer=frappe.get_doc("Customer",doc.party_name)
+						# 	print(customer)
+						# 	fromdate=frappe.utils.nowdate()
+						# 	dur=int(war.duration)
+						# 	todate=add_to_date(fromdate,days=dur,as_string=True)	
+						# 	table_len=len(customer.customer_warehouse_details)                            
+						# 	if table_len ==0:                                
+						# 		customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
+						# 	else:                                
+						# 		for warehouses_det in customer.customer_warehouse_details:                                    
+						# 			if  war.warehouse not in warehouses_det.warehouse:                                        
+						# 				customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
+						# 	customer.save()	
 							
 						
 			
