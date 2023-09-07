@@ -1,6 +1,9 @@
 import frappe
 from datetime import date
-
+from datetime import date
+from datetime import datetime
+import calendar
+from functools import reduce
 from frappe.utils import add_to_date
 def after_insert(doc,method):
 	if doc.opportunity_from=="Customer":
@@ -13,10 +16,13 @@ def after_insert(doc,method):
 			sales_order.booking_id=doc.name
 			sales_order.booking_type=doc.booking_type
 			sales_order.booking_status="New"
-			sales_order.delivery_date = date.today()
-			if doc.booking_type=="Vehicle" or doc.booking_type=="Warehouse":
+			sales_order.delivery_date = frappe.utils.nowdate()
+			if doc.booking_type=="Vehicle"  :
 				for shipment in doc.shipment_details:
 					sales_order.append("items",{"item_code":shipment.item,"qty":1,"rate":doc.payment_amount})
+			if doc.booking_type=="Warehouse":
+				for itm in doc.warehouse_stock_items:
+					sales_order.append("items",{"item_code":itm.item,"qty":1,"rate":doc.payment_amount})
 			if doc.booking_type=="Diesel":
 				
 				sales_order.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
@@ -34,10 +40,16 @@ def after_insert(doc,method):
 			sales_invoice.order_id=doc.name
 			sales_invoice.booking_type=doc.booking_type
 			sales_invoice.order_status="New"
-			sales_invoice.due_date=date.today()
-			if doc.booking_type=="Vehicle" or doc.booking_type=="Warehouse":
+			sales_invoice.due_date=frappe.utils.nowdate()
+			if doc.booking_type=="Vehicle":
 				for shipment in doc.shipment_details:
 					sales_invoice.append("items",{"item_code":shipment.item,"qty":1,"rate":doc.payment_amount})
+			if doc.booking_type=="Warehouse":
+				for itm in doc.warehouse_stock_items:
+					print(itm.item)
+					sales_invoice.append("items",{"item_code":itm.item,"qty":1,"rate":doc.payment_amount})
+					
+			
 			if doc.booking_type=="Diesel":
 				
 				sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
@@ -45,7 +57,7 @@ def after_insert(doc,method):
 				for packing in doc.packing_items:
 					sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
 		
-			sales_invoice.save()
+			sales_invoice.insert()
 			sales_invoice.submit()
 			doc.invoice_id = sales_invoice.name
 
@@ -66,7 +78,7 @@ def after_insert(doc,method):
 				payment.paid_from_account_currency=company.default_currency
 				payment.payment_type="Receive"
 				payment.mode_of_payment=doc.mode_of_payment
-				current_date=date.today()			
+				current_date=frappe.utils.nowdate()			
 				payment.reference_date=current_date
 				payment.total_allocated_amount=doc.payment_amount
 				payment.paid_amount=doc.payment_amount
@@ -151,7 +163,7 @@ def after_insert(doc,method):
 					for itm in doc.warehouse_stock_items:
 						if war.warehouse:
 							warehouses = frappe.get_doc("Warehouse", war.warehouse)
-							warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"status":"Pending"})		
+							warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"zone":war.zone,"status":"Pending"})		
 							warehouses.save()
 
 						# if doc.party_name:
@@ -180,25 +192,47 @@ def after_insert(doc,method):
 
 #API
 			
-@frappe.whitelist()
-def get_addresses(doc,type):
-	print(doc)
-	data=[]
+# @frappe.whitelist()
+# def get_addresses(doc,type):
+# 	print(doc)
+	
 	linked_addresses = frappe.get_all('Dynamic Link', filters={
 					'link_doctype': 'Customer',
 					'link_name': doc,
 					'parenttype': 'Address'
 				}, fields=['parent'])
 	addresses = [frappe.get_doc('Address', address.parent) for address in linked_addresses]
-	data.append(addresses)
+	
+
+# 	return addresses 
 	# if type=="Warehouse":
 	# 	customer=frappe.get_doc("Customer",doc)
-	# 	if customer.customer_warehouse_details:
-	# 		for details in customer.customer_warehouse_details:
-	# 			data.append(details)
+	# 	if frappe.db.exists("Warehouse", {"customer": doc}):
+	# 		details = frappe.get_list("Warehouse", fields=["name"], filters={"customer": doc})
+	# 		data.append(details)
+@frappe.whitelist()
+def fetch_address(address):
+	print(address)
+	add=frappe.get_doc("Address",address)
+	data={}
+	if add.address_title:
+		data["title"]=add.address_title
+	if add.city:
+		data["city"]= add.city
+	if add.address_line1:
+		data["address1"]=add.address_line1
+	if add.address_line2:
+		data["address2"]=add.address_line2
 
-	# print(data)
-	return data 
+	if add.latitude:
+		data["lat"]=add.latitude
+	if add.longitude:
+		data["lon"]=add.longitude
+	if add.phone:
+		data["phone"]=add.phone
+	return data
+
+
 @frappe.whitelist()
 def get_sender_data(mobile_number):
 	print(mobile_number)
@@ -210,24 +244,141 @@ def get_sender_data(mobile_number):
 
 @frappe.whitelist()
 def get_warehouse(doc):
-    if frappe.db.exists("Warehouse", {"customer": doc}):
-        warehouses = frappe.get_list("Warehouse", fields=["name"], filters={"customer": doc})
-        return [d.name for d in warehouses]
-    else:
-        return []
+
+	if frappe.db.exists("Warehouse", {"customer": doc}):
+		warehouses = frappe.get_list("Warehouse", fields=["name"], filters={"customer": doc})
+		return [d.name for d in warehouses]
+	else:
+		return []
 
 		
 
+@frappe.whitelist()
+def fetch_warehouse(warehouse):
+	print(warehouse)
+	data={}
+	warehouses=frappe.get_doc("Warehouse",warehouse)
+	if warehouses.city:
+		data["city"]= warehouses.city
+	if warehouses.address_line_1:
+		data["address1"]=warehouses.address_line_1
+	if warehouses.address_line_2:
+		data["address2"]=warehouses.address_line_2
+
+	if warehouses.latitude:
+		data["lat"]=warehouses.latitude
+	if warehouses.longitude:
+		data["lon"]=warehouses.longitude
+	if warehouses.phone_no:
+		data["phone"]=warehouses.phone_no
+	return data
+
+@frappe.whitelist()
+def get_default_address(doc):
+	# Fetch linked addresses
+	linked_addresses = frappe.get_all('Dynamic Link', filters={
+		'link_doctype': 'Customer',
+		'link_name': doc,
+		'parenttype': 'Address'
+	}, fields=['parent'])
+
+	# Fetch Address docs
+	addresses = [frappe.get_doc('Address', address.parent) for address in linked_addresses]
+
+	# Find default address
+	default_address = None
+	for address in addresses:
+		if address.is_default == 1:
+			default_address = address
+			break
+	print(default_address)
+	if default_address != None:
+	
+		data={}
+		if default_address.name:
+			data["name"]=default_address.name
+		if default_address.address_title:
+			data["title"]=default_address.address_title
+		if default_address.city:
+			data["city"]= default_address.city
+		if default_address.address_line1:
+			data["address1"]=default_address.address_line1
+		if default_address.address_line2:
+			data["address2"]=default_address.address_line2
+
+		if default_address.latitude:
+			data["lat"]=default_address.latitude
+		if default_address.longitude:
+			data["lon"]=default_address.longitude
+		if default_address.phone:
+			data["phone"]=default_address.phone
+		return data
 
 
 
 
 
+from frappe import whitelist, get_all, get_doc
+
+@frappe.whitelist()
+def get_addresses(doc):
+	# Fetch linked addresses
+	linked_addresses = get_all('Dynamic Link', filters={
+		'link_doctype': 'Customer',
+		'link_name': doc,
+		'parenttype': 'Address'
+	}, fields=['parent'])
+
+	# You may only need names of the addresses for the filter
+	address_names = [address.parent for address in linked_addresses]
+	return address_names
 
 
-				
+@frappe.whitelist()
+def get_end_of_month(current_date_str):
+   data={}
+   current_date = datetime.strptime(current_date_str, "%Y-%m-%d")
 
 
+   # Extract year and month from the datetime object
+   year = current_date.year
+   month = current_date.month
+
+
+   # Calculate the last day of the month
+   _, last_day = calendar.monthrange(year, month)
+
+
+   # Create a new date object for the end of the month
+   end_of_month = current_date.replace(day=last_day)
+   # Convert the end_of_month back to a string if needed
+   end_of_month_str = end_of_month.strftime("%Y-%m-%d")
+   data["end_month"]=end_of_month_str
+   days_difference = (end_of_month - current_date).days
+   data["difference"]=days_difference
+   print(end_of_month_str,days_difference)
+   return data
+@frappe.whitelist()
+def calculate_charges(selected_item,no_of_days):
+	no_of_days=float(no_of_days)
+	print(selected_item,no_of_days)
+	data={}
+	if frappe.db.exists("Item Price",{ "item_code":selected_item}):
+		item_price = frappe.get_doc("Item Price", {"item_code":selected_item})
+		if item_price.price_list_rate:
+			total_amount=item_price.price_list_rate*no_of_days
+			data["total_amount"]=total_amount
+			return data
+	else:
+		frappe.msgprint("There is no price added for the selected item")
+	  
+@frappe.whitelist()
+def get_warehouse(doc):
+	if frappe.db.exists("Warehouse", {"customer": doc}):
+		warehouses = frappe.get_list("Warehouse", fields=["name"], filters={"customer": doc})
+		return [d.name for d in warehouses]
+	else:
+		return []
 
 
 				

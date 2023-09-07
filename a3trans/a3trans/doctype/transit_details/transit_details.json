@@ -39,7 +39,6 @@
    "label": "Name"
   },
   {
-   "depends_on": "eval:doc.is_default==0",
    "fieldname": "address",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -47,12 +46,11 @@
    "options": "Address"
   },
   {
-   "fetch_from": "warehouse.mobile_no",
-   "fetch_if_empty": 1,
    "fieldname": "contact",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Contact",
+   "mandatory_depends_on": "eval:doc.booking_type==\"Vehicle\" || doc.transit_required==1",
    "options": "Phone"
   },
   {
@@ -76,37 +74,30 @@
    "label": "Tax ID"
   },
   {
-   "fetch_from": "warehouse.address_line_2",
    "fieldname": "address_line2",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Address Line2"
   },
   {
-   "fetch_from": "warehouse.city",
    "fieldname": "city",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "City"
   },
   {
-   "fetch_from": "warehouse.latitude",
-   "fetch_if_empty": 1,
    "fieldname": "latitude",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Latitude"
   },
   {
-   "fetch_from": "warehouse.longitude",
-   "fetch_if_empty": 1,
    "fieldname": "longitude",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Longitude"
   },
   {
-   "fetch_from": "warehouse.address_line_1",
    "fieldname": "address_line1",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -181,7 +172,6 @@
   },
   {
    "default": "1",
-   "depends_on": "eval:doc.warehouse !==\" \"",
    "fieldname": "is_default",
    "fieldtype": "Check",
    "in_list_view": 1,
@@ -191,7 +181,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-06 15:36:29.432445",
+ "modified": "2023-09-07 11:55:31.727639",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Details",
