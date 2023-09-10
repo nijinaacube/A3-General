@@ -10,7 +10,10 @@
   "item",
   "quantity",
   "area",
-  "uom"
+  "uom",
+  "column_break_ht1em",
+  "handling_required",
+  "labour_required"
  ],
  "fields": [
   {
@@ -18,7 +21,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Movement Type",
-   "options": "\nStock-IN\nStock-OUT"
+   "options": "\nStock IN\nStock OUT"
   },
   {
    "fieldname": "item",
@@ -45,12 +48,30 @@
    "fieldtype": "Link",
    "label": "UOM",
    "options": "UOM"
+  },
+  {
+   "fieldname": "column_break_ht1em",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "handling_required",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Handling Required"
+  },
+  {
+   "default": "0",
+   "fieldname": "labour_required",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Labour Required"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-05 19:49:45.238715",
+ "modified": "2023-09-08 13:20:10.169525",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Stock Items",

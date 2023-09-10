@@ -17,12 +17,10 @@ def after_insert(doc,method):
 			sales_order.booking_type=doc.booking_type
 			sales_order.booking_status="New"
 			sales_order.delivery_date = frappe.utils.nowdate()
-			if doc.booking_type=="Vehicle"  :
-				for shipment in doc.shipment_details:
-					sales_order.append("items",{"item_code":shipment.item,"qty":1,"rate":doc.payment_amount})
-			if doc.booking_type=="Warehouse":
-				for itm in doc.warehouse_stock_items:
-					sales_order.append("items",{"item_code":itm.item,"qty":1,"rate":doc.payment_amount})
+			if doc.booking_type=="Vehicle" or doc.booking_type=="Warehouse" :
+				for shipment in doc.opportunity_line_item:
+					sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+		
 			if doc.booking_type=="Diesel":
 				
 				sales_order.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
@@ -41,14 +39,9 @@ def after_insert(doc,method):
 			sales_invoice.booking_type=doc.booking_type
 			sales_invoice.order_status="New"
 			sales_invoice.due_date=frappe.utils.nowdate()
-			if doc.booking_type=="Vehicle":
-				for shipment in doc.shipment_details:
-					sales_invoice.append("items",{"item_code":shipment.item,"qty":1,"rate":doc.payment_amount})
-			if doc.booking_type=="Warehouse":
-				for itm in doc.warehouse_stock_items:
-					print(itm.item)
-					sales_invoice.append("items",{"item_code":itm.item,"qty":1,"rate":doc.payment_amount})
-					
+			if doc.booking_type=="Vehicle" or doc.booking_type=="Warehouse" :
+				for shipment in doc.opportunity_line_item:
+					sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
 			
 			if doc.booking_type=="Diesel":
 				
@@ -382,5 +375,27 @@ def get_warehouse(doc):
 
 
 				
+	  
+@frappe.whitelist()
+def get_warehouse_data(doc):
+	war=frappe.get_doc("Warehouse",doc)
+	print(war)
+	data={}
+	if war.warehouse_floor:
+		data["floor"]=war.warehouse_floor
+	if war.zone:
+		data["zone"]=war.zone
+	if war.warehouse_shelf:
+		data["shelf"]=war.warehouse_shelf
+	if war.warehouse_rack:
+		data["rack"]=war.warehouse_rack
+	return data
 
-			
+
+@frappe.whitelist()
+def fetch_charges_price(charges):
+	print(charges)
+	if frappe.db.exists("Item Price",{"item_code":charges}):
+		itm=frappe.get_doc("Item Price",{"item_code":charges})
+		print(itm)
+		return itm.as_dict()

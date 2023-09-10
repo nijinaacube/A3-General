@@ -16,13 +16,15 @@
    "fieldname": "warehouse",
    "fieldtype": "Link",
    "label": "Warehouse",
-   "options": "Warehouse"
+   "options": "Warehouse",
+   "reqd": 1
   },
   {
    "fieldname": "floor",
    "fieldtype": "Link",
    "label": "Floor",
-   "options": "Warehouse Floor"
+   "options": "Warehouse Floor",
+   "reqd": 1
   },
   {
    "fieldname": "zone",
@@ -34,7 +36,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-05 17:28:26.082223",
+ "modified": "2023-09-07 17:02:20.888972",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Zone",

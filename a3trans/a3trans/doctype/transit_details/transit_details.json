@@ -18,6 +18,7 @@
   "email",
   "column_break_pp1jg",
   "is_default",
+  "make_default",
   "address",
   "address_line1",
   "address_line2",
@@ -39,6 +40,7 @@
    "label": "Name"
   },
   {
+   "depends_on": "eval:doc.warehouse == \"\" || doc.is_default==0",
    "fieldname": "address",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -171,17 +173,26 @@
    "label": "Location Details"
   },
   {
-   "default": "1",
+   "default": "0",
+   "depends_on": "eval:doc.make_default==0",
    "fieldname": "is_default",
    "fieldtype": "Check",
    "in_list_view": 1,
    "label": "Is Default?"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.is_default==0",
+   "fieldname": "make_default",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Make Default"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-07 11:55:31.727639",
+ "modified": "2023-09-08 16:45:22.398013",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Details",

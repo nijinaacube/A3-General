@@ -2,7 +2,35 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Zone', {
-	// refresh: function(frm) {
+	onload: function(frm) {
+        // Filter for 'warehouse' field
+        frm.fields_dict['warehouse'].get_query = function(doc) {
+            return {
+                filters: {
+                    'is_group': 1
+                }
+            };
+        };
 
-	// }
+        // Filter for 'floor_id' field
+        frm.fields_dict['floor'].get_query = function(doc) {
+            if (doc.warehouse) {
+                return {
+                    filters: {
+                        'warehouse': doc.warehouse
+                    }
+                };
+            }
+            // If no warehouse is selected, no floors will be shown
+            return {
+                filters: {
+                    'warehouse': ''
+                }
+            };
+        };
+    },
+    warehouse: function(frm) {
+        // Whenever warehouse is updated, clear the 'floor_id' field
+        frm.set_value('floor', null);
+    }
 });

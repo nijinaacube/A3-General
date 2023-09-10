@@ -7,11 +7,10 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "warehouse",
   "warehouse_shelf",
-  "rack_level",
-  "column_break_nfeij",
-  "rack_capacity",
-  "rack_usage"
+  "column_break_m0xqi",
+  "rack_level"
  ],
  "fields": [
   {
@@ -23,30 +22,27 @@
    "reqd": 1
   },
   {
-   "fieldname": "column_break_nfeij",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "rack_capacity",
-   "fieldtype": "Float",
-   "label": "Rack Capacity"
-  },
-  {
-   "fieldname": "rack_usage",
-   "fieldtype": "Float",
-   "label": "Rack Usage"
-  },
-  {
    "fieldname": "warehouse_shelf",
    "fieldtype": "Link",
    "label": "Warehouse Shelf",
    "options": "Warehouse Shelf",
    "reqd": 1
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "label": "Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_m0xqi",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-05 16:12:41.885655",
+ "modified": "2023-09-07 17:15:51.994338",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Rack",

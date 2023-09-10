@@ -2,7 +2,15 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Warehouse Floor', {
-	// refresh: function(frm) {
-
-	// }
+    onload: function(frm) {
+        frm.fields_dict['warehouse'].get_query = function(doc) {
+           
+                return {
+                    filters: {
+                        'is_group': 1
+                    }
+                };
+            
+        };
+    }
 });

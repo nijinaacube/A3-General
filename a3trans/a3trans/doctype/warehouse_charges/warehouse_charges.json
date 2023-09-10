@@ -39,6 +39,7 @@
    "label": "Area"
   },
   {
+   "default": "Cubic Meter",
    "fieldname": "uom",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -49,7 +50,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-06 09:58:44.342010",
+ "modified": "2023-09-08 11:04:20.868513",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Charges",

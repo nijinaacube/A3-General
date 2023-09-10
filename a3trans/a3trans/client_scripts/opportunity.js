@@ -2,8 +2,11 @@
 
 
 frappe.ui.form.on('Opportunity', {
+
+    
     party_name: function(frm) {
         if (frm.doc.party_name){
+           
             frappe.call({
                 method: "a3trans.a3trans.events.opportunity.get_warehouse",
                 args: {
@@ -12,8 +15,18 @@ frappe.ui.form.on('Opportunity', {
                 callback: function(r) {
                     if (r.message) {
                         console.log("Callback received:", r.message);
+                        
 
-
+                        if (r.message && r.message.length > 0) {
+                            if (frm.doc.booking_type=="Warehouse"){
+                            const target_row = frm.add_child('warehouse_space_details');
+                            target_row.warehouse = r.message[0];
+                            frm.refresh_field('warehouse_space_details');
+                            
+                            // Trigger the warehouse field to execute its associated logic
+                            frm.script_manager.trigger('warehouse', target_row.doctype, target_row.name);
+                        }
+                    }
                         frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
                             if (r.message.length > 0) {
                             return {
@@ -22,7 +35,7 @@ frappe.ui.form.on('Opportunity', {
                                 }
                             };  
                              }
-                        
+
                             else{
 
                                 return {
@@ -34,117 +47,7 @@ frappe.ui.form.on('Opportunity', {
                        
                     }
                     frm.fields_dict['warehouse_space_details'].grid.refresh(); 
-                    frm.fields_dict['warehouse_space_details'].grid.get_field('floor_id').get_query = function(doc, cdt, cdn) {
-                        var selectedWarehouse = locals[cdt][cdn].warehouse;
-                        if (r.message.length > 0)
-                        {
-                        return {
-                            filters: {
-                                "warehouse": ["in", selectedWarehouse]
-                            }
-                        };
-                       
-                        }
                    
-                        else{
- 
- 
- 
- 
-                        return {
-                            filters: {
-                                "name": ["in", ""]
-                            }
-                        };
-                        }
-                           
-                        }
-                        frm.fields_dict['warehouse_space_details'].grid.refresh();
- 
- 
-                    frm.fields_dict['warehouse_space_details'].grid.get_field('zone').get_query = function(doc, cdt, cdn) {
-                        var selectedfloor = locals[cdt][cdn].floor_id;
-                            if (r.message.length > 0) {
-                            return {
-                                filters: {
-                                    "floor": ["in", selectedfloor]
-                                }
-                            };
-                           
-                        }
-                      
-                        else{
-     
-     
-     
-     
-                        return {
-                            filters: {
-                                "floor": ["in", ""]
-                            }
-                        };
-                        }
-                           
-                        }
-                        frm.fields_dict['warehouse_space_details'].grid.refresh();
-     
-     
-                        frm.fields_dict['warehouse_space_details'].grid.get_field('shelf_id').get_query = function(doc, cdt, cdn) {
-                            var selectedfloor = locals[cdt][cdn].floor_id;
-                                if (r.message.length > 0) {
-                                return {
-                                    filters: {
-                                        "floor_id": ["in", selectedfloor]
-                                    }
-                                };
-                               
-                            }
-                           
-                        else{
-     
-     
-     
-     
-                        return {
-                            filters: {
-                                "floor_id": ["in", ""]
-                            }
-                        };
-                        }
-                           
-                        }
-                        frm.fields_dict['warehouse_space_details'].grid.refresh();
-
-
-                        frm.fields_dict['warehouse_space_details'].grid.get_field('rack_id').get_query = function(doc, cdt, cdn) {
-                            var selectedshelf = locals[cdt][cdn].shelf_id;
-                                if (r.message.length > 0) {
-                                return {
-                                    filters: {
-                                        "warehouse_shelf": ["in", selectedshelf]
-                                    }
-                                };
-                               
-                            }
-                           
-                        else{
-     
-     
-     
-     
-                        return {
-                            filters: {
-                                "warehouse_shelf": ["in", ""]
-                            }
-                        };
-                        }
-                           
-                        }
-                        frm.fields_dict['warehouse_space_details'].grid.refresh();
-          
-
-
-
                         frm.fields_dict['receiver_information'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
                             if (r.message.length > 0) {
                             return {
@@ -170,7 +73,8 @@ frappe.ui.form.on('Opportunity', {
               
             }
             });
-
+        
+if (frm.doc.booking_type=="Vehicle"){
             frappe.call({
                 method: "a3trans.a3trans.events.opportunity.get_default_address",
                 args: {
@@ -189,6 +93,7 @@ frappe.ui.form.on('Opportunity', {
                     target_row.longitude=r.message["lon"]
                     target_row.contact=r.message["phone"]
                     target_row.name1=r.message["title"]
+                    target_row.is_default=1
                     target_row.order_no=1
                 
 					frm.refresh_field('receiver_information');
@@ -199,7 +104,7 @@ frappe.ui.form.on('Opportunity', {
                 }
             })
 
-
+        }
 
 
             frappe.call({
@@ -293,25 +198,25 @@ frappe.ui.form.on('Transit Details', {
 
 
     
-}
+                }
                 })
             }
 
-            if (child.warehouse==""){
-                                        frappe.model.set_value(cdt, cdn, 'city',"");                    
-                                        frm.refresh_field('city');    
-                                        frappe.model.set_value(cdt, cdn, 'address_line1',"");                    
-                                        frm.refresh_field('address_line1');    
-                                        frappe.model.set_value(cdt, cdn, 'address_line2',"");                    
-                                        frm.refresh_field('address_line1'); 
-                                        frappe.model.set_value(cdt, cdn, 'latitude',"");                    
-                                        frm.refresh_field('latitude');                 
-                                        frappe.model.set_value(cdt, cdn, 'longitude',"");                    
-                                        frm.refresh_field('longitude'); 
-                                        frappe.model.set_value(cdt, cdn, 'contact',"");                    
-                                        frm.refresh_field('contact'); 
+            // if (child.warehouse==""){
+            //                             frappe.model.set_value(cdt, cdn, 'city',"");                    
+            //                             frm.refresh_field('city');    
+            //                             frappe.model.set_value(cdt, cdn, 'address_line1',"");                    
+            //                             frm.refresh_field('address_line1');    
+            //                             frappe.model.set_value(cdt, cdn, 'address_line2',"");                    
+            //                             frm.refresh_field('address_line1'); 
+            //                             frappe.model.set_value(cdt, cdn, 'latitude',"");                    
+            //                             frm.refresh_field('latitude');                 
+            //                             frappe.model.set_value(cdt, cdn, 'longitude',"");                    
+            //                             frm.refresh_field('longitude'); 
+            //                             frappe.model.set_value(cdt, cdn, 'contact',"");                    
+            //                             frm.refresh_field('contact'); 
                                           
-            }
+            // }
            
             },
 
@@ -350,7 +255,28 @@ address:function(frm, cdt, cdn) {
             }
 
         },
+        
+ 
 
+        labour_required: function(frm, cdt, cdn) {
+            const child = locals[cdt][cdn];
+            if (child.labour_required == 1) {
+                addCharge(frm, child, "Labour Charges");
+            } else {
+                removeSpecificCharge(frm, child.name, "Labour Charges");
+            }
+            frm.refresh_field('transit_charges');
+        },
+    
+        handling_required: function(frm, cdt, cdn) {
+            const child = locals[cdt][cdn];
+            if (child.handling_required == 1) {
+                addCharge(frm, child, "Manual Handling Charges");
+            } else {
+                removeSpecificCharge(frm, child.name, "Manual Handling Charges");
+            }
+            frm.refresh_field('transit_charges');
+        },
 
 
 
@@ -429,6 +355,9 @@ is_default:function(frm,cdt, cdn) {
     refresh: function(frm) {
         update_order_no(frm);
     },
+    transit_type:function(frm) {
+        update_order_no(frm);
+    },
     receiver_information_add: function(frm, cdt, cdn) {
         update_order_no(frm);
     },
@@ -441,7 +370,29 @@ is_default:function(frm,cdt, cdn) {
 
 
 });
+// Helper function to add a charge
+function addCharge(frm, child, chargeName) {
+    // Check if the row is already there with the same reference and specific charge
+    if (!findSpecificChargeRow(frm, child.name, chargeName)) {
+        const target_row = frm.add_child('transit_charges');
+        target_row.charges = chargeName;
+        target_row.source_name = child.name; // Use this as a unique reference
+        frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+    }
+}
 
+// Helper function to find the specific charge row by source row's name/reference and specific charge
+function findSpecificChargeRow(frm, sourceName, chargeName) {
+    return frm.doc.transit_charges && frm.doc.transit_charges.find(row => row.source_name === sourceName && row.charges === chargeName);
+}
+
+// Helper function to remove a specific charge row based on source row's name/reference and specific charge
+function removeSpecificCharge(frm, sourceName, chargeName) {
+    const targetRow = findSpecificChargeRow(frm, sourceName, chargeName);
+    if (targetRow) {
+        frm.get_field('transit_charges').grid.grid_rows_by_docname[targetRow.name].remove();
+    }
+}
 function update_order_no(frm) {
     var index = 1;
     $.each(frm.doc.receiver_information || [], function(i, row) {
@@ -531,11 +482,40 @@ frappe.ui.form.on('Opportunity', {
 
 frappe.ui.form.on('Warehouse Space Details', {
     warehouse: function(frm, cdt, cdn) {
-        var child = locals[cdt][cdn];
+               
+                var child = locals[cdt][cdn]
+        
+                // Fetch additional details using the warehouse value
+                if (child.warehouse) {
+                    frappe.call({
+                        method: "a3trans.a3trans.events.opportunity.get_warehouse_data",
+                        args: {
+                          
+                            "doc": child.warehouse
+                        },
+                        callback: function(r) {
+                            if (r.message) {
+                                console.log(r.message)
+                                frappe.model.set_value(cdt, cdn, "floor_id", r.message["floor"]);
+                                frm.refresh_field('floor_id');
+                                frappe.model.set_value(cdt, cdn, 'zone',r.message["zone"]);
+                                frm.refresh_field('zone');
+                                frappe.model.set_value(cdt, cdn, 'shelf_id',r.message["shelf"]);
+                                frm.refresh_field('shelf_id');
+                                frappe.model.set_value(cdt, cdn, 'rack_id',r.message["rack"]);
+                                frm.refresh_field('rack_id');
+                               
+                            }
+                        }
+                    });
+                }
+          
+     
         if (!child.date_from) {
             // Set the current date as the default value for date_from
             frappe.model.set_value(cdt, cdn, 'date_from', frappe.datetime.now_date());
             frm.refresh_field('date_from');
+            
         }
         if (child.warehouse==""){
             frappe.model.set_value(cdt, cdn, 'floor_id',"");
@@ -546,12 +526,6 @@ frappe.ui.form.on('Warehouse Space Details', {
             frm.refresh_field('shelf_id');
             frappe.model.set_value(cdt, cdn, 'rack_id',"");
             frm.refresh_field('rack_id');
- 
- 
- 
- 
- 
- 
  
  
         }
@@ -574,17 +548,26 @@ frappe.ui.form.on('Warehouse Space Details', {
                     frm.refresh_field('date_to');
                     frappe.model.set_value(cdt, cdn, 'no_of_days',response.message["difference"]);
                     frm.refresh_field('no_of_days');
+                    frappe.model.set_value(cdt, cdn, 'rental_charges',"Warehouse Space Rent");
+                    frm.refresh_field('rental_charges');
                 }
             });
         }
     },
     rental_charges: function(frm, cdt, cdn) {
         var child = locals[cdt][cdn];
+        if (child.no_of_days){
         var no_of_days = child.no_of_days;
+        }
         var selected_item=child.rental_charges
         console.log(child.rental_charges)
-         // Get the value of no_of_days
-        // Now, you can use 'no_of_days' in your Frappe call as an argument
+        const target_row=frm.add_child('warehouse_charges')
+		target_row.charges=selected_item
+        frm.refresh_field('warehouse_charges');
+        frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+       
+        
+        
         frappe.call({
             method: "a3trans.a3trans.events.opportunity.calculate_charges",
             args: {
@@ -594,9 +577,176 @@ frappe.ui.form.on('Warehouse Space Details', {
             callback: function(response) {
                 frappe.model.set_value(cdt, cdn, 'rental_cost',response.message["total_amount"]);
                     frm.refresh_field('rental_cost');
-                // Handle the response of your Frappe call here
+                
             }
         });
+       
     }
  });
- 
+
+
+ frappe.ui.form.on('Transit Charges', {
+    charges: function(frm, cdt, cdn) {
+        var child = locals[cdt][cdn];
+        var char = child.charges;
+        console.log(child.charges);
+
+        if (child.charges) {
+            frappe.call({
+                method: "a3trans.a3trans.events.opportunity.fetch_charges_price",
+                args: {
+                    charges: char
+                },
+                callback: function(response) {
+                    console.log(response.message);
+                    frappe.model.set_value(cdt, cdn, 'cost',response.message["price_list_rate"]);
+                    frm.refresh_field('cost');
+                    frappe.model.set_value(cdt, cdn, 'quantity',1);
+                    frm.refresh_field('quantity');
+                    
+                }
+            });
+        }
+    }
+});
+frappe.ui.form.on('Warehouse Stock Items', {
+    
+    labour_required: function(frm, cdt, cdn) {
+        var child = locals[cdt][cdn];
+        if (child.labour_required == 1) {
+            handleCharges(frm, child, "Labour Charges", 'add');
+        } else if (child.labour_required == 0) {
+            handleCharges(frm, child, "Labour Charges", 'remove');
+        }
+        frm.refresh_field('warehouse_charges');
+    },
+    
+    handling_required: function(frm, cdt, cdn) {
+        var child = locals[cdt][cdn];
+        if (child.handling_required == 1) {
+            handleCharges(frm, child, "Manual Handling Charges", 'add');
+        } else if (child.handling_required == 0) {
+            handleCharges(frm, child, "Manual Handling Charges", 'remove');
+        }
+        frm.refresh_field('warehouse_charges');
+    },
+
+    
+
+    movement_type: function(frm, cdt, cdn) {
+        var child = locals[cdt][cdn];
+        var order_no_sequence = (frm.doc.receiver_information && frm.doc.receiver_information.length > 0) ? frm.doc.receiver_information.length + 1 : 1;
+        
+        if (child.movement_type) {
+            $.each(frm.doc.warehouse_space_details, function(i, row) {
+            var target_row;
+
+            if (child.movement_type == "Stock IN") {
+                target_row = frm.add_child('receiver_information');
+                target_row.transit_type = "Dropoff";
+                
+                target_row.warehouse = row.warehouse;
+                target_row.order_no = order_no_sequence++;
+                target_row.warehouse_charge_ref = child.name;// reference to the unique name of the warehouse_space_details row
+                frm.script_manager.trigger('warehouse', target_row.doctype, target_row.name);
+            } else if (child.movement_type == "Stock OUT") {
+                target_row = frm.add_child('receiver_information');
+                target_row.transit_type = "Pickup";
+                target_row.warehouse = row.warehouse;
+                target_row.order_no = order_no_sequence++;
+                target_row.warehouse_charge_ref = child.name;  // reference to the unique name of the warehouse_space_details row
+                frm.script_manager.trigger('warehouse', target_row.doctype, target_row.name);
+            }
+
+            frm.refresh_field("receiver_information");
+        })
+        }
+    },
+    warehouse_stock_items_remove: function(frm, cdt, cdn) {
+        // Filtering matching rows from 'receiver_information'
+        var matching_rows = frm.doc.receiver_information.filter(row => row.warehouse_charge_ref === cdn);
+    
+        // Looping over all matching rows and removing them
+        $.each(matching_rows, function(index, row) {
+            var idx = frm.doc.receiver_information.indexOf(row);
+            if (idx > -1) {
+                frm.doc.receiver_information.splice(idx, 1);
+            }
+        });
+    
+        // Renumbering the order_no and idx for the remaining rows
+        $.each(frm.doc.receiver_information, function(index, row) {
+            row.order_no = index + 1;   // Setting the order_no based on the array index
+            row.idx = index + 1;       // Adjusting the idx property
+        });
+    
+        frm.refresh_field('receiver_information');
+    }
+    
+    
+    
+    
+    
+    
+});
+
+// Helper function to find the corresponding charge row by source row's name and charge type
+function findChargeRowBySourceNameAndCharges(frm, sourceName, chargeType) {
+    return frm.doc.warehouse_charges && frm.doc.warehouse_charges.find(row => row.source_name === sourceName && row.charges === chargeType);
+}
+
+function handleCharges(frm, child, chargeName, action) {
+    if (action === 'add' && !findChargeRowBySourceNameAndCharges(frm, child.name, chargeName)) {
+        const target_row = frm.add_child('warehouse_charges');
+        target_row.charges = chargeName;
+        target_row.source_name = child.name; 
+        frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+    } else if (action === 'remove') {
+        const targetRow = findChargeRowBySourceNameAndCharges(frm, child.name, chargeName);
+        if (targetRow) {
+            frm.get_field('warehouse_charges').grid.grid_rows_by_docname[targetRow.name].remove();
+        }
+    }
+}
+frappe.ui.form.on('Warehouse Charges', {
+    charges: function(frm, cdt, cdn) {
+        var child = locals[cdt][cdn];
+        var char = child.charges;
+        console.log(child.charges);
+
+        if (child.charges) {
+            frappe.call({
+                method: "a3trans.a3trans.events.opportunity.fetch_charges_price",
+                args: {
+                    charges: char
+                },
+                callback: function(response) {
+                    console.log(response.message);
+                    frappe.model.set_value(cdt, cdn, 'cost',response.message["price_list_rate"]);
+                    frm.refresh_field('cost');
+                    frappe.model.set_value(cdt, cdn, 'quantity',1);
+                    frm.refresh_field('quantity');
+                    
+                }
+            });
+        }
+    }
+});
+
+frappe.ui.form.on('Opportunity Line Items', {
+    amount: function(frm,cdt,cdn) {
+            var total_amount = 0;           
+            $.each(frm.doc.opportunity_line_item, function(index, row) {
+                console.log("Row amount:", row.amount);
+                total_amount += row.amount
+            });
+
+         
+            // Set the total_amount to the 'payment_amount' field in the parent doctype
+            frm.set_value('payment_amount', total_amount);
+            frm.refresh_field('payment_amount');  // Refresh the field to reflect the updated value on the UI
+        
+    }
+});
+
+

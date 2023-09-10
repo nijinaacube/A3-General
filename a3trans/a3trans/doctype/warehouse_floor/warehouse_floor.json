@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{warehouse}-{floor_name}-{##}",
+ "autoname": "format:{warehouse}-{floor_name}",
  "creation": "2023-08-22 12:09:46.917078",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -34,7 +34,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-05 19:30:41.835626",
+ "modified": "2023-09-07 16:58:42.017830",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Floor",
