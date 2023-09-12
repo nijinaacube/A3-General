@@ -1,4 +1,38 @@
-
+frappe.ui.form.on('Opportunity', {
+    refresh: function(frm) {
+        if(!frm.is_new() && frm.doc.order_status != "Stock Updated") {
+            if (frm.doc.booking_type=="Warehouse"){
+            // Add a custom button to the form
+           
+            frm.add_custom_button(__("Create Stock Entry"), function() {
+    
+    
+                frappe.call({
+                    method: "a3trans.a3trans.events.opportunity.create_stock_entry",
+                    args:{
+                        "doc": frm.doc.name,
+                      
+                        
+                    },
+    
+                    callback: (r)=>{
+                    
+                        console.log(r.message)
+                        frappe.show_alert({message: __('Stock Entry Created Successfully'), indicator: 'green'});
+                      
+                        
+                
+                    }
+    
+                
+                })
+            
+            })
+        }
+        }
+    }
+    
+});
 
 
 frappe.ui.form.on('Opportunity', {
@@ -136,6 +170,146 @@ if (frm.doc.booking_type=="Vehicle"){
 })
 
 
+
+frappe.ui.form.on('Opportunity', {
+
+    
+    booking_type: function(frm) {
+        if (frm.doc.party_name ){
+           
+            frappe.call({
+                method: "a3trans.a3trans.events.opportunity.get_warehouse",
+                args: {
+                    "doc": frm.doc.party_name,
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        console.log("Callback received:", r.message);
+                        
+
+                        if (r.message && r.message.length > 0) {
+                            if (frm.doc.booking_type=="Warehouse"){
+                            const target_row = frm.add_child('warehouse_space_details');
+                            target_row.warehouse = r.message[0];
+                            frm.refresh_field('warehouse_space_details');
+                            
+                            // Trigger the warehouse field to execute its associated logic
+                            frm.script_manager.trigger('warehouse', target_row.doctype, target_row.name);
+                        }
+                    }
+                        frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
+                            if (r.message.length > 0) {
+                            return {
+                                filters: {
+                                    "name": ["in", r.message]
+                                }
+                            };  
+                             }
+
+                            else{
+
+                                return {
+                                    filters: {
+                                        "name": ["in", ""]
+                                    }
+                                };
+                            }
+                       
+                    }
+                    frm.fields_dict['warehouse_space_details'].grid.refresh(); 
+                   
+                        frm.fields_dict['receiver_information'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
+                            if (r.message.length > 0) {
+                            return {
+                                filters: {
+                                    "name": ["in", r.message]
+                                }
+                            };
+                            
+                        }
+                        
+                  else{
+
+                    return {
+                        filters: {
+                            "name": ["in", ""]
+                        }
+                    };
+                  }
+                       
+                    }
+                    frm.fields_dict['receiver_information'].grid.refresh();
+                }
+              
+            }
+            });
+        
+if (frm.doc.booking_type=="Vehicle"){
+            frappe.call({
+                method: "a3trans.a3trans.events.opportunity.get_default_address",
+                args: {
+                    "doc": frm.doc.party_name,
+                },
+                callback: function(r) {
+                    frm.clear_table("receiver_information")
+                    if (r.message) {
+
+                    const target_row=frm.add_child('receiver_information')
+					target_row.address=r.message["name"]
+                    target_row.city=r.message["city"]
+                    target_row.address_line1=r.message["address1"]
+                    target_row.address_line2=r.message["address2"]
+                    target_row.latitude=r.message["lat"]
+                    target_row.longitude=r.message["lon"]
+                    target_row.contact=r.message["phone"]
+                    target_row.name1=r.message["title"]
+                    target_row.is_default=1
+                    target_row.order_no=1
+                
+					frm.refresh_field('receiver_information');
+                       
+                     
+                    }
+                  
+                }
+            })
+
+        }
+
+
+            frappe.call({
+                method: "a3trans.a3trans.events.opportunity.get_addresses",
+                args: {
+                    "doc": frm.doc.party_name,
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frm.fields_dict['receiver_information'].grid.get_field('address').get_query = function(doc, cdt, cdn) {
+                            return {
+                                filters: {
+                                    "name": ["in", r.message],
+                                    "address_type":"Shipping"
+                                }
+                            };
+                        };
+                    }
+                }
+            });
+            
+
+
+        }
+ 
+
+
+    }
+})
+
+
+
+
+
+
 frappe.ui.form.on('Opportunity', {
 mobile_number: function(frm){
 		
@@ -257,7 +431,6 @@ address:function(frm, cdt, cdn) {
         },
         
  
-
         labour_required: function(frm, cdt, cdn) {
             const child = locals[cdt][cdn];
             if (child.labour_required == 1) {
@@ -408,6 +581,7 @@ frappe.ui.form.on('Opportunity', {
 
     onload: function(frm) {
 
+        
 
         if (frm.doc.booking_type == "Packing and Moving") {
 
@@ -586,6 +760,107 @@ frappe.ui.form.on('Warehouse Space Details', {
 
 
  frappe.ui.form.on('Transit Charges', {
+
+    cost: function(frm, cdt, cdn) {
+        const charges_row = locals[cdt][cdn];
+ 
+ 
+        if (charges_row.charges) {
+            let existing_row = null;
+            console.log(charges_row,"tttttttttt")
+            if (frm.doc.opportunity_line_item && Array.isArray(frm.doc.opportunity_line_item)) {
+                existing_row = frm.doc.opportunity_line_item.find(row => row.item && row.item === charges_row.charges);
+            }
+ 
+ 
+            if (existing_row) {
+                // If item exists, update its quantity and cost
+                existing_row.quantity += charges_row.quantity;
+                existing_row.amount += charges_row.cost;
+                // Update the average rate
+                existing_row.average_rate = existing_row.amount / existing_row.quantity;
+            } else {
+                // If item doesn't exist, add it as a new row
+                const target_row = frm.add_child('opportunity_line_item');
+                target_row.item = charges_row.charges;
+                target_row.quantity = charges_row.quantity;
+                target_row.amount = charges_row.cost;
+                target_row.average_rate = target_row.amount / target_row.quantity; // Calculate average rate for the new row
+                target_row.transit_charge_ref = charges_row.name;  // Storing reference
+            }
+            frm.refresh_field('opportunity_line_item');
+            // calculateTotalAmount(frm);
+        }
+    },
+    transit_charges_remove: function(frm, cdt, cdn) {
+        const groupedData = {};
+ 
+ 
+        // Group by items in warehouse_charges
+        $.each(frm.doc.transit_charges, function(_, charge) {
+            if (charge.charges) {
+                if (!groupedData[charge.charges]) {
+                    groupedData[charge.charges] = {
+                        quantity: 0,
+                        amount: 0,
+                        average_rate: 0,
+                        transit_charge_refs: []
+                    };
+                }
+ 
+ 
+                groupedData[charge.charges].quantity += charge.quantity;
+                groupedData[charge.charges].amount += charge.cost;
+                groupedData[charge.charges].transit_charge_refs.push(charge.name);
+            }
+        });
+ 
+ 
+        // Update or Add rows in opportunity_line_item
+        for (let item in groupedData) {
+            const existing_row = frm.doc.opportunity_line_item.find(row => row.item && row.item === item);
+           
+ 
+ 
+            if (existing_row) {
+                existing_row.quantity = groupedData[item].quantity;
+                existing_row.amount = groupedData[item].amount;
+                existing_row.average_rate = existing_row.amount / existing_row.quantity;
+            } else {
+                const target_row = frm.add_child('opportunity_line_item');
+                target_row.item = item;
+                target_row.quantity = groupedData[item].quantity;
+                target_row.amount = groupedData[item].amount;
+                target_row.average_rate = target_row.amount / target_row.quantity;
+                target_row.transit_charge_ref = JSON.stringify(groupedData[item].transit_charge_refs);
+                frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
+            }
+        }
+ 
+ 
+        // Delete rows from opportunity_line_item that are not present in warehouse_charges
+        for (let i = frm.doc.opportunity_line_item.length - 1; i >= 0; i--) {
+            const row = frm.doc.opportunity_line_item[i];
+            if (!groupedData[row.item]) {
+                console.log("qqqqqqqqqqqqqqqqqqqqqqqqq")
+                frm.get_field('opportunity_line_item').grid.grid_rows[i].remove();
+            }
+            // calculateTotalAmount(frm);
+        }
+ 
+ 
+        frm.refresh_field('opportunity_line_item');
+        // calculateTotalAmount(frm);
+    },
+   
+
+   
+
+
+
+
+
+
     charges: function(frm, cdt, cdn) {
         var child = locals[cdt][cdn];
         var char = child.charges;
@@ -609,6 +884,19 @@ frappe.ui.form.on('Warehouse Space Details', {
         }
     }
 });
+// function calculateTotalAmount(frm) {
+//     let totalAmount = 0;
+//     if (frm.doc.opportunity_line_item && Array.isArray(frm.doc.opportunity_line_item)) {
+//         frm.doc.opportunity_line_item.forEach(row => {
+//             totalAmount += row.amount;
+//         });
+//     }
+ 
+ 
+//     // Update the payment_amount field with the totalAmount
+//     frm.set_value('payment_amount', totalAmount);
+//  }
+ 
 frappe.ui.form.on('Warehouse Stock Items', {
     
     labour_required: function(frm, cdt, cdn) {
@@ -632,36 +920,46 @@ frappe.ui.form.on('Warehouse Stock Items', {
     },
 
     
-
     movement_type: function(frm, cdt, cdn) {
         var child = locals[cdt][cdn];
         var order_no_sequence = (frm.doc.receiver_information && frm.doc.receiver_information.length > 0) ? frm.doc.receiver_information.length + 1 : 1;
         
         if (child.movement_type) {
-            $.each(frm.doc.warehouse_space_details, function(i, row) {
-            var target_row;
-
-            if (child.movement_type == "Stock IN") {
-                target_row = frm.add_child('receiver_information');
-                target_row.transit_type = "Dropoff";
-                
-                target_row.warehouse = row.warehouse;
-                target_row.order_no = order_no_sequence++;
-                target_row.warehouse_charge_ref = child.name;// reference to the unique name of the warehouse_space_details row
-                frm.script_manager.trigger('warehouse', target_row.doctype, target_row.name);
-            } else if (child.movement_type == "Stock OUT") {
-                target_row = frm.add_child('receiver_information');
-                target_row.transit_type = "Pickup";
-                target_row.warehouse = row.warehouse;
-                target_row.order_no = order_no_sequence++;
-                target_row.warehouse_charge_ref = child.name;  // reference to the unique name of the warehouse_space_details row
-                frm.script_manager.trigger('warehouse', target_row.doctype, target_row.name);
+            if (!frm.doc.receiver_information) {
+                frm.doc.receiver_information = [];  // Initializing if not already present
             }
+    
+            $.each(frm.doc.warehouse_space_details, function(i, row) {
+                var target_row = frm.doc.receiver_information.find(r => r.warehouse_charge_ref === child.name);
+    
+                if (!target_row) {
+                    target_row = frm.add_child('receiver_information');
+                    target_row.warehouse_charge_ref = child.name;
+                    target_row.order_no = order_no_sequence++;
+                    target_row.warehouse = row.warehouse;
+                }
+    
+                if (child.movement_type == "Stock IN") {
+                    
+                    target_row.transit_type = "Dropoff";
 
+                    var grid_row = locals[cdt][cdn];
+
+
+                    // var df = frappe.meta.get_docfield("Transit Details","handling_required", cur_frm.doc.name);
+                    // df.read_only = 1;
+
+                } else if (child.movement_type == "Stock OUT") {
+                    target_row.transit_type = "Pickup";
+                }
+    
+                frm.script_manager.trigger('warehouse', target_row.doctype, target_row.name);
+            })
             frm.refresh_field("receiver_information");
-        })
         }
     },
+    
+    
     warehouse_stock_items_remove: function(frm, cdt, cdn) {
         // Filtering matching rows from 'receiver_information'
         var matching_rows = frm.doc.receiver_information.filter(row => row.warehouse_charge_ref === cdn);
@@ -709,6 +1007,102 @@ function handleCharges(frm, child, chargeName, action) {
     }
 }
 frappe.ui.form.on('Warehouse Charges', {
+
+   
+        cost: function(frm, cdt, cdn) {
+            const charges_row = locals[cdt][cdn];
+     
+     
+            if (charges_row.charges) {
+                let existing_row = null;
+               
+                if (frm.doc.opportunity_line_item && Array.isArray(frm.doc.opportunity_line_item)) {
+                    existing_row = frm.doc.opportunity_line_item.find(row => row.item && row.item === charges_row.charges);
+                }
+     
+     
+                if (existing_row) {
+                    // If item exists, update its quantity and cost
+                    existing_row.quantity += charges_row.quantity;
+                    existing_row.amount += charges_row.cost;
+                    // Update the average rate
+                    existing_row.average_rate = existing_row.amount / existing_row.quantity;
+                   
+                } else {
+                    // If item doesn't exist, add it as a new row
+                    const target_row = frm.add_child('opportunity_line_item');
+                    target_row.item = charges_row.charges;
+                    target_row.quantity = charges_row.quantity;
+                    target_row.amount = charges_row.cost;
+                    target_row.average_rate = target_row.amount / target_row.quantity; // Calculate average rate for the new row
+                    target_row.warehouse_charge_ref = charges_row.name;  // Storing reference
+
+                frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
+                }
+     
+     
+                frm.refresh_field('opportunity_line_item');
+            }
+        },
+        warehouse_charges_remove: function(frm, cdt, cdn) {
+            const groupedData = {};
+     
+     
+            // Group by items in warehouse_charges
+            $.each(frm.doc.warehouse_charges, function(_, charge) {
+                if (charge.charges) {
+                    if (!groupedData[charge.charges]) {
+                        groupedData[charge.charges] = {
+                            quantity: 0,
+                            amount: 0,
+                            average_rate: 0,
+                            warehouse_charge_refs: []
+                        };
+                    }
+     
+     
+                    groupedData[charge.charges].quantity += charge.quantity;
+                    groupedData[charge.charges].amount += charge.cost;
+                    groupedData[charge.charges].warehouse_charge_refs.push(charge.name);
+                }
+            });
+     
+     
+            // Update or Add rows in opportunity_line_item
+            for (let item in groupedData) {
+                const existing_row = frm.doc.opportunity_line_item.find(row => row.item && row.item === item);
+     
+     
+                if (existing_row) {
+                    existing_row.quantity = groupedData[item].quantity;
+                    existing_row.amount = groupedData[item].amount;
+                    existing_row.average_rate = existing_row.amount / existing_row.quantity;
+                } else {
+                    const target_row = frm.add_child('opportunity_line_item');
+                    target_row.item = item;
+                    target_row.quantity = groupedData[item].quantity;
+                    target_row.amount = groupedData[item].amount;
+                    target_row.average_rate = target_row.amount / target_row.quantity;
+                    target_row.warehouse_charge_ref = JSON.stringify(groupedData[item].warehouse_charge_refs);
+                }
+            }
+     
+     
+            // Delete rows from opportunity_line_item that are not present in warehouse_charges
+            for (let i = frm.doc.opportunity_line_item.length - 1; i >= 0; i--) {
+                const row = frm.doc.opportunity_line_item[i];
+                if (!groupedData[row.item]) {
+                    frm.get_field('opportunity_line_item').grid.grid_rows[i].remove();
+                }
+            }
+     
+     
+            frm.refresh_field('opportunity_line_item');
+        },
+       
+     
+
+
     charges: function(frm, cdt, cdn) {
         var child = locals[cdt][cdn];
         var char = child.charges;
@@ -735,18 +1129,25 @@ frappe.ui.form.on('Warehouse Charges', {
 
 frappe.ui.form.on('Opportunity Line Items', {
     amount: function(frm,cdt,cdn) {
-            var total_amount = 0;           
-            $.each(frm.doc.opportunity_line_item, function(index, row) {
-                console.log("Row amount:", row.amount);
-                total_amount += row.amount
-            });
-
+        calculate_total_amount(frm);
+    },
+    'opportunity_line_item_remove': function(frm) {
+        calculate_total_amount(frm);
+    },
+          
          
-            // Set the total_amount to the 'payment_amount' field in the parent doctype
-            frm.set_value('payment_amount', total_amount);
-            frm.refresh_field('payment_amount');  // Refresh the field to reflect the updated value on the UI
         
-    }
+    
 });
+// A separate function to calculate the total_amount
+function calculate_total_amount(frm) {
+    var total_amount = 0;
+    $.each(frm.doc.opportunity_line_item || [], function(index, row) {
+        total_amount += row.amount;
+    });
+
+    frm.set_value('payment_amount', total_amount);
+    frm.refresh_field('payment_amount');  // Refresh to show the updated value on the UI
+}
 
 

@@ -140,13 +140,49 @@ def after_insert(doc,method):
 						address.phone = info.contact
 					if info.email:
 						address.email_id = info.email
-
+					if info.make_default ==1:
+						address.is_default=1
 					address.address_type = "Shipping"
 					address.append("links", {
 						"link_doctype": "Customer",
 						"link_name": doc.party_name
 					})
+					address.address_type = "Shipping"
+					
+					address.append("links", {
+						"link_doctype": "Customer",
+						"link_name": doc.party_name
+					})
 					address.insert()
+					
+
+
+				elif info.address and info.make_default == 1:
+					# Fetch the existing default address
+					default_address = frappe.get_all('Address', filters={'is_default': 1, 'phone': info.contact}, fields=['name', 'is_default'])
+					print(default_address)
+
+
+					# If there's an existing default address, unset its default status
+					if default_address:
+						address_to_unset = frappe.get_doc('Address', default_address[0].name)
+						address_to_unset.is_default = 0
+						address_to_unset.save()
+					add=frappe.get_doc("Address",info.address)
+					add.address_type = "Shipping"
+					
+					add.append("links", {
+						"link_doctype": "Customer",
+						"link_name": doc.party_name
+					})
+					add.is_default=1
+					add.insert()
+
+
+
+				
+				
+
 
 
 
@@ -399,3 +435,43 @@ def fetch_charges_price(charges):
 		itm=frappe.get_doc("Item Price",{"item_code":charges})
 		print(itm)
 		return itm.as_dict()
+
+@frappe.whitelist()
+def create_stock_entry(doc):
+	print(doc)
+	opp=frappe.get_doc("Opportunity",doc)
+	stock_entry = frappe.new_doc('Stock Entry')
+	stock_entry.customer=opp.party_name
+	
+	
+	for stock in opp.warehouse_stock_items:
+		if stock.movement_type=="Stock IN":
+			stock_entry.stock_entry_type="Material Receipt"
+			stock_entry.purpose="Material Receipt"
+			for war in opp.warehouse_space_details:
+				stock_entry.append("items",{"t_warehouse":war.warehouse,
+							"item_code":stock.item,"qty":stock.quantity,
+							"allow_zero_valuation_rate":1
+		
+				})
+			
+		if stock.movement_type=="Stock OUT":
+			stock_entry.stock_entry_type="Material Issue"
+			stock_entry.purpose="Material Issue"
+			for war in opp.warehouse_space_details:
+				stock_entry.append("items",{"s_warehouse":war.warehouse,
+							"item_code":stock.item,"qty":stock.quantity,
+							"allow_zero_valuation_rate":1
+		
+				})
+	opp.order_status="Stock Updated"
+	stock_entry.save(ignore_permissions=True)
+	stock_entry.submit()
+	frappe.msgprint("Stock Updated Successfully")
+	opp.save()
+	return "success"
+
+
+
+ 
+

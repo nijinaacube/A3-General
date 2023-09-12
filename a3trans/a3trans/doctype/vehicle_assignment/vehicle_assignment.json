@@ -37,14 +37,18 @@
   {
    "fieldname": "vehicle_id",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Vehicle ID",
-   "options": "Vehicle"
+   "options": "Vehicle",
+   "reqd": 1
   },
   {
    "fieldname": "driver_id",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Driver ID",
-   "options": "Staff Member"
+   "options": "Staff Member",
+   "reqd": 1
   },
   {
    "depends_on": "eval:!doc.__islocal",
@@ -62,7 +66,8 @@
    "fieldname": "routes",
    "fieldtype": "Table",
    "label": "Routes",
-   "options": "Route Details Item"
+   "options": "Route Details Item",
+   "reqd": 1
   },
   {
    "collapsible": 1,
@@ -144,8 +149,10 @@
   {
    "fieldname": "helper_id",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Helper ID",
-   "options": "Staff Member"
+   "options": "Staff Member",
+   "reqd": 1
   },
   {
    "fetch_from": "helper_id.full_name",
@@ -178,7 +185,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-30 13:26:35.105226",
+ "modified": "2023-09-12 15:01:51.394901",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Assignment",
