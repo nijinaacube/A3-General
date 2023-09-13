@@ -131,10 +131,10 @@ if (frm.doc.booking_type=="Vehicle"){
                     target_row.order_no=1
                 
 					frm.refresh_field('receiver_information');
-                    const transit_row=frm.add_child('transit_charges')
-                    transit_row.charges="Transportation Charges"
+                    // const transit_row=frm.add_child('transit_charges')
+                    // transit_row.charges="Transportation Charges"
                     // frm.script_manager.trigger('charges', transit_row.doctype, transit_row.name);
-                    frm.refresh_field('transit_charges');
+                    // frm.refresh_field('transit_charges');
                        
                      
                     }
@@ -401,6 +401,19 @@ frappe.ui.form.on('Transit Details', {
 
  
     
+},
+
+city:function(frm, cdt, cdn) {
+    console.log("hiii",child)
+    var child = locals[cdt][cdn]; 
+    if (child.order_no==2){
+        const transit_row=frm.add_child('transit_charges')
+        
+        transit_row.charges="Transportation Charges"
+        frm.script_manager.trigger('charges', transit_row.doctype, transit_row.name);
+        frm.refresh_field('transit_charges');
+
+    }
 },
 
 address:function(frm, cdt, cdn) {
@@ -741,7 +754,7 @@ frappe.ui.form.on('Warehouse Space Details', {
             });
         }
     },
-    rental_charges: function(frm, cdt, cdn) {
+    uom: function(frm, cdt, cdn) {
         var child = locals[cdt][cdn];
         if (child.no_of_days){
         var no_of_days = child.no_of_days;
@@ -750,7 +763,8 @@ frappe.ui.form.on('Warehouse Space Details', {
         console.log(child.rental_charges)
         const target_row=frm.add_child('warehouse_charges')
 		target_row.charges=selected_item
-        frm.refresh_field('warehouse_charges');
+        target_row.quantity=1
+        // frm.refresh_field('warehouse_charges');
         frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
        
         
@@ -764,6 +778,9 @@ frappe.ui.form.on('Warehouse Space Details', {
             callback: function(response) {
                 frappe.model.set_value(cdt, cdn, 'rental_cost',response.message["total_amount"]);
                     frm.refresh_field('rental_cost');
+                    target_row.cost = child.rental_cost;
+                    frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+                    frm.refresh_field("warehouse_charges")
                 
             }
         });
@@ -834,7 +851,7 @@ frappe.ui.form.on('Warehouse Space Details', {
  
  
         // Update or Add rows in opportunity_line_item
-        for (let item in groupedData) {
+        for (let item in groupedDatas) {
             const existing_row = frm.doc.opportunity_line_item.find(row => row.item && row.item === item);
            
  
@@ -849,7 +866,7 @@ frappe.ui.form.on('Warehouse Space Details', {
                 target_row.quantity = groupedDatas[item].quantity;
                 target_row.amount = groupedDatas[item].amount;
                 target_row.average_rate = target_row.amount / target_row.quantity;
-                target_row.transit_charge_ref = JSON.stringify(groupedData[item].transit_charge_refs);
+                target_row.transit_charge_ref = JSON.stringify(groupedDatas[item].transit_charge_refs);
                 frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
             }
         }
@@ -858,7 +875,7 @@ frappe.ui.form.on('Warehouse Space Details', {
         // Delete rows from opportunity_line_item that are not present in warehouse_charges
         for (let i = frm.doc.opportunity_line_item.length - 1; i >= 0; i--) {
             const row = frm.doc.opportunity_line_item[i];
-            if (!groupedData[row.item]) {
+            if (!groupedDatas[row.item]) {
                 console.log("qqqqqqqqqqqqqqqqqqqqqqqqq")
                 frm.get_field('opportunity_line_item').grid.grid_rows[i].remove();
             }
@@ -1129,7 +1146,10 @@ frappe.ui.form.on('Warehouse Charges', {
         var char = child.charges;
         console.log(child.charges);
 
-        if (child.charges) {
+        if (child.charges != "Warehouse Space Rent") {
+            frappe.model.set_value(cdt, cdn, 'quantity',1);
+            frm.refresh_field('quantity');
+          
             frappe.call({
                 method: "a3trans.a3trans.events.opportunity.fetch_charges_price",
                 args: {
@@ -1139,8 +1159,8 @@ frappe.ui.form.on('Warehouse Charges', {
                     console.log(response.message);
                     frappe.model.set_value(cdt, cdn, 'cost',response.message["price_list_rate"]);
                     frm.refresh_field('cost');
-                    frappe.model.set_value(cdt, cdn, 'quantity',1);
-                    frm.refresh_field('quantity');
+
+                   
                     
                 }
             });

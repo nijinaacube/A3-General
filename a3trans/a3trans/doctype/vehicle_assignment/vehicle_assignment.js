@@ -25,7 +25,7 @@ frappe.ui.form.on('Vehicle Assignment', {
                 columns: ['status'],
                 get_query() {
                     return {
-                        filters: { status: ['=', 'converted'] }
+                        filters: { status: ['=', 'converted'] ,order_status:['=','New']}
                     };
                 },
                 action(selections, args) {
