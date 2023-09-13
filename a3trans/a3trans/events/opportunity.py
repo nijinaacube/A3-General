@@ -440,12 +440,13 @@ def fetch_charges_price(charges):
 def create_stock_entry(doc):
 	print(doc)
 	opp=frappe.get_doc("Opportunity",doc)
-	stock_entry = frappe.new_doc('Stock Entry')
-	stock_entry.customer=opp.party_name
 	
 	
 	for stock in opp.warehouse_stock_items:
 		if stock.movement_type=="Stock IN":
+			stock_entry = frappe.new_doc('Stock Entry')
+			stock_entry.party_name=opp.party_name
+			stock_entry.order_id=opp.name
 			stock_entry.stock_entry_type="Material Receipt"
 			stock_entry.purpose="Material Receipt"
 			for war in opp.warehouse_space_details:
@@ -455,23 +456,32 @@ def create_stock_entry(doc):
 		
 				})
 			
-		if stock.movement_type=="Stock OUT":
-			stock_entry.stock_entry_type="Material Issue"
-			stock_entry.purpose="Material Issue"
-			for war in opp.warehouse_space_details:
-				stock_entry.append("items",{"s_warehouse":war.warehouse,
-							"item_code":stock.item,"qty":stock.quantity,
-							"allow_zero_valuation_rate":1
+			
+			opp.order_status="Stock Updated"
+			stock_entry.save(ignore_permissions=True)
+			stock_entry.submit()
+			opp.save()
+			frappe.msgprint("Stock Updated Successfully")
+
+			
+		# if stock.movement_type=="Stock OUT":
+		# 	delivery_note=frappe.new_doc('Delivery Note')
+		# 	delivery_note.customer=opp.party_name
+		# 	delivery_note
+
+		# 	stock_entry.stock_entry_type="Material Issue"
+		# 	stock_entry.purpose="Material Issue"
+		# 	for war in opp.warehouse_space_details:
+		# 		stock_entry.append("items",{"s_warehouse":war.warehouse,
+		# 					"item_code":stock.item,"qty":stock.quantity,
+		# 					"allow_zero_valuation_rate":1
 		
-				})
-	opp.order_status="Stock Updated"
-	stock_entry.save(ignore_permissions=True)
-	stock_entry.submit()
-	frappe.msgprint("Stock Updated Successfully")
-	opp.save()
+		# 		})
+		
+	
+		
 	return "success"
 
 
 
- 
 

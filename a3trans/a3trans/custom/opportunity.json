@@ -4174,14 +4174,14 @@
    "_comments": null,
    "_liked_by": null,
    "_user_tags": null,
-   "creation": "2023-09-12 17:43:46.969062",
+   "creation": "2023-09-12 20:33:36.706180",
    "default_value": null,
    "doc_type": "Opportunity",
    "docstatus": 0,
    "doctype_or_field": "DocType",
    "field_name": null,
    "idx": 0,
-   "modified": "2023-09-12 17:43:46.969062",
+   "modified": "2023-09-12 20:33:36.706180",
    "modified_by": "Administrator",
    "name": "Opportunity-main-links_order",
    "owner": "Administrator",
@@ -4191,7 +4191,7 @@
    "property": "links_order",
    "property_type": "Small Text",
    "row_name": null,
-   "value": "[\"2aa965afdf\"]"
+   "value": "[\"2aa965afdf\", \"6b30db2592\"]"
   },
   {
    "_assign": null,

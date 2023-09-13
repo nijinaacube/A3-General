@@ -14,6 +14,8 @@
   "column_break_hitzy",
   "rental_charges",
   "no_of_days",
+  "required_area",
+  "uom",
   "rental_cost",
   "date_from",
   "date_to"
@@ -92,12 +94,25 @@
    "in_list_view": 1,
    "label": "Rental Charges",
    "options": "Item"
+  },
+  {
+   "fieldname": "required_area",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Required Area"
+  },
+  {
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "UOM",
+   "options": "UOM"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-07 18:30:26.525697",
+ "modified": "2023-09-12 19:12:08.716016",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Space Details",

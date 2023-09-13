@@ -131,6 +131,10 @@ if (frm.doc.booking_type=="Vehicle"){
                     target_row.order_no=1
                 
 					frm.refresh_field('receiver_information');
+                    const transit_row=frm.add_child('transit_charges')
+                    transit_row.charges="Transportation Charges"
+                    // frm.script_manager.trigger('charges', transit_row.doctype, transit_row.name);
+                    frm.refresh_field('transit_charges');
                        
                      
                     }
@@ -392,7 +396,12 @@ frappe.ui.form.on('Transit Details', {
                                           
             // }
            
-            },
+
+
+
+ 
+    
+},
 
 address:function(frm, cdt, cdn) {
     var child = locals[cdt][cdn];            
@@ -424,13 +433,17 @@ address:function(frm, cdt, cdn) {
                         frm.refresh_field('contact'); 
                         frappe.model.set_value(cdt, cdn, 'warehouse',"");                    
                         frm.refresh_field('warehouse'); 
+                       
+                      
+                        
+                        
+                        
                     }
                 })
             }
 
         },
-        
- 
+      
         labour_required: function(frm, cdt, cdn) {
             const child = locals[cdt][cdn];
             if (child.labour_required == 1) {
@@ -779,6 +792,8 @@ frappe.ui.form.on('Warehouse Space Details', {
                 existing_row.amount += charges_row.cost;
                 // Update the average rate
                 existing_row.average_rate = existing_row.amount / existing_row.quantity;
+                frm.script_manager.trigger('amount', existing_row.doctype, existing_row.name);
+                
             } else {
                 // If item doesn't exist, add it as a new row
                 const target_row = frm.add_child('opportunity_line_item');
@@ -786,21 +801,23 @@ frappe.ui.form.on('Warehouse Space Details', {
                 target_row.quantity = charges_row.quantity;
                 target_row.amount = charges_row.cost;
                 target_row.average_rate = target_row.amount / target_row.quantity; // Calculate average rate for the new row
-                target_row.transit_charge_ref = charges_row.name;  // Storing reference
+                target_row.transit_charge_ref = charges_row.name; 
+                 // Storing reference
+                 frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
             }
             frm.refresh_field('opportunity_line_item');
             // calculateTotalAmount(frm);
         }
     },
     transit_charges_remove: function(frm, cdt, cdn) {
-        const groupedData = {};
+        const groupedDatas = {};
  
  
         // Group by items in warehouse_charges
         $.each(frm.doc.transit_charges, function(_, charge) {
             if (charge.charges) {
-                if (!groupedData[charge.charges]) {
-                    groupedData[charge.charges] = {
+                if (!groupedDatas[charge.charges]) {
+                    groupedDatas[charge.charges] = {
                         quantity: 0,
                         amount: 0,
                         average_rate: 0,
@@ -809,9 +826,9 @@ frappe.ui.form.on('Warehouse Space Details', {
                 }
  
  
-                groupedData[charge.charges].quantity += charge.quantity;
-                groupedData[charge.charges].amount += charge.cost;
-                groupedData[charge.charges].transit_charge_refs.push(charge.name);
+                groupedDatas[charge.charges].quantity += charge.quantity;
+                groupedDatas[charge.charges].amount += charge.cost;
+                groupedDatas[charge.charges].transit_charge_refs.push(charge.name);
             }
         });
  
@@ -823,14 +840,14 @@ frappe.ui.form.on('Warehouse Space Details', {
  
  
             if (existing_row) {
-                existing_row.quantity = groupedData[item].quantity;
-                existing_row.amount = groupedData[item].amount;
+                existing_row.quantity = groupedDatas[item].quantity;
+                existing_row.amount = groupedDatas[item].amount;
                 existing_row.average_rate = existing_row.amount / existing_row.quantity;
             } else {
                 const target_row = frm.add_child('opportunity_line_item');
                 target_row.item = item;
-                target_row.quantity = groupedData[item].quantity;
-                target_row.amount = groupedData[item].amount;
+                target_row.quantity = groupedDatas[item].quantity;
+                target_row.amount = groupedDatas[item].amount;
                 target_row.average_rate = target_row.amount / target_row.quantity;
                 target_row.transit_charge_ref = JSON.stringify(groupedData[item].transit_charge_refs);
                 frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
@@ -1027,6 +1044,7 @@ frappe.ui.form.on('Warehouse Charges', {
                     existing_row.amount += charges_row.cost;
                     // Update the average rate
                     existing_row.average_rate = existing_row.amount / existing_row.quantity;
+                    frm.script_manager.trigger('amount', existing_row.doctype, existing_row.name);
                    
                 } else {
                     // If item doesn't exist, add it as a new row
@@ -1038,7 +1056,9 @@ frappe.ui.form.on('Warehouse Charges', {
                     target_row.warehouse_charge_ref = charges_row.name;  // Storing reference
 
                 frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
-                }
+                
+                
+            }
      
      
                 frm.refresh_field('opportunity_line_item');
@@ -1084,6 +1104,7 @@ frappe.ui.form.on('Warehouse Charges', {
                     target_row.amount = groupedData[item].amount;
                     target_row.average_rate = target_row.amount / target_row.quantity;
                     target_row.warehouse_charge_ref = JSON.stringify(groupedData[item].warehouse_charge_refs);
+                    frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
                 }
             }
      

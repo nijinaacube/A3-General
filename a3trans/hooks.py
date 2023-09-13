@@ -118,6 +118,8 @@ fixtures = [
 doctype_js = {
 	"Opportunity": "a3trans/client_scripts/opportunity.js",
 	"Warehouse": "a3trans/client_scripts/warehouse.js",
+	"Delivery Note":"a3trans/client_scripts/delivery_note.js",
+	"Stock Entry":"a3trans/client_scripts/stock_entry.js"
 	
  }
 doc_events = {
@@ -129,8 +131,14 @@ doc_events = {
 	 },
 	 "Warehouse":{
 		"validate":"a3trans.a3trans.events.warehouse.validate"
-	 }
-	
+	 },
+	 "Delivery Note":{
+		"on_submit":"a3trans.a3trans.events.delivery_note.on_submit"
+	 },
+
+	"Stock Entry":{
+		"on_submit":"a3trans.a3trans.events.stock_entry.on_submit"
+	 },
 }
 # Scheduled Tasks
 # ---------------
