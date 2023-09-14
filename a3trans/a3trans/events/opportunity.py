@@ -388,18 +388,22 @@ def get_end_of_month(current_date_str):
    print(end_of_month_str,days_difference)
    return data
 @frappe.whitelist()
-def calculate_charges(selected_item,no_of_days):
+def calculate_charges(selected_item,no_of_days,uom,customer,area):
 	no_of_days=float(no_of_days)
 	print(selected_item,no_of_days)
 	data={}
-	if frappe.db.exists("Item Price",{ "item_code":selected_item}):
-		item_price = frappe.get_doc("Item Price", {"item_code":selected_item})
-		if item_price.price_list_rate:
-			total_amount=item_price.price_list_rate*no_of_days
-			data["total_amount"]=total_amount
-			return data
+	if frappe.db.exists("Tariff Details",{"customer":customer}):
+		tariff=frappe.get_doc("Tariff Details",{"customer":customer})
+		for itm in tariff.warehouse_space_rent_charges:
+			if uom==itm.uom:
+				rate=itm.rate
+		
+				total_amount=(rate*no_of_days)*float(area)
+				data["total_amount"]=total_amount
+				return data
 	else:
-		frappe.msgprint("There is no price added for the selected item")
+		frappe.msgprint("No Tariff Added for this customer")
+	
 	  
 @frappe.whitelist()
 def get_warehouse(doc):
@@ -435,6 +439,32 @@ def fetch_charges_price(charges):
 		itm=frappe.get_doc("Item Price",{"item_code":charges})
 		print(itm)
 		return itm.as_dict()
+
+
+import json
+@frappe.whitelist()
+
+def calculate_transportation_cost(customer,zone,vehicle_type,length):
+	print(length)
+	zone_list = json.loads(zone)
+	amount=0
+	if frappe.db.exists("Tariff Details",{"customer":customer}):
+		tariff=frappe.get_doc("Tariff Details",{"customer":customer})
+		
+		for item in tariff.tariff_details_item:
+		
+			if item.from_city==zone_list[0] and item.vehicle_type==vehicle_type:
+				if item.to_city==zone_list[1]:
+					print(item.amount)
+					amount=item.amount
+			
+
+
+
+
+			
+	return amount
+
 
 @frappe.whitelist()
 def create_stock_entry(doc):

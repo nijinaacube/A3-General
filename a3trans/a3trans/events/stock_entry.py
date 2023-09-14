@@ -4,7 +4,7 @@ def on_submit(doc,methods):
     if doc.order_id:
         oppo=frappe.get_doc("Opportunity",doc.order_id)
         oppo.order_status="Stock Updated"
-        oppo.save()
+        # oppo.save()
 
 
 @frappe.whitelist()

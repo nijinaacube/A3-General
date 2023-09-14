@@ -1,65 +1,54 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:{from_city}-{to_city}-{vehicle_type}",
- "creation": "2023-09-04 19:05:45.089175",
+ "autoname": "format:TARIFF-{customer}-{####}",
+ "creation": "2023-09-14 10:51:31.174501",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "from_city",
-  "vehicle_type",
-  "column_break_ouwej",
-  "to_city",
-  "amount",
-  "weight",
-  "uom"
+  "customer",
+  "transportation_charges_section",
+  "tariff_details_item",
+  "warehouse_space_rent_charges_section",
+  "warehouse_space_rent_charges"
  ],
  "fields": [
   {
-   "fieldname": "from_city",
+   "allow_bulk_edit": 1,
+   "fieldname": "tariff_details_item",
+   "fieldtype": "Table",
+   "label": "Tariff Details Item",
+   "options": "Tariff Details Item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer",
    "fieldtype": "Link",
-   "label": "From City",
-   "options": "Location"
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "Customer"
   },
   {
-   "fieldname": "to_city",
-   "fieldtype": "Link",
-   "label": "To City",
-   "options": "Location"
+   "fieldname": "warehouse_space_rent_charges_section",
+   "fieldtype": "Section Break",
+   "label": "Warehouse Space Rent Charges"
   },
   {
-   "fieldname": "column_break_ouwej",
-   "fieldtype": "Column Break"
+   "fieldname": "warehouse_space_rent_charges",
+   "fieldtype": "Table",
+   "label": "Warehouse Space Rent Charges",
+   "options": "Warehouse Space Rent Charges"
   },
   {
-   "fieldname": "vehicle_type",
-   "fieldtype": "Link",
-   "label": "Vehicle Type",
-   "options": "Vehicle Type"
-  },
-  {
-   "fieldname": "amount",
-   "fieldtype": "Currency",
-   "label": "Amount"
-  },
-  {
-   "fieldname": "weight",
-   "fieldtype": "Float",
-   "hidden": 1,
-   "label": "Weight"
-  },
-  {
-   "fieldname": "uom",
-   "fieldtype": "Link",
-   "hidden": 1,
-   "label": "UOM",
-   "options": "UOM"
+   "fieldname": "transportation_charges_section",
+   "fieldtype": "Section Break",
+   "label": "Transportation Charges"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-05 16:27:49.842836",
+ "modified": "2023-09-14 12:18:56.645643",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Tariff Details",

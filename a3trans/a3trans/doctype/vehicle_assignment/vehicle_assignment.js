@@ -5,10 +5,9 @@
 
 frappe.ui.form.on('Vehicle Assignment', {
     refresh: function(frm) {
-        var today = frappe.datetime.nowdate();
-        var formattedDate = frappe.datetime.str_to_user(today);
-        frm.set_value('assignment_date', formattedDate);
-
+        if  (frm.is_new()){
+            frm.set_value('assignment_date', frappe.datetime.get_today());
+          }
         frm.add_custom_button(__('Get Orders'), function() {
             // Clear existing routes before adding new ones
             frm.clear_table('routes');
@@ -17,12 +16,15 @@ frappe.ui.form.on('Vehicle Assignment', {
                 doctype: 'Opportunity',
                 target: frm,
                 setters: {
-                    status: 'Converted'
+                    // status: 'Converted',
+                    party_name:frm.doc.party_name,
+                    booking_date:frm.doc.booking_date
+
                 },
                 add_filters_group: 1,
                 // allow_child_item_selection: 1,
                 // child_fieldname: 'receiver_information',
-                columns: ['status'],
+                columns: ['party_name'],
                 get_query() {
                     return {
                         filters: { status: ['=', 'converted'] ,order_status:['=','New']}
