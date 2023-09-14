@@ -442,28 +442,24 @@ def fetch_charges_price(charges):
 
 
 import json
+
 @frappe.whitelist()
+def calculate_transportation_cost(customer, zone, vehicle_type, length):
+    zone_list = json.loads(zone)
+    amount = 0
 
-def calculate_transportation_cost(customer,zone,vehicle_type,length):
-	print(length)
-	zone_list = json.loads(zone)
-	amount=0
-	if frappe.db.exists("Tariff Details",{"customer":customer}):
-		tariff=frappe.get_doc("Tariff Details",{"customer":customer})
-		
-		for item in tariff.tariff_details_item:
-		
-			if item.from_city==zone_list[0] and item.vehicle_type==vehicle_type:
-				if item.to_city==zone_list[1]:
-					print(item.amount)
-					amount=item.amount
-			
+    if len(zone_list) != 2:
+        return 0  # Return 0 if it's not a pair
 
+    if frappe.db.exists("Tariff Details", {"customer": customer}):
+        tariff = frappe.get_doc("Tariff Details", {"customer": customer})
 
+        for item in tariff.tariff_details_item:
+            if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+                amount = item.amount
 
+    return amount
 
-			
-	return amount
 
 
 @frappe.whitelist()

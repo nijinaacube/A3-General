@@ -410,49 +410,49 @@ frappe.ui.form.on('Transit Details', {
 },
 
 zone: function(frm, cdt, cdn) {
-    frm.clear_table("transit_charges")
-    const child = locals[cdt][cdn];
+    const zones = frm.doc.receiver_information.map(receiver => receiver.zone);
 
-    if (child.idx >= 2) {
-        
-        
-        // loop through each receiver_information to calculate transportation cost
-        $.each(frm.doc.receiver_information, function(_, receiver) {
-            if (receiver.zone && frm.doc.vehicle_type) {
-              
-                // Fetch the tariff details for the party_name
-                let zones = frm.doc.receiver_information.map(receiver => receiver.zone);
-                frappe.call({
-                    method: "a3trans.a3trans.events.opportunity.calculate_transportation_cost",
-                    args: {
-                        
-                            "customer": frm.doc.party_name,
-                            "zone": JSON.stringify(zones),
-                            "vehicle_type": frm.doc.vehicle_type,
-                            "length":frm.doc.receiver_information.length
-                        },
-                       
-                    callback: function(response) {
-                        if (response.message) {
-                            frm.clear_table("transit_charges")
-                            const target_row=frm.add_child('transit_charges')
-                            target_row.charges = "Transportation Charges";
-                            console.log(response.message)
-                            target_row.cost=response.message
-                            
-                            frm.refresh_field('transit_charges');
-                           
-                        }
+    if (zones.length >= 2) {
+        // When adding third zone (and subsequent zones), calculate charges based on the last two zones
+        let from_zone = zones[zones.length - 2];
+        let to_zone = zones[zones.length - 1];
+
+        frappe.call({
+            method: "a3trans.a3trans.events.opportunity.calculate_transportation_cost",
+            args: {
+                "customer": frm.doc.party_name,
+                "zone": JSON.stringify([from_zone, to_zone]),
+                "vehicle_type": frm.doc.vehicle_type,
+                "length": frm.doc.receiver_information.length
+            },
+            callback: function(response) {
+                if (response.message) {
+                    // Check if a row already exists for this charge
+                    if (frm.doc.transit_charges){
+                    let existing_row = frm.doc.transit_charges.find(r => r.from_zone == from_zone && r.to_zone == to_zone);
+                    
+                    if (existing_row) {
+                        // Update existing row
+                        frappe.model.set_value(existing_row.doctype, existing_row.name, 'cost', response.message);
+                    } 
+                }
+                else {
+                        // Add new row
+                        const target_row = frm.add_child('transit_charges');
+                        target_row.charges = "Transportation Charges";
+                        target_row.quantity = 1;
+                        target_row.from_zone = from_zone;
+                        target_row.to_zone = to_zone;
+                        target_row.cost = response.message;
                     }
-                });
+                    frm.refresh_field('transit_charges');
+                }
             }
         });
-
-     
-        
-       
     }
 },
+
+
 
 address:function(frm, cdt, cdn) {
     var child = locals[cdt][cdn];            
@@ -895,33 +895,66 @@ frappe.ui.form.on('Warehouse Space Details', {
 
  frappe.ui.form.on('Transit Charges', {
 
+
     cost: function(frm, cdt, cdn) {
-        const charges_row = locals[cdt][cdn];
-
-        if (charges_row.charges) {
-            let existing_row = frm.doc.opportunity_line_item?.find(row => row.item === charges_row.charges);
-
-            if (existing_row) {
-                existing_row.quantity += charges_row.quantity;
-                existing_row.amount += charges_row.cost;
-                existing_row.average_rate = existing_row.amount / existing_row.quantity;
-                frm.script_manager.trigger('amount', existing_row.doctype, existing_row.name);
-            } else {
-                const target_row = frm.add_child('opportunity_line_item');
-                target_row.item = charges_row.charges;
-                target_row.quantity = charges_row.quantity;
-                target_row.amount = charges_row.cost;
+            let aggregated_items = {}; // Object to store aggregated values.
+       
+            // Loop through each row in warehouse charges
+            $.each(frm.doc.warehouse_charges || [], function(i, charge) {
+                if (charge.charges) {
+                    if (aggregated_items[charge.charges]) {
+                        // Aggregate if item already exists
+                        aggregated_items[charge.charges].quantity += charge.quantity;
+                        aggregated_items[charge.charges].amount += charge.cost;
+                    } else {
+                        // Or, create a new aggregated entry
+                        aggregated_items[charge.charges] = {
+                            item: charge.charges,
+                            quantity: charge.quantity,
+                            amount: charge.cost,
+                            warehouse_charge_ref: charge.name
+                        };
+                    }
+                }
+            });
+            $.each(frm.doc.transit_charges || [], function(i, charge) {
+                if (charge.charges) {
+                    if (aggregated_items[charge.charges]) {
+                        // Aggregate if item already exists
+                        aggregated_items[charge.charges].quantity += charge.quantity;
+                        aggregated_items[charge.charges].amount += charge.cost;
+                    } else {
+                        // Or, create a new aggregated entry
+                        aggregated_items[charge.charges] = {
+                            item: charge.charges,
+                            quantity: charge.quantity,
+                            amount: charge.cost,
+                            warehouse_charge_ref: charge.name
+                        };
+                    }
+                }
+            });
+       
+            // Clear the existing opportunity_line_item table
+            frm.doc.opportunity_line_item = [];
+       
+            // Populate the opportunity_line_item table with aggregated values
+            for (let item in aggregated_items) {
+                let target_row = frm.add_child('opportunity_line_item');
+                target_row.item = aggregated_items[item].item;
+                target_row.quantity = aggregated_items[item].quantity;
+                target_row.amount = aggregated_items[item].amount;
                 target_row.average_rate = target_row.amount / target_row.quantity;
-                target_row.transit_charge_ref = charges_row.name; 
+                target_row.warehouse_charge_ref = aggregated_items[item].warehouse_charge_ref;
+       
                 frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
             }
+       
             frm.refresh_field('opportunity_line_item');
-        }
-    },
-
-    transit_charges_remove: function(frm) {
+        },
+    transit_charges_remove: function(frm, cdt, cdn) {
         const groupedDatas = {};
-        
+        // Group by items in transit_charges
         $.each(frm.doc.transit_charges, function(_, charge) {
             if (charge.charges) {
                 if (!groupedDatas[charge.charges]) {
@@ -935,9 +968,9 @@ frappe.ui.form.on('Warehouse Space Details', {
                 groupedDatas[charge.charges].quantity += charge.quantity;
                 groupedDatas[charge.charges].amount += charge.cost;
                 groupedDatas[charge.charges].transit_charge_refs.push(charge.name);
+                console.log("Transit remove")
             }
         });
-
         $.each(frm.doc.warehouse_charges, function(_, charge) {
             if (charge.charges) {
                 if (!groupedDatas[charge.charges]) {
@@ -952,12 +985,13 @@ frappe.ui.form.on('Warehouse Space Details', {
                 groupedDatas[charge.charges].quantity += charge.quantity;
                 groupedDatas[charge.charges].amount += charge.cost;
                 groupedDatas[charge.charges].transit_charge_refs.push(charge.name);
+                console.log("Warehouse remove",groupedDatas)
             }
         });
-
+        // Update or Add rows in opportunity_line_item
         for (let item in groupedDatas) {
             const existing_row = frm.doc.opportunity_line_item.find(row => row.item && row.item === item);
-
+          
             if (existing_row) {
                 existing_row.quantity = groupedDatas[item].quantity;
                 existing_row.amount = groupedDatas[item].amount;
@@ -973,16 +1007,19 @@ frappe.ui.form.on('Warehouse Space Details', {
                 frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
             }
         }
-
+        // Delete rows from opportunity_line_item that are not present in transit_charges
         for (let i = frm.doc.opportunity_line_item.length - 1; i >= 0; i--) {
             const row = frm.doc.opportunity_line_item[i];
             if (!groupedDatas[row.item]) {
+                
                 frm.get_field('opportunity_line_item').grid.grid_rows[i].remove();
             }
+           
         }
         frm.refresh_field('opportunity_line_item');
+      
     },
-
+ 
     charges: function(frm, cdt, cdn) {
         const charges_row = locals[cdt][cdn];
         const oldChargesValue = charges_row.__original ? charges_row.__original.charges : null;
@@ -1130,45 +1167,67 @@ function handleCharges(frm, child, chargeName, action) {
 }
 frappe.ui.form.on('Warehouse Charges', {
 
-   
-        cost: function(frm, cdt, cdn) {
-            const charges_row = locals[cdt][cdn];
-     
-     
-            if (charges_row.charges) {
-                let existing_row = null;
-               
-                if (frm.doc.opportunity_line_item && Array.isArray(frm.doc.opportunity_line_item)) {
-                    existing_row = frm.doc.opportunity_line_item.find(row => row.item && row.item === charges_row.charges);
-                }
-     
-     
-                if (existing_row) {
-                    // If item exists, update its quantity and cost
-                    existing_row.quantity += charges_row.quantity;
-                    existing_row.amount += charges_row.cost;
-                    // Update the average rate
-                    existing_row.average_rate = existing_row.amount / existing_row.quantity;
-                    frm.script_manager.trigger('amount', existing_row.doctype, existing_row.name);
-                   
-                } else {
-                    // If item doesn't exist, add it as a new row
-                    const target_row = frm.add_child('opportunity_line_item');
-                    target_row.item = charges_row.charges;
-                    target_row.quantity = charges_row.quantity;
-                    target_row.amount = charges_row.cost;
-                    target_row.average_rate = target_row.amount / target_row.quantity; // Calculate average rate for the new row
-                    target_row.warehouse_charge_ref = charges_row.name;  // Storing reference
 
-                frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
-                
-                
+ 
+    cost:function(frm, cdt, cdn) {
+        let aggregated_items = {}; // Object to store aggregated values.
+   
+        // Loop through each row in warehouse charges
+        $.each(frm.doc.warehouse_charges || [], function(i, charge) {
+            if (charge.charges) {
+                if (aggregated_items[charge.charges]) {
+                    // Aggregate if item already exists
+                    aggregated_items[charge.charges].quantity += charge.quantity;
+                    aggregated_items[charge.charges].amount += charge.cost;
+                } else {
+                    // Or, create a new aggregated entry
+                    aggregated_items[charge.charges] = {
+                        item: charge.charges,
+                        quantity: charge.quantity,
+                        amount: charge.cost,
+                        warehouse_charge_ref: charge.name
+                    };
+                }
             }
-     
-     
-                frm.refresh_field('opportunity_line_item');
+        });
+        $.each(frm.doc.transit_charges || [], function(i, charge) {
+            if (charge.charges) {
+                if (aggregated_items[charge.charges]) {
+                    // Aggregate if item already exists
+                    aggregated_items[charge.charges].quantity += charge.quantity;
+                    aggregated_items[charge.charges].amount += charge.cost;
+                } else {
+                    // Or, create a new aggregated entry
+                    aggregated_items[charge.charges] = {
+                        item: charge.charges,
+                        quantity: charge.quantity,
+                        amount: charge.cost,
+                        warehouse_charge_ref: charge.name
+                    };
+                }
             }
-        },
+        });
+   
+        // Clear the existing opportunity_line_item table
+        frm.doc.opportunity_line_item = [];
+   
+        // Populate the opportunity_line_item table with aggregated values
+        for (let item in aggregated_items) {
+            let target_row = frm.add_child('opportunity_line_item');
+            target_row.item = aggregated_items[item].item;
+            target_row.quantity = aggregated_items[item].quantity;
+            target_row.amount = aggregated_items[item].amount;
+            target_row.average_rate = target_row.amount / target_row.quantity;
+            target_row.warehouse_charge_ref = aggregated_items[item].warehouse_charge_ref;
+   
+            frm.script_manager.trigger('amount', target_row.doctype, target_row.name);
+        }
+   
+        frm.refresh_field('opportunity_line_item');
+    },
+   
+    // You can now use this function on triggers related to warehouse charges addition/editing.
+   
         warehouse_charges_remove: function(frm, cdt, cdn) {
             const groupedData = {};
     
@@ -1244,8 +1303,6 @@ frappe.ui.form.on('Warehouse Charges', {
             frm.refresh_field('opportunity_line_item');
         },
  
-     
-
 
     charges: function(frm, cdt, cdn) {
         var child = locals[cdt][cdn];
