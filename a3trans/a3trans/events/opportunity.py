@@ -383,7 +383,7 @@ def get_end_of_month(current_date_str,booked_upto):
 		data["end_month"]=end_of_month_str
 		days_difference = (booked_upto_date - current_date).days
 		data["difference"]=days_difference
-		print("workeddd")
+		
 		
 	else:
 		# Convert the end_of_month back to a string if needed
