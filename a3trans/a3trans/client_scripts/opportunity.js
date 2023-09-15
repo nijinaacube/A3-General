@@ -892,7 +892,12 @@ frappe.ui.form.on('Warehouse Space Details', {
         // frm.refresh_field('warehouse_charges');
         frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
        
-        
+        if (child.uom=="Cubic Meter"){
+            var type=child.cargo_type
+        }
+        else{
+            var type="NIL"
+        }
         
         frappe.call({
             method: "a3trans.a3trans.events.opportunity.calculate_charges",
@@ -901,12 +906,15 @@ frappe.ui.form.on('Warehouse Space Details', {
                 selected_item:selected_item,
                 uom:child.uom,
                 customer:frm.doc.party_name,
-                area:child.required_area
+                area:child.required_area,
+                rate_month:child.rate_per_month,
+                rate_day:child.rate_per_day,
+                types:type
 
             },
             callback: function(response) {
                 if (response.message){
-                   
+                   console.log("hiiii",response.message)
                 frappe.model.set_value(cdt, cdn, 'rental_cost',response.message["total_amount"]);
                     frm.refresh_field('rental_cost');
                     target_row.cost = child.rental_cost;

@@ -388,21 +388,41 @@ def get_end_of_month(current_date_str):
    print(end_of_month_str,days_difference)
    return data
 @frappe.whitelist()
-def calculate_charges(selected_item,no_of_days,uom,customer,area):
-	no_of_days=float(no_of_days)
-	print(selected_item,no_of_days)
-	data={}
-	if frappe.db.exists("Tariff Details",{"customer":customer}):
-		tariff=frappe.get_doc("Tariff Details",{"customer":customer})
-		for itm in tariff.warehouse_space_rent_charges:
-			if uom==itm.uom:
-				rate=itm.rate
+def calculate_charges(selected_item, no_of_days, uom, customer, area, rate_month, rate_day, types):
+	no_of_days = float(no_of_days)
+	data = {}
+	pt
+	if frappe.db.exists("Tariff Details", {"customer": customer}):
+		tariff = frappe.get_doc("Tariff Details", {"customer": customer})
 		
-				total_amount=(rate*no_of_days)*float(area)
-				data["total_amount"]=total_amount
-				return data
+		for itm in tariff.warehouse_space_rent_charges:
+			rate=0
+			# if uom == "Cubic Meter" and types == itm.cargo_type:
+			# 	if rate_month == 1:
+			# 		rate = itm.rate_per_month
+			# 	elif rate_day == 1:
+			# 		rate = itm.rate_per_day
+
+			# 	total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+			# 	data["total_amount"] = total_amount
+
+			if uom == itm.uom:
+				print(uom)
+				if rate_month == 1:
+					print(rate_month)
+					rate = itm.rate_per_month
+					print(rate)
+				elif rate_day == 1:
+					rate = itm.rate_per_day
+
+				total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+				data["total_amount"] = total_amount
+
+		return data
+
 	else:
 		frappe.msgprint("No Tariff Added for this customer")
+
 	
 	  
 @frappe.whitelist()
@@ -445,20 +465,20 @@ import json
 
 @frappe.whitelist()
 def calculate_transportation_cost(customer, zone, vehicle_type, length):
-    zone_list = json.loads(zone)
-    amount = 0
+	zone_list = json.loads(zone)
+	amount = 0
 
-    if len(zone_list) != 2:
-        return 0  # Return 0 if it's not a pair
+	if len(zone_list) != 2:
+		return 0  # Return 0 if it's not a pair
 
-    if frappe.db.exists("Tariff Details", {"customer": customer}):
-        tariff = frappe.get_doc("Tariff Details", {"customer": customer})
+	if frappe.db.exists("Tariff Details", {"customer": customer}):
+		tariff = frappe.get_doc("Tariff Details", {"customer": customer})
 
-        for item in tariff.tariff_details_item:
-            if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
-                amount = item.amount
+		for item in tariff.tariff_details_item:
+			if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+				amount = item.amount
 
-    return amount
+	return amount
 
 
 
