@@ -852,7 +852,10 @@ frappe.ui.form.on('Warehouse Space Details', {
                 selected_item:selected_item,
                 uom:child.uom,
                 customer:frm.doc.party_name,
-                area:child.required_area
+                area:child.required_area,
+                rate_month:child.rate_per_month,
+                rate_day:child.rate_per_day,
+                types:type
 
             },
             callback: function(response) {

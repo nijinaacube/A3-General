@@ -388,34 +388,29 @@ def get_end_of_month(current_date_str):
    print(end_of_month_str,days_difference)
    return data
 @frappe.whitelist()
-def calculate_charges(selected_item, no_of_days, uom, customer, area, rate_month, rate_day, types):
+def calculate_charges(selected_item, no_of_days, uom, customer, area, rate_month, rate_day,types):
 	no_of_days = float(no_of_days)
 	data = {}
-	pt
 	if frappe.db.exists("Tariff Details", {"customer": customer}):
 		tariff = frappe.get_doc("Tariff Details", {"customer": customer})
 		
 		for itm in tariff.warehouse_space_rent_charges:
 			rate=0
-			# if uom == "Cubic Meter" and types == itm.cargo_type:
-			# 	if rate_month == 1:
-			# 		rate = itm.rate_per_month
-			# 	elif rate_day == 1:
-			# 		rate = itm.rate_per_day
-
-			# 	total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
-			# 	data["total_amount"] = total_amount
-
-			if uom == itm.uom:
-				print(uom)
-				if rate_month == 1:
-					print(rate_month)
+			if types == itm.cargo_type and uom == "Cubic Meter":
+				if rate_month == "1":
 					rate = itm.rate_per_month
-					print(rate)
-				elif rate_day == 1:
+				elif rate_day == "1":
 					rate = itm.rate_per_day
 
 				total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+				data["total_amount"] = total_amount
+
+			if uom == itm.uom:
+				if rate_month == "1":
+					rate = itm.rate_per_month
+				elif rate_day == "1":
+					rate = itm.rate_per_day
+				total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
 				data["total_amount"] = total_amount
 
 		return data
