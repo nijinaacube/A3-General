@@ -131,6 +131,7 @@ doctype_js = {
 	"Delivery Note":"a3trans/client_scripts/delivery_note.js",
 	"Stock Entry":"a3trans/client_scripts/stock_entry.js",
 	"Sales Invoice":"a3trans/client_scripts/sales_invoice.js",
+	"Payment Entry":"a3trans/client_scripts/payment_entry.js",
 	
  }
 doc_events = {

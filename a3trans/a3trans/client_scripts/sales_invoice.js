@@ -5,7 +5,7 @@ frappe.ui.form.on('Sales Invoice', {
             frm.clear_table('items')
             console.log("hiii")
             frappe.call({
-                method: "a3trans.a3trans.events.opportunity.get_items",
+                method: "a3trans.a3trans.events.opportunity.get_invoice_items",
                 args:{
                     "doc": frm.doc.order_id
                 },
@@ -24,16 +24,7 @@ frappe.ui.form.on('Sales Invoice', {
                             items.qty = element.quantity
                             items.rate = element.rate
                             refresh_field("items")
-                        //     // items.price_list_rate=element.price
-                        //     // items.rate = element.price
-                        //     items.description=element.description
-                        //     items.uom=element.stock_uom
-                        //     items.warehouse=element.war
-                            
-                        //     console.log(element.war)
-                        //     
-        
-                        //    
+                         
                     })
 
                 }

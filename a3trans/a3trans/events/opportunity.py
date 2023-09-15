@@ -57,33 +57,33 @@ def after_insert(doc,method):
 			doc.save()
 
 # # 			Create payment entry
-# 			if doc.customer_group != "Credit Customer":
-# 				payment=frappe.new_doc("Payment Entry")
-# 				payment.party_type="Customer"
-# 				payment.party=doc.party_name
-# 				payment.party_name=doc.customer_name
-# 				payment.order_id=doc.name
-# 				payment.booking_type=doc.booking_type
-# 				if sales_order.company:
-# 					company=frappe.get_doc("Company",sales_order.company)
-# 					print(company)
-# 					payment.paid_from=company.default_receivable_account
-# 					payment.paid_to=company.default_cash_account
-# 				payment.paid_to_account_currency=company.default_currency
-# 				payment.paid_from_account_currency=company.default_currency
-# 				payment.payment_type="Receive"
-# 				payment.mode_of_payment=doc.mode_of_payment
-# 				current_date=frappe.utils.nowdate()			
-# 				payment.reference_date=current_date
-# 				payment.total_allocated_amount=doc.payment_amount
-# 				payment.paid_amount=doc.payment_amount
-# 				payment.received_amount=doc.payment_amount	
-# 				payment.append("references",{"reference_doctype":"Sales Invoice","reference_name":doc.invoice_id,"total_amount":doc.payment_amount,"allocated_amount":doc.payment_amount,"outstanding_amount":doc.payment_amount})
-# 				payment.insert()	
-# 				payment.submit()
-# 				doc.payment_id=payment.name
-# 				doc.status="Converted"
-# 				doc.save()
+			if doc.customer_group != "Credit Customer":
+				payment=frappe.new_doc("Payment Entry")
+				payment.party_type="Customer"
+				payment.party=doc.party_name
+				payment.party_name=doc.customer_name
+				payment.order_id=doc.name
+				payment.booking_type=doc.booking_type
+				if sales_order.company:
+					company=frappe.get_doc("Company",sales_order.company)
+					print(company)
+					payment.paid_from=company.default_receivable_account
+					payment.paid_to=company.default_cash_account
+				payment.paid_to_account_currency=company.default_currency
+				payment.paid_from_account_currency=company.default_currency
+				payment.payment_type="Receive"
+				payment.mode_of_payment=doc.mode_of_payment
+				current_date=frappe.utils.nowdate()			
+				payment.reference_date=current_date
+				payment.total_allocated_amount=doc.payment_amount
+				payment.paid_amount=doc.payment_amount
+				payment.received_amount=doc.payment_amount	
+				payment.append("references",{"reference_doctype":"Sales Invoice","reference_name":doc.invoice_id,"total_amount":doc.payment_amount,"allocated_amount":doc.payment_amount,"outstanding_amount":doc.payment_amount})
+				payment.insert()	
+				payment.submit()
+				doc.payment_id=payment.name
+				doc.status="Converted"
+				doc.save()
 			#Create user account for sender
 			if doc.mobile_number and doc.email:
 				if not frappe.db.exists("User", {"first_name":doc.customer_name, "mobile_no":doc.mobile_number,"email":doc.email}):
@@ -536,7 +536,7 @@ def create_stock_entry(doc):
 
 
 @frappe.whitelist()
-def  get_items(doc):
+def  get_invoice_items(doc):
 	print(doc)
 	oppo=frappe.get_doc("Opportunity",doc)
 
@@ -555,28 +555,48 @@ def  get_items(doc):
 	return {"data": data_from_receipt}
 
 			
+@frappe.whitelist()
+def  get_payment_items(doc):
+	print(doc)
+	oppo=frappe.get_doc("Opportunity",doc)
 
-
-
-
-	# if oppo.booking_type=="Warehouse":
-	# 	for shipment in oppo.warehouse_stock_items:
-	# 		print(doc,shipment)
-	# 		data["item"] = shipment.item
-	# 		it=frappe.get_doc("Item",shipment.item)
-	# 		data["description"]=it.description
-	# 		data["stock_uom"]=it.stock_uom
-	# 		data["quantity"] = shipment.quantity
-	# 		data_from_receipt.append(data)
-	# if oppo.booking_type=="Vehicle":
+	data_from_receipt = []
+	data = {}
 	
-	# 	for itm in oppo.shipment_details:
-	# 		print(doc,itm)
-	# 		data["item"] = itm.item
-	# 		it=frappe.get_doc("Item",itm.item)
-	# 		data["description"]=it.description
-	# 		data["stock_uom"]=it.stock_uom
-	# 		data["quantity"] = itm.quantity
-	# 		data_from_receipt.append(data)
+	data["b_type"]=oppo.booking_type
+	data["party"]=oppo.party_name
+	data["channel"]=oppo.booking_channel
+	data["mode"]=oppo.mode_of_payment
+	if oppo.company:
+		company=frappe.get_doc("Company",oppo.company)
+		data["paid_from"]=company.default_receivable_account
+		data["paid_to"]=company.default_cash_account
+		data["paid_to_account_currency"]=company.default_currency
+		data["paid_from_account_currency"]=company.default_currency
+	current_date=frappe.utils.nowdate()			
+	data["reference_date"]=current_date
+	data["total_allocated_amount"]=oppo.payment_amount
+	data["invoice"]=oppo.invoice_id
+	data_from_receipt.append(data)
+	print(data_from_receipt)
+	return {"data": data_from_receipt}
+
+
+
+
 			
 
+				# 	payment.paid_from=company.default_receivable_account
+				# 	payment.paid_to=company.default_cash_account
+				# payment.paid_to_account_currency=company.default_currency
+				# payment.paid_from_account_currency=company.default_currency
+				# payment.payment_type="Receive"
+				# payment.mode_of_payment=doc.mode_of_payment
+				# current_date=frappe.utils.nowdate()			
+				# payment.reference_date=current_date
+				# payment.total_allocated_amount=doc.payment_amount
+				# payment.paid_amount=doc.payment_amount
+				# payment.received_amount=doc.payment_amount	
+				# payment.append("references",{"reference_doctype":"Sales Invoice","reference_name":doc.invoice_id,"total_amount":doc.payment_amount,"allocated_amount":doc.payment_amount,"outstanding_amount":doc.payment_amount})
+				# payment.insert()	
+				# payment.submit()
