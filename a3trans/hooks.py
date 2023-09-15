@@ -111,7 +111,17 @@ fixtures = [
 	['name',"in",
 	["Driver","Helper","Operator"]
 	]
-]}
+]},
+  {"dt": "Custom DocPerm", "filters": [
+            [
+            "role", "in", [
+                    "Operator",
+                   
+                    "Guest"
+    		       ]
+                ]
+  ]
+            },
 ]
 
 
