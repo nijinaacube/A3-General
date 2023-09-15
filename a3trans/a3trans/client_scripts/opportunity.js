@@ -385,21 +385,7 @@ frappe.ui.form.on('Transit Details', {
                 })
             }
 
-            // if (child.warehouse==""){
-            //                             frappe.model.set_value(cdt, cdn, 'city',"");                    
-            //                             frm.refresh_field('city');    
-            //                             frappe.model.set_value(cdt, cdn, 'address_line1',"");                    
-            //                             frm.refresh_field('address_line1');    
-            //                             frappe.model.set_value(cdt, cdn, 'address_line2',"");                    
-            //                             frm.refresh_field('address_line1'); 
-            //                             frappe.model.set_value(cdt, cdn, 'latitude',"");                    
-            //                             frm.refresh_field('latitude');                 
-            //                             frappe.model.set_value(cdt, cdn, 'longitude',"");                    
-            //                             frm.refresh_field('longitude'); 
-            //                             frappe.model.set_value(cdt, cdn, 'contact',"");                    
-            //                             frm.refresh_field('contact'); 
-                                          
-            // }
+         
            
 
 
@@ -408,15 +394,7 @@ frappe.ui.form.on('Transit Details', {
     
 },
 
-receiver_information_remove: function(frm, cdt, cdn) {
-    console.log("before_delete called");
-    const row = locals[cdt][cdn];
-    if (row && row.zone) {
-        console.log("Detected removal of zone:", row.zone);
-        frm._deleted_zone = row.zone;
-        frm.script_manager.trigger('zone', row.doctype, row.name);
-    }
-},
+
 
 zone: function(frm, cdt, cdn) {
     if (!frm.doc || !frm.doc.receiver_information) return;
@@ -464,6 +442,7 @@ zone: function(frm, cdt, cdn) {
                         target_row.from_zone = from_zone;
                         target_row.to_zone = to_zone;
                         target_row.cost = response.message;
+                        frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
                         frm.refresh_field('transit_charges');
                     }
                 }
@@ -483,6 +462,8 @@ zone: function(frm, cdt, cdn) {
             target_row.quantity = 1;
             target_row.from_zone = from_zone;
             target_row.to_zone = to_zone;
+            target_row.cost=0
+            frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
             frm.refresh_field('transit_charges');
         }
     }
@@ -497,7 +478,6 @@ zone: function(frm, cdt, cdn) {
         delete frm._deleted_zone;  // Clean up the temporary variable
     }
 
-    // Remove transportation charge rows corresponding to removed or changed zones
     const validZonePairs = [];
     for (let i = 0; i < zones.length - 1; i++) {
         validZonePairs.push({ from_zone: zones[i], to_zone: zones[i + 1] });
@@ -506,8 +486,7 @@ zone: function(frm, cdt, cdn) {
         return validZonePairs.some(pair => pair.from_zone == charge.from_zone && pair.to_zone == charge.to_zone);
     });
     frm.refresh_field('transit_charges');
-}
-,
+},
 
 
 
