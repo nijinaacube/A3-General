@@ -377,21 +377,21 @@ def get_end_of_month(current_date_str,booked_upto):
 	_, last_day = calendar.monthrange(year, month)
 	# Create a new date object for the end of the month
 	end_of_month = current_date.replace(day=last_day)
-	if end_of_month>booked_upto_date:
-		end_of_month_str = end_of_month.strftime("%Y-%m-%d")
-		print(end_of_month,"worked")
-		data["end_month"]=end_of_month_str
-		days_difference = (booked_upto_date - current_date).days
-		data["difference"]=days_difference
-		
-		
-	else:
+	if booked_upto_date<end_of_month:
 		# Convert the end_of_month back to a string if needed
 		end_of_month_str = end_of_month.strftime("%Y-%m-%d")
 		data["end_month"]=end_of_month_str
 		days_difference = (end_of_month - current_date).days
 		data["difference"]=days_difference
 		print(end_of_month_str,days_difference)
+	else:
+		end_of_month_str = end_of_month.strftime("%Y-%m-%d")
+		print(end_of_month,"worked")
+		data["end_month"]=end_of_month_str
+		days_difference = (booked_upto_date - current_date).days
+		data["difference"]=days_difference
+		print(days_difference,"222222")
+		
 
 	return data
 @frappe.whitelist()

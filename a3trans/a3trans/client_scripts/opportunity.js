@@ -832,7 +832,7 @@ frappe.ui.form.on('Warehouse Space Details', {
 
     booked_upto:function(frm, cdt, cdn) {
         var child = locals[cdt][cdn];
-        if (!child.date_to) {
+        // if (!child.date_to) {
             // Set the current date as the default value for date_from
             // frappe.model.set_value(cdt, cdn, 'date_to', frappe.datetime.now_date());
             // frm.refresh_field('date_to');
@@ -847,13 +847,20 @@ frappe.ui.form.on('Warehouse Space Details', {
                     // Handle callback response if needed
                     frappe.model.set_value(cdt, cdn, 'date_to',response.message["end_month"]);
                     frm.refresh_field('date_to');
+                    if(response.message["difference"]<0){
+                        frappe.model.set_value(cdt, cdn, 'no_of_days',0);
+                        frm.refresh_field('no_of_days');
+                        frappe.throw("Booking to Date can't be lower than Current Date")
+                    }
+                    else{
                     frappe.model.set_value(cdt, cdn, 'no_of_days',response.message["difference"]);
                     frm.refresh_field('no_of_days');
+                    }
                     frappe.model.set_value(cdt, cdn, 'rental_charges',"Warehouse Space Rent");
                     frm.refresh_field('rental_charges');
                 }
             });
-        }
+        // }
     },
     uom: function(frm, cdt, cdn) {
         frm.clear_table("warehouse_charges")
