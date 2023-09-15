@@ -134,7 +134,6 @@ if (frm.doc.booking_type=="Vehicle"){
                     target_row.name1=r.message["title"]
                     target_row.is_default=1
                     target_row.order_no=1
-                
 					frm.refresh_field('receiver_information');
                     // const transit_row=frm.add_child('transit_charges')
                     // transit_row.charges="Transportation Charges"
@@ -409,13 +408,42 @@ frappe.ui.form.on('Transit Details', {
     
 },
 
+receiver_information_remove: function(frm, cdt, cdn) {
+    console.log("before_delete called");
+    const row = locals[cdt][cdn];
+    if (row && row.zone) {
+        console.log("Detected removal of zone:", row.zone);
+        frm._deleted_zone = row.zone;
+        frm.script_manager.trigger('zone', row.doctype, row.name);
+    }
+},
+
 zone: function(frm, cdt, cdn) {
+    if (!frm.doc || !frm.doc.receiver_information) return;
     const zones = frm.doc.receiver_information.map(receiver => receiver.zone);
 
-    if (zones.length >= 2) {
-        // When adding third zone (and subsequent zones), calculate charges based on the last two zones
-        let from_zone = zones[zones.length - 2];
-        let to_zone = zones[zones.length - 1];
+    // Handle deletion
+    if (frm._deleted_zone) {
+        console.log("Handling removal for zone:", frm._deleted_zone);
+        const charge_to_remove = frm.doc.transit_charges.find(r => r.from_zone == frm._deleted_zone || r.to_zone == frm._deleted_zone);
+        if (charge_to_remove) {
+            console.log("Found associated charge to remove:", charge_to_remove);
+            frm.get_field('transit_charges').grid.grid_rows_by_docname[charge_to_remove.name].remove();
+        }
+        delete frm._deleted_zone;  // Clean up the temporary variable
+        frm.refresh_field('transit_charges');
+        return;  // Early exit after handling deletion
+    }
+
+    // Initialize transit_charges if it's not present
+    if (!frm.doc.transit_charges) {
+        frm.doc.transit_charges = [];
+    }
+
+    if (zones.length == 2) {
+        // Calculate cost and add transportation charge
+        let from_zone = zones[0];
+        let to_zone = zones[1];
 
         frappe.call({
             method: "a3trans.a3trans.events.opportunity.calculate_transportation_cost",
@@ -427,30 +455,60 @@ zone: function(frm, cdt, cdn) {
             },
             callback: function(response) {
                 if (response.message) {
-                    // Check if a row already exists for this charge
-                    if (frm.doc.transit_charges){
                     let existing_row = frm.doc.transit_charges.find(r => r.from_zone == from_zone && r.to_zone == to_zone);
-                    
-                    if (existing_row) {
-                        // Update existing row
-                        frappe.model.set_value(existing_row.doctype, existing_row.name, 'cost', response.message);
-                    } 
-                }
-                else {
-                        // Add new row
+
+                    if (!existing_row) {
                         const target_row = frm.add_child('transit_charges');
                         target_row.charges = "Transportation Charges";
                         target_row.quantity = 1;
                         target_row.from_zone = from_zone;
                         target_row.to_zone = to_zone;
                         target_row.cost = response.message;
+                        frm.refresh_field('transit_charges');
                     }
-                    frm.refresh_field('transit_charges');
                 }
             }
         });
     }
-},
+
+    if (zones.length >= 3) {
+        // Add transportation charges without cost for the latest two zones
+        let from_zone = zones[zones.length - 2];
+        let to_zone = zones[zones.length - 1];
+        let existing_row = frm.doc.transit_charges.find(r => r.from_zone == from_zone && r.to_zone == to_zone);
+
+        if (!existing_row) {
+            const target_row = frm.add_child('transit_charges');
+            target_row.charges = "Transportation Charges";
+            target_row.quantity = 1;
+            target_row.from_zone = from_zone;
+            target_row.to_zone = to_zone;
+            frm.refresh_field('transit_charges');
+        }
+    }
+
+    if (frm._deleted_zone) {
+        console.log("Handling removal for zone:", frm._deleted_zone);
+        const charge_to_remove = frm.doc.transit_charges.find(r => r.from_zone == frm._deleted_zone || r.to_zone == frm._deleted_zone);
+        if (charge_to_remove) {
+            console.log("Found associated charge to remove:", charge_to_remove);
+            frm.get_field('transit_charges').grid.grid_rows_by_docname[charge_to_remove.name].remove();
+        }
+        delete frm._deleted_zone;  // Clean up the temporary variable
+    }
+
+    // Remove transportation charge rows corresponding to removed or changed zones
+    const validZonePairs = [];
+    for (let i = 0; i < zones.length - 1; i++) {
+        validZonePairs.push({ from_zone: zones[i], to_zone: zones[i + 1] });
+    }
+    frm.doc.transit_charges = frm.doc.transit_charges.filter(charge => {
+        return validZonePairs.some(pair => pair.from_zone == charge.from_zone && pair.to_zone == charge.to_zone);
+    });
+    frm.refresh_field('transit_charges');
+}
+,
+
 
 
 

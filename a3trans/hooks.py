@@ -109,7 +109,7 @@ fixtures = [
 
 {'dt':"Role","filters":[
 	['name',"in",
-	["Driver","Helper"]
+	["Driver","Helper","Operator"]
 	]
 ]}
 ]
