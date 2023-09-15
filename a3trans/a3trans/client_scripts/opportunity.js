@@ -805,7 +805,32 @@ frappe.ui.form.on('Warehouse Space Details', {
  
         }
     },
-    date_from:function(frm, cdt, cdn) {
+    // date_from:function(frm, cdt, cdn) {
+    //     var child = locals[cdt][cdn];
+    //     if (!child.date_to) {
+    //         // Set the current date as the default value for date_from
+    //         // frappe.model.set_value(cdt, cdn, 'date_to', frappe.datetime.now_date());
+    //         // frm.refresh_field('date_to');
+    //         frappe.call({
+    //             method: "a3trans.a3trans.events.opportunity.get_end_of_month",
+    //             args: {
+    //                 current_date_str:frappe.datetime.now_date()
+    //             },
+    //             callback: function(response) {
+    //                 console.log(response.message["end_month"])
+    //                 // Handle callback response if needed
+    //                 frappe.model.set_value(cdt, cdn, 'date_to',response.message["end_month"]);
+    //                 frm.refresh_field('date_to');
+    //                 frappe.model.set_value(cdt, cdn, 'no_of_days',response.message["difference"]);
+    //                 frm.refresh_field('no_of_days');
+    //                 frappe.model.set_value(cdt, cdn, 'rental_charges',"Warehouse Space Rent");
+    //                 frm.refresh_field('rental_charges');
+    //             }
+    //         });
+    //     }
+    // },
+
+    booked_upto:function(frm, cdt, cdn) {
         var child = locals[cdt][cdn];
         if (!child.date_to) {
             // Set the current date as the default value for date_from
@@ -814,7 +839,8 @@ frappe.ui.form.on('Warehouse Space Details', {
             frappe.call({
                 method: "a3trans.a3trans.events.opportunity.get_end_of_month",
                 args: {
-                    current_date_str:frappe.datetime.now_date()
+                    current_date_str:frappe.datetime.now_date(),
+                    booked_upto:child.booked_upto
                 },
                 callback: function(response) {
                     console.log(response.message["end_month"])
