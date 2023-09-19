@@ -129,14 +129,14 @@
    "_comments": null,
    "_liked_by": null,
    "_user_tags": null,
-   "creation": "2023-09-19 11:45:41.245099",
+   "creation": "2023-09-19 15:15:08.446140",
    "default_value": null,
    "doc_type": "Stock Entry",
    "docstatus": 0,
    "doctype_or_field": "DocType",
    "field_name": null,
    "idx": 0,
-   "modified": "2023-09-19 11:45:41.245099",
+   "modified": "2023-09-19 15:15:08.446140",
    "modified_by": "Administrator",
    "name": "Stock Entry-main-links_order",
    "owner": "Administrator",
@@ -146,7 +146,7 @@
    "property": "links_order",
    "property_type": "Small Text",
    "row_name": null,
-   "value": "[\"7fd372825e\"]"
+   "value": "[\"e75bcec47a\"]"
   },
   {
    "_assign": null,
