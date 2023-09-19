@@ -6,6 +6,10 @@ import calendar
 from functools import reduce
 from frappe.utils import add_to_date
 def after_insert(doc,method):
+	if doc.lead_id:
+		lead_doc=frappe.get_doc("Lead",doc.lead_id)
+		lead_doc.status="Opportunity"
+		lead_doc.save()
 	if doc.opportunity_from=="Customer":
 		if doc.party_name:
 			
@@ -126,37 +130,46 @@ def after_insert(doc,method):
 			for info in doc.receiver_information:
 				# Checking if the current info.contact exists as a phone in the existing_addresses
 				if info.contact not in existing_addresses:
-					address = frappe.new_doc("Address")
-					if info.name1:
-						address.address_title = info.name1
-					if info.address_line1:
-						address.address_line1 = info.address_line1
-					if info.address_line2:
-						address.address_line2 = info.address_line2
-					if info.city:
-						address.city = info.city
-					if info.latitude:
-						address.latitude = info.latitude
-					if info.longitude:
-						address.longitude = info.longitude
-					if info.contact:
-						address.phone = info.contact
-					if info.email:
-						address.email_id = info.email
-					if info.make_default ==1:
-						address.is_default=1
-					address.address_type = "Shipping"
-					address.append("links", {
-						"link_doctype": "Customer",
-						"link_name": doc.party_name
-					})
-					address.address_type = "Shipping"
-					
-					address.append("links", {
-						"link_doctype": "Customer",
-						"link_name": doc.party_name
-					})
-					address.insert()
+					if info.address_line1 and info.city:
+						address = frappe.new_doc("Address")
+						if info.name1:
+							address.address_title = info.name1
+						else:
+							address.address_title = "Home"
+						if info.address_line1:
+							address.address_line1 = info.address_line1
+						else:
+							address.address_line1 ="NIL"
+						if info.address_line2:
+							address.address_line2 = info.address_line2
+						else:
+							address.address_line2 = "NIL"
+						if info.city:
+							address.city = info.city
+						else:
+							address.city="NIL"
+						if info.latitude:
+							address.latitude = info.latitude
+						if info.longitude:
+							address.longitude = info.longitude
+						if info.contact:
+							address.phone = info.contact
+						if info.email:
+							address.email_id = info.email
+						if info.make_default ==1:
+							address.is_default=1
+						address.address_type = "Shipping"
+						address.append("links", {
+							"link_doctype": "Customer",
+							"link_name": doc.party_name
+						})
+						address.address_type = "Shipping"
+						
+						address.append("links", {
+							"link_doctype": "Customer",
+							"link_name": doc.party_name
+						})
+						address.insert()
 					
 
 

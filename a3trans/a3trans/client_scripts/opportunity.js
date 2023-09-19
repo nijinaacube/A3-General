@@ -682,11 +682,16 @@ function update_order_no(frm) {
 
 
 frappe.ui.form.on('Opportunity', {
+  
+
 
     onload: function(frm) {
 
         
-
+        if (frm.doc.customer_name && frm.doc.party_name==""){
+            frm.set_value("party_name",frm.doc.customer_name)
+            frm.refresh_field("party_name")
+        }
         if (frm.doc.booking_type == "Packing and Moving") {
 
             

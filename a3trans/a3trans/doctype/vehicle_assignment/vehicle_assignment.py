@@ -92,7 +92,7 @@ class VehicleAssignment(Document):
 
 						# Calculate the distance
 						distance_km =round(earth_radius_km * c,2)
-					order.distance=distance_km
+						order.distance=distance_km
 					if order.eta and order.actual_arrival_time:
 						start_datetime = get_datetime(order.eta) 
 						end_datetime = get_datetime(order.actual_arrival_time)
@@ -109,7 +109,7 @@ class VehicleAssignment(Document):
 						)
 
 						print("minutes",total_minutes)
-						order.time_difference=total_minutes
+						order.time_difference=float(total_minutes)
 
 	def after_insert(self):
 		if self.routes:

@@ -58,6 +58,9 @@ def convert(doc):
             customer.city="NIL"
 
         customer.insert()
+    print(customer.name)
+    customerr=frappe.get_doc("Customer",customer.name)
+    print(customerr)
    
     return customer.as_dict()
 
