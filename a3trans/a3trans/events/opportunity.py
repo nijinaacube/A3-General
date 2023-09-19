@@ -57,33 +57,33 @@ def after_insert(doc,method):
 			doc.save()
 
 # # 			Create payment entry
-			if doc.customer_group != "Credit Customer":
-				payment=frappe.new_doc("Payment Entry")
-				payment.party_type="Customer"
-				payment.party=doc.party_name
-				payment.party_name=doc.customer_name
-				payment.order_id=doc.name
-				payment.booking_type=doc.booking_type
-				if sales_order.company:
-					company=frappe.get_doc("Company",sales_order.company)
-					print(company)
-					payment.paid_from=company.default_receivable_account
-					payment.paid_to=company.default_cash_account
-				payment.paid_to_account_currency=company.default_currency
-				payment.paid_from_account_currency=company.default_currency
-				payment.payment_type="Receive"
-				payment.mode_of_payment=doc.mode_of_payment
-				current_date=frappe.utils.nowdate()			
-				payment.reference_date=current_date
-				payment.total_allocated_amount=doc.payment_amount
-				payment.paid_amount=doc.payment_amount
-				payment.received_amount=doc.payment_amount	
-				payment.append("references",{"reference_doctype":"Sales Invoice","reference_name":doc.invoice_id,"total_amount":doc.payment_amount,"allocated_amount":doc.payment_amount,"outstanding_amount":doc.payment_amount})
-				payment.insert()	
-				payment.submit()
-				doc.payment_id=payment.name
-				doc.status="Converted"
-				doc.save()
+			# if doc.customer_group != "Credit Customer":
+			# 	payment=frappe.new_doc("Payment Entry")
+			# 	payment.party_type="Customer"
+			# 	payment.party=doc.party_name
+			# 	payment.party_name=doc.customer_name
+			# 	payment.order_id=doc.name
+			# 	payment.booking_type=doc.booking_type
+			# 	if sales_order.company:
+			# 		company=frappe.get_doc("Company",sales_order.company)
+			# 		print(company)
+			# 		payment.paid_from=company.default_receivable_account
+			# 		payment.paid_to=company.default_cash_account
+			# 	payment.paid_to_account_currency=company.default_currency
+			# 	payment.paid_from_account_currency=company.default_currency
+			# 	payment.payment_type="Receive"
+			# 	payment.mode_of_payment=doc.mode_of_payment
+			# 	current_date=frappe.utils.nowdate()			
+			# 	payment.reference_date=current_date
+			# 	payment.total_allocated_amount=doc.payment_amount
+			# 	payment.paid_amount=doc.payment_amount
+			# 	payment.received_amount=doc.payment_amount	
+			# 	payment.append("references",{"reference_doctype":"Sales Invoice","reference_name":doc.invoice_id,"total_amount":doc.payment_amount,"allocated_amount":doc.payment_amount,"outstanding_amount":doc.payment_amount})
+			# 	payment.insert()	
+			# 	payment.submit()
+			# 	doc.payment_id=payment.name
+			# 	doc.status="Converted"
+			# 	doc.save()
 			#Create user account for sender
 			if doc.mobile_number and doc.email:
 				if not frappe.db.exists("User", {"first_name":doc.customer_name, "mobile_no":doc.mobile_number,"email":doc.email}):
@@ -197,20 +197,20 @@ def after_insert(doc,method):
 							warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"zone":war.zone,"status":"Pending"})		
 							warehouses.save()
 
-						# if doc.party_name:
-						# 	customer=frappe.get_doc("Customer",doc.party_name)
-						# 	print(customer)
-						# 	fromdate=frappe.utils.nowdate()
-						# 	dur=int(war.duration)
-						# 	todate=add_to_date(fromdate,days=dur,as_string=True)	
-						# 	table_len=len(customer.customer_warehouse_details)                            
-						# 	if table_len ==0:                                
-						# 		customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
-						# 	else:                                
-						# 		for warehouses_det in customer.customer_warehouse_details:                                    
-						# 			if  war.warehouse not in warehouses_det.warehouse:                                        
-						# 				customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
-						# 	customer.save()	
+						if doc.party_name:
+							customer=frappe.get_doc("Customer",doc.party_name)
+							print(customer)
+							fromdate=frappe.utils.nowdate()
+							dur=int(war.duration)
+							todate=add_to_date(fromdate,days=dur,as_string=True)	
+							table_len=len(customer.customer_warehouse_details)                            
+							if table_len ==0:                                
+								customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
+							else:                                
+								for warehouses_det in customer.customer_warehouse_details:                                    
+									if  war.warehouse not in warehouses_det.warehouse:                                        
+										customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                            
+							customer.save()	
 							
 						
 			
@@ -288,21 +288,25 @@ def get_warehouse(doc):
 def fetch_warehouse(warehouse):
 	print(warehouse)
 	data={}
-	warehouses=frappe.get_doc("Warehouse",warehouse)
-	if warehouses.city:
-		data["city"]= warehouses.city
-	if warehouses.address_line_1:
-		data["address1"]=warehouses.address_line_1
-	if warehouses.address_line_2:
-		data["address2"]=warehouses.address_line_2
+	ware=frappe.get_doc("Warehouse",warehouse)
+	if ware.parent_warehouse:
+		warehouses=frappe.get_doc("Warehouse",ware.parent_warehouse)
+		print(warehouses,"*******")
 
-	if warehouses.latitude:
-		data["lat"]=warehouses.latitude
-	if warehouses.longitude:
-		data["lon"]=warehouses.longitude
-	if warehouses.phone_no:
-		data["phone"]=warehouses.phone_no
-	return data
+		if warehouses.city:
+			data["city"]= warehouses.city
+		if warehouses.address_line_1:
+			data["address1"]=warehouses.address_line_1
+		if warehouses.address_line_2:
+			data["address2"]=warehouses.address_line_2
+
+		if warehouses.latitude:
+			data["lat"]=warehouses.latitude
+		if warehouses.longitude:
+			data["lon"]=warehouses.longitude
+		if warehouses.phone_no:
+			data["phone"]=warehouses.phone_no
+		return data
 
 @frappe.whitelist()
 def get_default_address(doc):
@@ -565,6 +569,7 @@ def  get_payment_items(doc):
 	
 	data["b_type"]=oppo.booking_type
 	data["party"]=oppo.party_name
+	data["cus"]=oppo.customer_name
 	data["channel"]=oppo.booking_channel
 	data["mode"]=oppo.mode_of_payment
 	if oppo.company:
@@ -586,17 +591,4 @@ def  get_payment_items(doc):
 
 			
 
-				# 	payment.paid_from=company.default_receivable_account
-				# 	payment.paid_to=company.default_cash_account
-				# payment.paid_to_account_currency=company.default_currency
-				# payment.paid_from_account_currency=company.default_currency
-				# payment.payment_type="Receive"
-				# payment.mode_of_payment=doc.mode_of_payment
-				# current_date=frappe.utils.nowdate()			
-				# payment.reference_date=current_date
-				# payment.total_allocated_amount=doc.payment_amount
-				# payment.paid_amount=doc.payment_amount
-				# payment.received_amount=doc.payment_amount	
-				# payment.append("references",{"reference_doctype":"Sales Invoice","reference_name":doc.invoice_id,"total_amount":doc.payment_amount,"allocated_amount":doc.payment_amount,"outstanding_amount":doc.payment_amount})
-				# payment.insert()	
-				# payment.submit()
+				

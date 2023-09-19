@@ -13,6 +13,7 @@
   "zone",
   "rack",
   "shelf",
+  "quantity",
   "status"
  ],
  "fields": [
@@ -28,15 +29,16 @@
    "fieldname": "from",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "From "
+   "label": "From Date"
   },
   {
    "fieldname": "to",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "label": "To"
+   "label": "To Date"
   },
   {
+   "default": "Active",
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -70,12 +72,18 @@
    "in_list_view": 1,
    "label": "Shelf",
    "options": "Warehouse Shelf"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-01 14:51:03.345638",
+ "modified": "2023-09-18 14:39:08.373022",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Customer Warehouse Details",

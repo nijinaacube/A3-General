@@ -422,7 +422,7 @@ zone: function(frm, cdt, cdn) {
         // Calculate cost and add transportation charge
         let from_zone = zones[0];
         let to_zone = zones[1];
-
+if (frm.doc.vehicle_type){
         frappe.call({
             method: "a3trans.a3trans.events.opportunity.calculate_transportation_cost",
             args: {
@@ -448,6 +448,7 @@ zone: function(frm, cdt, cdn) {
                 }
             }
         });
+    }
     }
 
     if (zones.length >= 3) {
@@ -741,8 +742,66 @@ frappe.ui.form.on('Opportunity', {
                         }
                     };
                 };
-              
-        
+                // frm.fields_dict['warehouse_space_details'].grid.get_field('main_warehouse').get_query = function(doc, cdt, cdn) {
+                    
+                //     return {
+                //         filters: {
+                            
+                //             "is_group": 1
+                //         }
+                //     };
+                // };
+                
+                // frm.fields_dict['warehouse_space_details'].grid.get_field('floor_id').get_query = function(doc, cdt, cdn) {
+                //     // get the current row object
+                //     let row = locals[cdt][cdn];
+                
+                //     return {
+                //         filters: {
+                //             "warehouse": row.main_warehouse
+                //         }
+                //     }
+                // };
+
+                // frm.fields_dict['warehouse_space_details'].grid.get_field('zone').get_query = function(doc, cdt, cdn) {
+                //     // get the current row object
+                //     let row = locals[cdt][cdn];
+                
+                //     return {
+                //         filters: {
+
+                //             "floor": row.floor_id,
+                //             "warehouse": row.main_warehouse
+                //         }
+                //     }
+                // }
+                // frm.fields_dict['warehouse_space_details'].grid.get_field('shelf_id').get_query = function(doc, cdt, cdn) {
+                //     // get the current row object
+                //     let row = locals[cdt][cdn];
+                
+                //     return {
+                //         filters: {
+
+                //             "floor_id": row.floor_id,
+                //             "warehouse": row.main_warehouse,
+                //             "zone":row.zone
+                //         }
+                //     }
+                // }
+
+                // frm.fields_dict['warehouse_space_details'].grid.get_field('rack_id').get_query = function(doc, cdt, cdn) {
+                //     // get the current row object
+                //     let row = locals[cdt][cdn];
+                
+                //     return {
+                //         filters: {
+
+                //             "warehouse_shelf": row.shelf_id,
+                //             "warehouse": row.main_warehouse,
+                          
+                //         }
+                //     }
+                // }
         
     },
     receiver_information_add: function(frm, cdt, cdn) {

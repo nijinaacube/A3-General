@@ -54,12 +54,13 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-12 22:37:33.384011",
+ "modified": "2023-09-18 10:37:16.503233",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Shipment Details",
  "owner": "Administrator",
  "permissions": [],
+ "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC"
 }

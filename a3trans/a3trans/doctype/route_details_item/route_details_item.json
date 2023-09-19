@@ -6,13 +6,23 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "route_details_section",
   "order_id",
   "order_no",
   "transit_type",
   "location",
+  "latitude",
+  "column_break_7zheu",
+  "longitude",
   "eta",
   "actual_arrival_time",
-  "status"
+  "status",
+  "performance_details_section",
+  "driver_marked_latitude",
+  "driver_marked_longitude",
+  "column_break_1ojub",
+  "distance",
+  "per_status"
  ],
  "fields": [
   {
@@ -57,12 +67,71 @@
    "fieldtype": "Int",
    "in_list_view": 1,
    "label": "Order No"
+  },
+  {
+   "fieldname": "route_details_section",
+   "fieldtype": "Section Break",
+   "label": "Route Details"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "column_break_7zheu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "performance_details_section",
+   "fieldtype": "Section Break",
+   "label": "Performance Details"
+  },
+  {
+   "fieldname": "driver_marked_latitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Driver Marked Latitude"
+  },
+  {
+   "fieldname": "driver_marked_longitude",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Driver Marked Longitude"
+  },
+  {
+   "fieldname": "column_break_1ojub",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "distance",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Distance"
+  },
+  {
+   "fieldname": "per_status",
+   "fieldtype": "Select",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "\nPoor\nGood\nVery Good\nExcellent"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-12 13:45:08.959045",
+ "modified": "2023-09-19 10:19:10.104276",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Route Details Item",

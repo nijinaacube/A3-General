@@ -132,11 +132,15 @@ doctype_js = {
 	"Stock Entry":"a3trans/client_scripts/stock_entry.js",
 	"Sales Invoice":"a3trans/client_scripts/sales_invoice.js",
 	"Payment Entry":"a3trans/client_scripts/payment_entry.js",
+	"Lead":"a3trans/client_scripts/lead.js",
 	
  }
 doc_events = {
 	 "Customer": {
 		"after_insert":"a3trans.a3trans.events.customer.after_insert"
+	 },
+	  "Lead": {
+		"after_insert":"a3trans.a3trans.events.lead.after_insert"
 	 },
 	 "Opportunity":{
 		"after_insert":"a3trans.a3trans.events.opportunity.after_insert"
