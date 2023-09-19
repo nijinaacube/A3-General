@@ -1,10 +1,21 @@
 
 import frappe
 def on_submit(doc,methods):
-    if doc.order_id:
-        oppo=frappe.get_doc("Opportunity",doc.order_id)
-        oppo.order_status="Stock Updated"
-        # oppo.save()
+
+	# if doc.order_id=="":
+	# 	if doc.party_name and doc.stock_entry_type=="Material Receipt":
+	# 		oppo=frappe.new_doc("Opportunity")
+	# 		oppo.party_name=doc.party_name
+	# 		oppo.booking_type="Warehouse"
+	# 		if doc.items:
+	# 			for item in doc.items:
+	# 				oppo.append("warehouse_space_details",{"warehouse":item.t_warehouse})
+
+					
+	if doc.order_id:
+		oppo=frappe.get_doc("Opportunity",doc.order_id)
+		oppo.order_status="Stock Updated"
+		# oppo.save()
 
 
 @frappe.whitelist()
@@ -27,3 +38,9 @@ def  get_items(doc):
 		data["quantity"] = shipment.quantity
 		data_from_receipt.append(data)
 	return {"data": data_from_receipt}
+
+
+@frappe.whitelist()
+def  get_customer(name):
+	stock=frappe.get_doc("Stock Entry",name)
+	return stock.as_dict()

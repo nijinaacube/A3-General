@@ -32,27 +32,28 @@ def after_insert(doc,method):
 
 
 			# Create sales invoice
-			sales_invoice=frappe.new_doc("Sales Invoice")
-			sales_invoice.customer = doc.party_name
-			sales_invoice.customer_name = doc.customer_name
-			sales_invoice.order_id=doc.name
-			sales_invoice.booking_type=doc.booking_type
-			sales_invoice.order_status="New"
-			sales_invoice.due_date=frappe.utils.nowdate()
-			if doc.booking_type=="Vehicle" or doc.booking_type=="Warehouse" :
-				for shipment in doc.opportunity_line_item:
-					sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
-			
-			if doc.booking_type=="Diesel":
+			if doc.payment_amount != 0:
+				sales_invoice=frappe.new_doc("Sales Invoice")
+				sales_invoice.customer = doc.party_name
+				sales_invoice.customer_name = doc.customer_name
+				sales_invoice.order_id=doc.name
+				sales_invoice.booking_type=doc.booking_type
+				sales_invoice.order_status="New"
+				sales_invoice.due_date=frappe.utils.nowdate()
+				if doc.booking_type=="Vehicle" or doc.booking_type=="Warehouse" :
+					for shipment in doc.opportunity_line_item:
+						sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
 				
-				sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
-			if doc.booking_type=="Packing and Moving":
-				for packing in doc.packing_items:
-					sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
-		
-			sales_invoice.insert()
-			sales_invoice.submit()
-			doc.invoice_id = sales_invoice.name
+				if doc.booking_type=="Diesel":
+					
+					sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
+				if doc.booking_type=="Packing and Moving":
+					for packing in doc.packing_items:
+						sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
+			
+				sales_invoice.insert()
+				sales_invoice.submit()
+				doc.invoice_id = sales_invoice.name
 			doc.status="Converted"
 			doc.save()
 

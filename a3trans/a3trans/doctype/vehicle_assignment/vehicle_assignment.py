@@ -2,6 +2,8 @@
 # For license information, please see license.txt
 import frappe
 from frappe.model.document import Document
+import math
+from frappe.utils import get_datetime, time_diff
 
 class VehicleAssignment(Document):
 	def validate(self):
@@ -61,6 +63,54 @@ class VehicleAssignment(Document):
 					
 					sales_order.save()
 					sales_invoice.save()
+
+				if order.status=="Arrived":
+					if order.latitude and order.longitude and order.driver_marked_latitude and order.driver_marked_longitude:
+						order.latitude=float(order.latitude)
+						order.longitude=float(order.longitude)
+						order.driver_marked_latitude=float(order.driver_marked_latitude)
+						order.driver_marked_longitude=float(order.driver_marked_longitude)
+						lat1 = math.radians(order.latitude)
+						lon1 = math.radians(order.longitude)
+						lat2 = math.radians(order.driver_marked_latitude)
+						lon2 = math.radians(order.driver_marked_longitude)
+						# distance_km=0
+
+
+						# Radius of the Earth in kilometers
+						earth_radius_km = 6371.0
+
+
+						# Haversine formula
+						dlon = lon2 - lon1
+						dlat = lat2 - lat1
+
+
+						a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+						c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+
+						# Calculate the distance
+						distance_km =round(earth_radius_km * c,2)
+					order.distance=distance_km
+					if order.eta and order.actual_arrival_time:
+						start_datetime = get_datetime(order.eta) 
+						end_datetime = get_datetime(order.actual_arrival_time)
+
+
+						# Calculate the time difference
+						time_difference = time_diff(end_datetime, start_datetime)
+
+
+						# Calculate the total difference in minutes
+						total_minutes = (
+							time_difference.days * 24 * 60 +  # Days to minutes
+							time_difference.seconds // 60     # Seconds to minutes
+						)
+
+						print("minutes",total_minutes)
+						order.time_difference=total_minutes
+
 	def after_insert(self):
 		if self.routes:
 			for order in self.routes:

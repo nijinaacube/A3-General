@@ -44,6 +44,7 @@ frappe.ui.form.on('Opportunity', {
     
     party_name: function(frm) {
         if (frm.doc.party_name){
+            if (frm.doc.booking_type=="Warehouse"){
            
             frappe.call({
                 method: "a3trans.a3trans.events.opportunity.get_warehouse",
@@ -56,7 +57,7 @@ frappe.ui.form.on('Opportunity', {
                         
 
                         if (r.message && r.message.length > 0) {
-                            if (frm.doc.booking_type=="Warehouse"){
+                            
                                 frm.clear_table("warehouse_space_details")
                             const target_row = frm.add_child('warehouse_space_details');
                             target_row.warehouse = r.message[0];
@@ -65,7 +66,7 @@ frappe.ui.form.on('Opportunity', {
                             // Trigger the warehouse field to execute its associated logic
                             frm.script_manager.trigger('warehouse', target_row.doctype, target_row.name);
                         }
-                    }
+                    
                         frm.fields_dict['warehouse_space_details'].grid.get_field('warehouse').get_query = function(doc, cdt, cdn) {
                             if (r.message.length > 0) {
                             return {
@@ -112,6 +113,7 @@ frappe.ui.form.on('Opportunity', {
               
             }
             });
+        }
         
 if (frm.doc.booking_type=="Vehicle"){
             frappe.call({

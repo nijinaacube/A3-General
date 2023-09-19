@@ -132,6 +132,23 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Stock Details",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock List",
+   "link_to": "Stock Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Asset Management",
    "link_type": "DocType",
    "onboard": 0,
@@ -174,7 +191,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-09-15 19:17:56.257947",
+ "modified": "2023-09-19 12:38:42.789657",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Logistics",
@@ -216,6 +233,12 @@
    "doc_view": "New",
    "label": "Import New Quotation",
    "link_to": "Tariff Details",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "New",
+   "label": "Add Stock Without Booking",
+   "link_to": "Stock Entry",
    "type": "DocType"
   }
  ],

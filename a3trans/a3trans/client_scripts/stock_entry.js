@@ -1,6 +1,5 @@
 frappe.ui.form.on('Stock Entry', {
 	order_id: function(frm) {
-
 if (frm.doc.order_id){
     frm.clear_table('items')
     frappe.call({
@@ -37,7 +36,8 @@ if (frm.doc.order_id){
         }
     })
 }
-    }
+    },
+
 
 
 })

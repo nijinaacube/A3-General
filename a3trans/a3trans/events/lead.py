@@ -26,7 +26,11 @@ def after_insert(doc,methods):
 @frappe.whitelist()
 def convert(doc):
     lead_doc=frappe.get_doc("Lead",doc)
-    if not frappe.db.exists("customer",{"mobile_number":lead_doc.mobile_number}):
+    if frappe.db.exists("Customer",{"mobile_number":lead_doc.mobile_number}):
+        customer=frappe.get_doc("Customer",{"mobile_number":lead_doc.mobile_number})
+
+    else:  
+       
         customer=frappe.new_doc("Customer")
         customer.customer_name=lead_doc.lead_name
         customer.mobile_number=lead_doc.mobile_number
@@ -34,7 +38,7 @@ def convert(doc):
             customer.email=lead_doc.email_id
 
         customer.customer_group="Individual"
-        customer.territory="INDIA"
+        customer.territory="India"
         if lead_doc.address_title:
             customer.address_title=lead_doc.address_title
         else:
@@ -54,11 +58,7 @@ def convert(doc):
             customer.city="NIL"
 
         customer.insert()
-    else:
-        customer=frappe.get_doc("customer",{"mobile_number":lead_doc.mobile_number})
-
-    lead_doc.status="Opportunity"
-    lead_doc.save()
+   
     return customer.as_dict()
 
 
