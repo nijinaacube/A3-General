@@ -124,7 +124,6 @@ fixtures = [
             },
 ]
 
-
 doctype_js = {
 	"Opportunity": "a3trans/client_scripts/opportunity.js",
 	"Warehouse": "a3trans/client_scripts/warehouse.js",
