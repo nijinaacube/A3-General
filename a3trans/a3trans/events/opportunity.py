@@ -194,14 +194,6 @@ def after_insert(doc,method):
 					add.is_default=1
 					add.insert()
 
-
-
-				
-				
-
-
-
-
 			if doc.booking_type == "Warehouse":
 			
 				for war in doc.warehouse_space_details:
@@ -228,11 +220,6 @@ def after_insert(doc,method):
 							
 						
 			
-			
-					
-
-		
-
 
 
 #API
@@ -419,31 +406,46 @@ def calculate_charges(selected_item, no_of_days, uom, customer, area, rate_month
 	no_of_days = float(no_of_days)
 	data = {}
 	if frappe.db.exists("Tariff Details", {"customer": customer}):
-		tariff = frappe.get_doc("Tariff Details", {"customer": customer})
 		
-		for itm in tariff.warehouse_space_rent_charges:
-			rate=0
-			if types == itm.cargo_type and uom == "Cubic Meter":
-				if rate_month == "1":
-					rate = itm.rate_per_month
-				elif rate_day == "1":
-					rate = itm.rate_per_day
+		tariff = frappe.get_doc("Tariff Details", {"customer": customer})
 
-				total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
-				data["total_amount"] = total_amount
+		if tariff.warehouse_space_rent_charges:
+		
+			for itm in tariff.warehouse_space_rent_charges:
+				rate=0
+				if types == itm.cargo_type and uom == "Cubic Meter":
+					if rate_month == "1":
+						rate = itm.rate_per_month
+					elif rate_day == "1":
+						if itm.rate_per_day:
+							rate = itm.rate_per_day
+						else:
+							ratemonth= itm.rate_per_month
+							rate=(ratemonth/30)
+							print(rate)
 
-			if uom == itm.uom:
-				if rate_month == "1":
-					rate = itm.rate_per_month
-				elif rate_day == "1":
-					rate = itm.rate_per_day
-				total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
-				data["total_amount"] = total_amount
+					total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+					data["total_amount"] = total_amount
 
-		return data
+				if uom == itm.uom:
+					if rate_month == "1":
+						rate = itm.rate_per_month
+					elif rate_day == "1":
+						if itm.rate_per_day:
+							rate = itm.rate_per_day
+						else:
+							ratemonth= itm.rate_per_month
+							rate=(ratemonth/30)
+						
+					total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
+					data["total_amount"] = total_amount
+
+			return data
+		else:
+			frappe.throw("Please Add Warehouse Tariff for this Customer")
 
 	else:
-		frappe.msgprint("No Tariff Added for this customer")
+		frappe.throw("No Tariff Added for this customer")
 
 	
 	  
@@ -500,7 +502,9 @@ def calculate_transportation_cost(customer, zone, vehicle_type, length):
 			if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
 				amount = item.amount
 
-	return amount
+		return amount
+	else:
+		frappe.throw("No Tariff Added for this customer. Please add or Manually enter transportation cost")
 
 
 

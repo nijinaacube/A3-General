@@ -133,6 +133,7 @@ doctype_js = {
 	"Sales Invoice":"a3trans/client_scripts/sales_invoice.js",
 	"Payment Entry":"a3trans/client_scripts/payment_entry.js",
 	"Lead":"a3trans/client_scripts/lead.js",
+	"Address":"a3trans/client_scripts/address.js",
 	
  }
 doc_events = {
@@ -154,6 +155,11 @@ doc_events = {
 
 	"Stock Entry":{
 		"on_submit":"a3trans.a3trans.events.stock_entry.on_submit"
+	 },
+
+	"Address":{
+		"after_insert":"a3trans.a3trans.events.address.after_insert",
+		"validate":"a3trans.a3trans.events.address.validate"
 	 },
 }
 # Scheduled Tasks

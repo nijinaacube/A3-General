@@ -1,6 +1,14 @@
 frappe.ui.form.on('Stock Entry', {
+
+	onload: function(frm) {
+        cur_frm.set_value("stock_entry_type", "Material Receipt");
+        cur_frm.refresh_field("stock_entry_type");
+
+    },
+
+
 	order_id: function(frm) {
-if (frm.doc.order_id){
+    if (frm.doc.order_id){
     frm.clear_table('items')
     frappe.call({
         method: "a3trans.a3trans.events.stock_entry.get_items",

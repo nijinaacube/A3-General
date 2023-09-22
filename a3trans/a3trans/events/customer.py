@@ -22,10 +22,13 @@ def after_insert(doc,method):
 		})
 		
 		contact.insert()
+	else:
+		contact=frappe.get_doc("Contact",{"mobile_no":doc.mobile_number})
 	# else:
 	# 	frappe.throw("Same mobile number is already registered.")
 # Create an address document
 	if not frappe.db.exists("Address", {"phone":doc.mobile_number}):
+	
 		address=frappe.new_doc("Address")
 		if doc.address_title:
 			address.address_title=doc.address_title
@@ -58,11 +61,15 @@ def after_insert(doc,method):
 			"link_title": doc.name,
 		})
 		address.insert()
-		if address.name:
-			doc.customer_primary_address=address.name
-		if contact.name:
-			doc.customer_primary_contact = contact.name
-		doc.save()
+	else:
+		address=frappe.get_doc("Address",{"phone":doc.mobile_number})
+		
+	if address.name:
+		doc.customer_primary_address=address.name
+	if contact.name:
+		doc.customer_primary_contact = contact.name
+	doc.save()
+
 
 
 	   # Create a lead        

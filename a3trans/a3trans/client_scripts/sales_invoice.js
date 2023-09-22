@@ -1,16 +1,9 @@
 frappe.ui.form.on('Sales Invoice', {
-    items_on_form_rendered: function(frm) {
-        console.log("items_on_form_rendered called");
-        frm.fields_dict['items'].grid.get_field('item').get_query = function(doc, cdt, cdn) {
-            console.log("get_query called");
-            return {
-                filters: {
-                    "is_stock_item": 0
-                }
-            };
-        };
-    },
+   
+      
+    
     order_id: function(frm) {
+       
         if (frm.doc.order_id) {
             frm.clear_table('items');
             console.log("hiii");
@@ -42,6 +35,16 @@ frappe.ui.form.on('Sales Invoice', {
     },
     stock_entry_id: function(frm) {
         if (frm.doc.stock_entry_id) {
+
+            
+            frm.fields_dict['items'].grid.get_field('item_code').get_query = function(doc, cdt, cdn) {
+                console.log("get_query called");
+                return {
+                    filters: {
+                        "is_stock_item": 0
+                    }
+                };
+            }
             // Fixed: Add "var" before stock_entry_id
             var stock_entry_id = frm.doc.stock_entry_id;
             frappe.call({
@@ -51,11 +54,14 @@ frappe.ui.form.on('Sales Invoice', {
                     name: stock_entry_id
                 },
                 callback: function(data) {
+                    console.log(data.message)
                     var stock = data.message;
                     cur_frm.set_value("customer", stock.party_name);
                     cur_frm.refresh_field("customer");
                     cur_frm.set_value("booking_type", "Warehouse");
                     cur_frm.refresh_field("booking_type");
+                   
+
                 }
             });
         }

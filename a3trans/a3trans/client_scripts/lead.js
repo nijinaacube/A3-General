@@ -2,6 +2,8 @@ frappe.ui.form.on('Lead', {
     refresh: function(frm) {
         if (!cur_frm.doc.__islocal && frm.doc.status === "Lead") {
             frm.add_custom_button(__('Convert'), function() {
+                
+                
                 frappe.call({
                     method: 'a3trans.a3trans.events.lead.convert',
                     args: {
@@ -10,6 +12,7 @@ frappe.ui.form.on('Lead', {
                     callback: function(r) {
                         if (r.message) {
                             console.log(r.message.name);
+                            console.log(frm.doc.booking_type)
 
                             // Pre-fill fields in the Opportunity from the Lead
                             frappe.new_doc('Opportunity', {
@@ -27,5 +30,17 @@ frappe.ui.form.on('Lead', {
                 });
             }).addClass('btn-primary');
         }
+    },
+
+
+mobile_number:function(frm) {
+    if (frm.doc.mobile_number){
+
+        cur_frm.set_value("phone",frm.doc.mobile_number)
+        frm.refresh_field("phone")
+        cur_frm.set_value("mobile_no",frm.doc.mobile_number)
+        frm.refresh_field("mobile_no")
     }
+
+}
 });

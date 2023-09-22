@@ -15,5 +15,20 @@ def validate(doc,methods):
                 
 
 
+@frappe.whitelist()
+def get_warehouseaddress(doc):
+    data={}
+    ware=frappe.get_doc("Warehouse",doc)
+    print(ware)
+    if ware.phone_no:
+        data["phone"]=ware.phone_no
+    if ware.address_line_1:
+        data["add1"]=ware.address_line_1
+    if ware.address_line_2:
+        data["add2"]=ware.address_line_2
+    if ware.city:
+        data["city"]=ware.city
+    return data
+    
 
-  
+    
