@@ -6,16 +6,26 @@ def on_submit(doc,methods):
 	if doc.order_id:
 		oppo=frappe.get_doc("Opportunity",doc.order_id)
 		oppo.order_status="Closed"
-		# if oppo.party_name:
-		# 	customer_warehouse=frappe.get_doc("Warehouse",{"customer":oppo.party_name})
-		# 	for item in customer_warehouse.warehouse_item:
-		# 		if doc.total_qty:
-					
-
-
-
-
-		# oppo.save()
+		
+		if oppo.party_name:
+			customer_warehouse = frappe.get_list("Warehouse", filters={"customer": oppo.party_name})
+			print(customer_warehouse, "******")
+			
+			for warehouse in customer_warehouse:
+				print(warehouse["name"], "oooooo")
+				warehouse_doc = frappe.get_doc("Warehouse", warehouse["name"])
+				for item in warehouse_doc.warehouse_item:
+					if item.booking_id==oppo.name:
+						if float(item.quantity)>0:
+							qty=float(item.quantity)-doc.total_qty
+							print(qty,"@@@@")
+							item.quantity=qty
+						
+							if qty==0:
+								item.status="Delivered"
+							warehouse_doc.save()				
+		oppo.save()
+	
 
 @frappe.whitelist()
 def  get_items(doc):

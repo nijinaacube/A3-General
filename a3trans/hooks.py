@@ -113,15 +113,15 @@ fixtures = [
 	]
 ]},
   {"dt": "Custom DocPerm", "filters": [
-            [
-            "role", "in", [
-                    "Operator",
-                   
-                    "Guest"
-    		       ]
-                ]
+			[
+			"role", "in", [
+					"Operator",
+				   
+					"Guest"
+				   ]
+				]
   ]
-            },
+			},
 ]
 
 doctype_js = {
@@ -146,7 +146,7 @@ doc_events = {
 		"after_insert":"a3trans.a3trans.events.opportunity.after_insert"
 	 },
 	 "Warehouse":{
-		"validate":"a3trans.a3trans.events.warehouse.validate",
+		# "validate":"a3trans.a3trans.events.warehouse.validate",
 		"after_insert":"a3trans.a3trans.events.warehouse.after_insert"
 	 },
 	 "Delivery Note":{
@@ -166,9 +166,15 @@ doc_events = {
 # ---------------
 
 # scheduler_events = {
-#	"all": [
-#		"a3trans.tasks.all"
-#	],
+	
+# #	"all": [
+# #		"a3trans.tasks.all"
+# #	],
+# "cron":{
+# 		"*/1 * * * *":[
+# 			"a3trans.a3trans.events.monthly_invoice.create_invoices"
+# 		]
+# 	},
 #	"daily": [
 #		"a3trans.tasks.daily"
 #	],
@@ -178,9 +184,9 @@ doc_events = {
 #	"weekly": [
 #		"a3trans.tasks.weekly"
 #	]
-#	"monthly": [
-#		"a3trans.tasks.monthly"
-#	]
+	# "monthly": [
+	# "a3trans.a3trans.events.monthly_invoic.create_invoices"
+	# ]
 # }
 
 # Testing

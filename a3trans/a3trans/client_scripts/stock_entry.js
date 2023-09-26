@@ -1,6 +1,7 @@
 frappe.ui.form.on('Stock Entry', {
 
 	onload: function(frm) {
+        
         cur_frm.set_value("stock_entry_type", "Material Receipt");
         cur_frm.refresh_field("stock_entry_type");
 
@@ -31,8 +32,8 @@ frappe.ui.form.on('Stock Entry', {
 
                     cur_frm.set_value("party_name", element.party);
 			        cur_frm.refresh_field("party_name");
-                    cur_frm.set_value("customer", element.party);
-			        cur_frm.refresh_field("customer");
+                    // cur_frm.set_value("customer", element.party);
+			        // cur_frm.refresh_field("customer");
                     if (element.type=="Stock IN"){
                         cur_frm.set_value("stock_entry_type","Material Receipt" );
                         cur_frm.refresh_field("stock_entry_type");

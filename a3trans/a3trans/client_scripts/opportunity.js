@@ -1,5 +1,9 @@
 frappe.ui.form.on('Opportunity', {
     refresh: function(frm) {
+        
+        // if (frm.doc.booking_type!="Warehouse"){
+        // frm.fields_dict['links'].toggle(false);
+        // }
  
         if  (frm.is_new()){
             frm.set_value('booking_date', frappe.datetime.get_today());

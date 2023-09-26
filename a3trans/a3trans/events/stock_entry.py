@@ -2,6 +2,7 @@
 import frappe
 def on_submit(doc,methods):
 
+
 	# if doc.order_id=="":
 	# 	if doc.party_name and doc.stock_entry_type=="Material Receipt":
 	# 		oppo=frappe.new_doc("Opportunity")
@@ -13,15 +14,50 @@ def on_submit(doc,methods):
 
 					
 	if doc.order_id:
-		oppo=frappe.get_doc("Opportunity",doc.order_id)
-		oppo.order_status="Stock Updated"
-		# oppo.save()
+		oppo = frappe.get_doc("Opportunity", doc.order_id)
+		oppo.order_status = "Stock Updated"
+    
+		if oppo.party_name:
+			customer_warehouse = frappe.get_list("Warehouse", filters={"customer": oppo.party_name})
+			print(customer_warehouse, "******")
+			
+			for warehouse in customer_warehouse:
+				print(warehouse["name"], "oooooo")
+				warehouse_doc = frappe.get_doc("Warehouse", warehouse["name"])
+				
+				for item in warehouse_doc.warehouse_item:
+					print(item)
+					
+					if item.booking_id == oppo.name:
+						if doc.items:
+							for itm in doc.items:
+								if itm.qty:
+									item.quantity=float(item.quantity)+itm.qty
+									
+									item.status = "Received"
+							
+									warehouse_doc.save()
+
+							
+				
+		
+		oppo.save()
 
 
 @frappe.whitelist()
 def  get_items(doc):
 	print(doc)
 	oppo=frappe.get_doc("Opportunity",doc)
+	if oppo.booking_type!="Warehouse":
+		frappe.throw("You can't create stock entry other than Warehouse booking")
+	else:
+		if oppo.warehouse_stock_items:
+			for itm in oppo.warehouse_stock_items:
+				if itm.movement_type!="Stock IN":
+					frappe.throw("You can create stock entry for STock IN only")
+					
+
+
 
 	data_from_receipt = []
 	data = {}
