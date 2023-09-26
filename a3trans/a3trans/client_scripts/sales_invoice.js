@@ -35,6 +35,7 @@ frappe.ui.form.on('Sales Invoice', {
     },
     stock_entry_id: function(frm) {
         if (frm.doc.stock_entry_id) {
+            console.log("yyyy")
 
             
             frm.fields_dict['items'].grid.get_field('item_code').get_query = function(doc, cdt, cdn) {

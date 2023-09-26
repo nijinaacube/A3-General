@@ -1,5 +1,15 @@
 import frappe
 def after_insert(doc,method):
+	print(doc,"jjjjjjjjj")
+	if frappe.db.exists("Tariff Details",{"customer":doc.name}):
+		pass
+	else:
+		
+		if doc.tariff=="" or doc.tariff==None:
+			if frappe.db.exists("Tariff Details",{"is_standard":1}):
+				
+				tariff_doc=frappe.get_doc("Tariff Details",{"is_standard":1})
+				doc.tariff=tariff_doc.name
 # Check if the contact exists, if not create it
 	if not frappe.db.exists("Contact", {"first_name":doc.customer_name, "mobile_no":doc.mobile_number}):
 		contact = frappe.new_doc("Contact")
@@ -70,6 +80,12 @@ def after_insert(doc,method):
 		doc.customer_primary_contact = contact.name
 	doc.save()
 
+
+	# set standard Tariff
+
+	
+
+		
 
 
 	   # Create a lead        

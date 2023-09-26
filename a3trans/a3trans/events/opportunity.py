@@ -61,7 +61,7 @@ def after_insert(doc,method):
 			doc.status="Converted"
 			doc.save()
 
-# # 			Create payment entry
+# #Create payment entry
 			# if doc.customer_group != "Credit Customer":
 			# 	payment=frappe.new_doc("Payment Entry")
 			# 	payment.party_type="Customer"
@@ -165,10 +165,7 @@ def after_insert(doc,method):
 						})
 						address.address_type = "Shipping"
 						
-						address.append("links", {
-							"link_doctype": "Customer",
-							"link_name": doc.party_name
-						})
+					
 						address.insert()
 					
 
@@ -384,7 +381,7 @@ def get_end_of_month(current_date_str,booked_upto):
 	_, last_day = calendar.monthrange(year, month)
 	# Create a new date object for the end of the month
 	end_of_month = current_date.replace(day=last_day)
-	if booked_upto_date<end_of_month:
+	if booked_upto_date>end_of_month:
 		# Convert the end_of_month back to a string if needed
 		end_of_month_str = end_of_month.strftime("%Y-%m-%d")
 		data["end_month"]=end_of_month_str
@@ -502,9 +499,19 @@ def calculate_transportation_cost(customer, zone, vehicle_type, length):
 			if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
 				amount = item.amount
 
-		return amount
+		
 	else:
-		frappe.throw("No Tariff Added for this customer. Please add or Manually enter transportation cost")
+		customer=frappe.get_doc("Customer",customer)
+		if customer.tariff:
+			tariff = frappe.get_doc("Tariff Details", customer.tariff)
+			for item in tariff.tariff_details_item:
+				if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+					amount = item.amount
+
+	return amount
+
+
+		
 
 
 

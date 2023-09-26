@@ -9,6 +9,7 @@ def after_insert(doc, method):
                 
                 lead.address_link = doc.name
                 lead.save()
+    
 def validate(doc, method):
     if doc.links:
        

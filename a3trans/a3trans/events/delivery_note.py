@@ -1,12 +1,22 @@
 import frappe
 
 def on_submit(doc,methods):
-    doc.status="Closed"
-    doc.update_status(doc.status)
-    if doc.order_id:
-        oppo=frappe.get_doc("Opportunity",doc.order_id)
-        oppo.order_status="Closed"
-        oppo.save()
+	doc.status="Closed"
+	doc.update_status(doc.status)
+	if doc.order_id:
+		oppo=frappe.get_doc("Opportunity",doc.order_id)
+		oppo.order_status="Closed"
+		# if oppo.party_name:
+		# 	customer_warehouse=frappe.get_doc("Warehouse",{"customer":oppo.party_name})
+		# 	for item in customer_warehouse.warehouse_item:
+		# 		if doc.total_qty:
+					
+
+
+
+
+		# oppo.save()
+
 @frappe.whitelist()
 def  get_items(doc):
 	print(doc)

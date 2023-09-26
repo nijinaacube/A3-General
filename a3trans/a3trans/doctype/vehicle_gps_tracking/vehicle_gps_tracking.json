@@ -14,10 +14,12 @@
   "longitude",
   "speed",
   "column_break_sj5rv",
-  "altitude",
   "heading",
   "satellites",
-  "hdop"
+  "city",
+  "area",
+  "state",
+  "map"
  ],
  "fields": [
   {
@@ -59,12 +61,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "altitude",
-   "fieldtype": "Float",
-   "label": "Altitude",
-   "reqd": 1
-  },
-  {
    "fieldname": "heading",
    "fieldtype": "Data",
    "label": "Heading"
@@ -75,19 +71,34 @@
    "label": "Satellites"
   },
   {
-   "fieldname": "hdop",
-   "fieldtype": "Float",
-   "label": "HDOP"
-  },
-  {
    "fieldname": "basic_details_section",
    "fieldtype": "Section Break",
    "label": "Basic Details"
+  },
+  {
+   "fieldname": "map",
+   "fieldtype": "HTML",
+   "label": "Map"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fieldname": "area",
+   "fieldtype": "Data",
+   "label": "Area"
+  },
+  {
+   "fieldname": "state",
+   "fieldtype": "Data",
+   "label": "State"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-08-18 13:33:59.988627",
+ "modified": "2023-09-22 14:42:42.829511",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle GPS Tracking",

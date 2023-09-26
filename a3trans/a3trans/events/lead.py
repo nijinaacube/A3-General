@@ -43,6 +43,7 @@ def convert(doc):
 
             customer.customer_group="Individual"
             customer.territory="India"
+            
             if lead_doc.address_link:
                 address=frappe.get_doc("Address",lead_doc.address_link)
                 if address.address_title:
