@@ -32,9 +32,8 @@ def after_insert(doc,method):
 		})
 		
 		contact.insert()
-	# else:
-	# 	pass
-		# contact=frappe.get_doc("Contact",{"mobile_no":doc.mobile_number})
+	else:
+		contact=frappe.get_doc("Contact",{"mobile_no":doc.mobile_number})
 	# else:
 	# 	frappe.throw("Same mobile number is already registered.")
 # Create an address document
