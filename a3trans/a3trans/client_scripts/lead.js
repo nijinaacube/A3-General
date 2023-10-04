@@ -31,7 +31,20 @@ frappe.ui.form.on('Lead', {
             }).addClass('btn-primary');
         }
     },
+    booking_type:function(frm){
+        if(frm.doc.booking_type==="Warehouse"){
+            frm.fields_dict['warehouse'].get_query = function(doc){
+                    return {
+                        filters: {
+                            'is_group': 1
+                        }
+                    };
+                
 
+                }
+    }
+
+    },
 
 mobile_number:function(frm) {
     if (frm.doc.mobile_number){
