@@ -8,10 +8,18 @@
  "field_order": [
   "basic_details_section",
   "employee",
+  "employee_name",
   "column_break_eidea",
   "overall_rating",
+  "status",
+  "rated_by",
   "employee_performance_evaluation_section",
-  "employee_performance_evaluation"
+  "trip_id",
+  "distance_difference",
+  "remarks",
+  "column_break_ao8dp",
+  "date",
+  "time_difference"
  ],
  "fields": [
   {
@@ -22,6 +30,9 @@
   {
    "fieldname": "employee",
    "fieldtype": "Link",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Employee",
    "options": "Employee"
   },
@@ -32,24 +43,83 @@
   {
    "fieldname": "employee_performance_evaluation_section",
    "fieldtype": "Section Break",
-   "label": "Employee Performance Evaluation"
+   "label": "Trip Details"
   },
   {
    "fieldname": "overall_rating",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Overall Rating",
-   "options": "1\n2\n3\n4\n5"
+   "options": "\n1\n2\n3\n4\n5"
   },
   {
-   "fieldname": "employee_performance_evaluation",
-   "fieldtype": "Table",
-   "label": "Employee Performance Evaluation",
-   "options": "Employee Performance Evaluation Item"
+   "fetch_from": "employee.employee_name",
+   "fetch_if_empty": 1,
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Employee Name"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "\nPoor\nGood\nVery Good\nExcellent"
+  },
+  {
+   "fieldname": "rated_by",
+   "fieldtype": "Link",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Rated By",
+   "options": "User"
+  },
+  {
+   "fieldname": "trip_id",
+   "fieldtype": "Link",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": " Trip ID",
+   "options": "Vehicle Assignment"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Date"
+  },
+  {
+   "fieldname": "distance_difference",
+   "fieldtype": "Data",
+   "label": "Distance Difference"
+  },
+  {
+   "fieldname": "column_break_ao8dp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "time_difference",
+   "fieldtype": "Data",
+   "label": "Time Difference"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-10 13:38:16.124517",
+ "modified": "2023-10-10 15:30:13.901714",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Employee Performance Evaluation",

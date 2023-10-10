@@ -588,7 +588,9 @@ def calculate_transportation_cost(customer, zone, vehicle_type, length):
 
 
        for item in tariff.tariff_details_item:
-           if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+            if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+               amount = item.amount
+            elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
                amount = item.amount
 
 
@@ -598,8 +600,10 @@ def calculate_transportation_cost(customer, zone, vehicle_type, length):
        if customer.tariff:
            tariff = frappe.get_doc("Tariff Details", customer.tariff)
            for item in tariff.tariff_details_item:
-               if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+                if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
                    amount = item.amount
+                elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
+                    amount = item.amount
 
 
    return amount

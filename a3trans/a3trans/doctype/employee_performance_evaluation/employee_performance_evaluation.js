@@ -2,7 +2,13 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Employee Performance Evaluation', {
-	// refresh: function(frm) {
+	onload: function(frm) {
+		if  (frm.is_new()){
+            frm.set_value('date', frappe.datetime.get_today());
+			frm.set_value('rated_by',frappe.session.user)
+          }
 
-	// }
+
+
+	}
 });

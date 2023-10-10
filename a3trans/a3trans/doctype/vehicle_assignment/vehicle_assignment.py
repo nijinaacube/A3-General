@@ -100,64 +100,57 @@ class VehicleAssignment(Document):
 
 
                if order.status=="Arrived":
-                   if order.latitude and order.longitude and order.driver_marked_latitude and order.driver_marked_longitude:
-                       order.latitude=float(order.latitude)
-                       order.longitude=float(order.longitude)
-                       order.driver_marked_latitude=float(order.driver_marked_latitude)
-                       order.driver_marked_longitude=float(order.driver_marked_longitude)
-                       lat1 = math.radians(order.latitude)
-                       lon1 = math.radians(order.longitude)
-                       lat2 = math.radians(order.driver_marked_latitude)
-                       lon2 = math.radians(order.driver_marked_longitude)
-                       # distance_km=0
+                    order.actual_arrival_time=frappe.utils.now()
 
 
 
 
-                       # Radius of the Earth in kilometers
-                       earth_radius_km = 6371.0
+               if order.status=="Completed":
+                    order.completed_date=frappe.utils.nowdate()
+                    completed_times=frappe.utils.now_datetime()
+                    order.completed_time = completed_times.strftime('%H:%M:%S')
+                    if order.latitude and order.longitude and order.current_latitude and order.current_longitude:
+                        order.latitude=float(order.latitude)
+                        order.longitude=float(order.longitude)
+                        order.current_latitude=float(order.current_latitude)
+                        order.current_longitude=float(order.current_longitude)
+                        lat1 = math.radians(order.latitude)
+                        lon1 = math.radians(order.longitude)
+                        lat2 = math.radians(order.current_latitude)
+                        lon2 = math.radians(order.current_longitude)
 
 
 
+                        # Radius of the Earth in kilometers
+                        earth_radius_km = 6371.0
 
-                       # Haversine formula
-                       dlon = lon2 - lon1
-                       dlat = lat2 - lat1
+                        # Haversine formula
+                        dlon = lon2 - lon1
+                        dlat = lat2 - lat1
 
-
-
-
-                       a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
-                       c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-
-
-
-                       # Calculate the distance
-                       distance_km =round(earth_radius_km * c,2)
-                       order.distance=distance_km
-                   if order.eta and order.actual_arrival_time:
-                       start_datetime = get_datetime(order.eta)
-                       end_datetime = get_datetime(order.actual_arrival_time)
+                        a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+                        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+                        # Calculate the distance
+                        distance_km =round(earth_radius_km * c,2)
+                        order.distance=distance_km
+                        if order.eta and order.actual_arrival_time:
+                            start_datetime = get_datetime(order.eta)
+                            end_datetime = get_datetime(order.actual_arrival_time)
 
 
+                            # Calculate the time difference
+                            time_difference = time_diff(end_datetime, start_datetime)
 
 
-                       # Calculate the time difference
-                       time_difference = time_diff(end_datetime, start_datetime)
+                            # Calculate the total difference in minutes
+                            total_minutes = (
+                            time_difference.days * 24 * 60 + # Days to minutes
+                            time_difference.seconds // 60 # Seconds to minutes
+                            )
 
+                            print("minutes",total_minutes)
+                            order.time_difference=float(total_minutes)
 
-
-
-                       # Calculate the total difference in minutes
-                       total_minutes = (
-                           time_difference.days * 24 * 60 +  # Days to minutes
-                           time_difference.seconds // 60     # Seconds to minutes
-                       )
-
-
-                       print("minutes",total_minutes)
-                       order.time_difference=float(total_minutes)
 
 
    # def after_insert(self):
@@ -201,30 +194,26 @@ def get_staff_data(vehicle_id):
    
 @frappe.whitelist()
 def fetch_order_details(order_id):
+    
+    print(order_id)
     if order_id:
         opportunity = frappe.get_doc("Opportunity", order_id)
-        data = []
-
+        data={}
         for item in opportunity.receiver_information:
-            item_data = {}
-
+            print(item)
             if item.order_no:
-                item_data["order_no"] = item.order_no
+                data["order_no"]=item.order_no
             if item.transit_type:
-                item_data["type"] = item.transit_type
+                data["type"]=item.transit_type
             if item.zone:
-                item_data["zone"] = item.zone
+                data["zone"]=item.zone
             if item.latitude:
-                item_data["lat"] = item.latitude
+                data["lat"]=item.latitude
             if item.longitude:
-                item_data["lon"] = item.longitude
+                data["lon"]=item.longitude
             if item.remarks:
-                item_data["remark"] = item.remarks
-
-            data.append(item_data)
-
-        return data
-
+                data["remark"]=item.remarks
+            return data
             
 
 

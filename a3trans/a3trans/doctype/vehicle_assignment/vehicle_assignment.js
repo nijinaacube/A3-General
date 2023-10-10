@@ -22,7 +22,9 @@ frappe.ui.form.on('Vehicle Assignment', {
                 setters: {
                     // status: 'Converted',
                     party_name:frm.doc.party_name,
-                    booking_date:frm.doc.booking_date
+                    booking_date:frm.doc.booking_date,
+                    vehicle_type:frm.doc.vehicle_type,
+                    booking_type:frm.doc.booking_type
  
  
                 },

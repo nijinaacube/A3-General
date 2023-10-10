@@ -637,10 +637,10 @@ zone: function(frm, cdt, cdn) {
                 	"length": frm.doc.receiver_information.length
             	},
             	callback: function(response) {
-                	// frappe.throw("jjjlllll")
+                	
                 	if (response.message) {
                     	let existing_row = frm.doc.transit_charges.find(r => r.from_zone == from_zone && r.to_zone == to_zone);
-                        	// frappe.throw("jjj")
+                        	
                     	if (!existing_row) {
                         	const target_row = frm.add_child('transit_charges');
                         	target_row.charges = "Transportation Charges";
@@ -700,7 +700,7 @@ zone: function(frm, cdt, cdn) {
 	frm.doc.transit_charges = frm.doc.transit_charges.filter(charge => {
     	return validZonePairs.some(pair => pair.from_zone == charge.from_zone && pair.to_zone == charge.to_zone);
 	});
-	// frm.refresh_field('transit_charges');
+	frm.refresh_field('transit_charges');
 },
 
 
