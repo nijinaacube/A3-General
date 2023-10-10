@@ -129,7 +129,7 @@ frappe.ui.form.on('Opportunity', {
                 	"doc": frm.doc.party_name,
             	},
             	callback: function(r) {
-                	// frm.clear_table("receiver_information")
+                	
                 	if (r.message) {
 
                 	const target_row=frm.add_child('receiver_information')

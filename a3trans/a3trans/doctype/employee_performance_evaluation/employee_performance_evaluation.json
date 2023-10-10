@@ -1,0 +1,73 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-10 13:37:31.375981",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "basic_details_section",
+  "employee",
+  "column_break_eidea",
+  "overall_rating",
+  "employee_performance_evaluation_section",
+  "employee_performance_evaluation"
+ ],
+ "fields": [
+  {
+   "fieldname": "basic_details_section",
+   "fieldtype": "Section Break",
+   "label": "Basic Details"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "column_break_eidea",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "employee_performance_evaluation_section",
+   "fieldtype": "Section Break",
+   "label": "Employee Performance Evaluation"
+  },
+  {
+   "fieldname": "overall_rating",
+   "fieldtype": "Select",
+   "label": "Overall Rating",
+   "options": "1\n2\n3\n4\n5"
+  },
+  {
+   "fieldname": "employee_performance_evaluation",
+   "fieldtype": "Table",
+   "label": "Employee Performance Evaluation",
+   "options": "Employee Performance Evaluation Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-10-10 13:38:16.124517",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Employee Performance Evaluation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

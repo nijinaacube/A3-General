@@ -148,20 +148,62 @@ frappe.ui.form.on('Vehicle Assignment', {
             }
         })
         }
-        // else{
-        //     cur_frm.set_value("driver_id", "");
-        //     frm.refresh_field('driver_id');
-        //     cur_frm.set_value("helper_id", "");
-        //     frm.refresh_field('helper_id');
-        // }
- }
+     
+ },
+ order: function(frm) {
+   
+
+    frappe.call({
+        method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
+        args: {
+            "order_id": frm.doc.order,
+          
+        },
+        callback: function(response) {
+            if (response.message) {
+                frm.clear_table("routes")
+                console.log(response.message)
+                var target_row=frm.add_child("routes")
+                target_row.order_id=frm.doc.order
+                target_row.order_no=response.message.order_no
+                target_row.transit_type=response.message.type
+                frm.refresh_field("routes")
+            }
+        }
+    })
+    
+},
  });
  
+
  
  
  
- 
- 
+  frappe.ui.form.on('Route Details Item', {
+	order_id: function(frm,cdt,cdn) {
+        var child = locals[cdt][cdn];
+    	var order = child.order_id;
+        frappe.throw("kkk")
+
+        frappe.call({
+            method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
+            args: {
+                "order_id": order,
+              
+            },
+            callback: function(response) {
+                if (response.message) {
+                    
+                }
+            }
+        })
+    	
+	},
+	 
+    	 
+   	 
+    
+});
  
  
  
