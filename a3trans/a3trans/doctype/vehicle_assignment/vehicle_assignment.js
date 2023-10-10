@@ -185,31 +185,7 @@ frappe.ui.form.on('Vehicle Assignment', {
  
  
  
-//   frappe.ui.form.on('Route Details Item', {
-// 	order_id: function(frm,cdt,cdn) {
-//         var child = locals[cdt][cdn];
-//     	var order = child.order_id;
-//         frappe.throw("kkk")
 
-//         frappe.call({
-//             method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
-//             args: {
-//                 "order_id": order,
-              
-//             },
-//             callback: function(response) {
-//                 if (response.message) {
-                    
-//                 }
-//             }
-//         })
-    	
-// 	},
-	 
-    	 
-   	 
-    
-// });
  
  
  
