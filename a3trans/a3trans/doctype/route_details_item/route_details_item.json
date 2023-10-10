@@ -10,16 +10,27 @@
   "order_id",
   "order_no",
   "transit_type",
-  "location",
-  "latitude",
   "column_break_7zheu",
+  "zone",
+  "latitude",
   "longitude",
+  "timeline_section",
+  "expected_start_date",
+  "expected_start_time",
   "eta",
+  "column_break_wpp63",
   "actual_arrival_time",
+  "completed_date",
+  "completed_time",
+  "location_section",
+  "from",
+  "distance_km",
+  "column_break_2eu56",
+  "to",
   "status",
   "performance_details_section",
-  "driver_marked_latitude",
-  "driver_marked_longitude",
+  "current_latitude",
+  "current_longitude",
   "per_status",
   "column_break_1ojub",
   "distance",
@@ -50,12 +61,6 @@
    "in_list_view": 1,
    "label": "Order ID",
    "options": "Opportunity"
-  },
-  {
-   "fieldname": "location",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Location"
   },
   {
    "fieldname": "transit_type",
@@ -96,18 +101,6 @@
    "label": "Performance Details"
   },
   {
-   "fieldname": "driver_marked_latitude",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Driver Marked Latitude"
-  },
-  {
-   "fieldname": "driver_marked_longitude",
-   "fieldtype": "Data",
-   "in_standard_filter": 1,
-   "label": "Driver Marked Longitude"
-  },
-  {
    "fieldname": "column_break_1ojub",
    "fieldtype": "Column Break"
   },
@@ -117,7 +110,7 @@
    "in_global_search": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Distance"
+   "label": "Distance Difference"
   },
   {
    "fieldname": "per_status",
@@ -133,12 +126,89 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Time Difference"
+  },
+  {
+   "fieldname": "timeline_section",
+   "fieldtype": "Section Break",
+   "label": "Timeline"
+  },
+  {
+   "fieldname": "expected_start_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Expected Start Date"
+  },
+  {
+   "fieldname": "expected_start_time",
+   "fieldtype": "Time",
+   "in_list_view": 1,
+   "label": "Expected Start Time"
+  },
+  {
+   "fieldname": "completed_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Completed Date"
+  },
+  {
+   "fieldname": "completed_time",
+   "fieldtype": "Time",
+   "label": "Completed Time"
+  },
+  {
+   "fieldname": "column_break_wpp63",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Zone",
+   "options": "Location"
+  },
+  {
+   "fieldname": "location_section",
+   "fieldtype": "Section Break",
+   "label": "Location"
+  },
+  {
+   "fieldname": "from",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "From"
+  },
+  {
+   "fieldname": "to",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "To"
+  },
+  {
+   "fieldname": "column_break_2eu56",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "distance_km",
+   "fieldtype": "Float",
+   "label": "Distance(km)"
+  },
+  {
+   "fieldname": "current_latitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Current Latitude"
+  },
+  {
+   "fieldname": "current_longitude",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Current Longitude"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-19 14:59:20.504855",
+ "modified": "2023-10-10 12:23:52.644812",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Route Details Item",
