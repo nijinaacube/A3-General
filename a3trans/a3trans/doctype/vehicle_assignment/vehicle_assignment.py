@@ -201,26 +201,30 @@ def get_staff_data(vehicle_id):
    
 @frappe.whitelist()
 def fetch_order_details(order_id):
-    
-    print(order_id)
     if order_id:
         opportunity = frappe.get_doc("Opportunity", order_id)
-        data={}
+        data = []
+
         for item in opportunity.receiver_information:
-            print(item)
+            item_data = {}
+
             if item.order_no:
-                data["order_no"]=item.order_no
+                item_data["order_no"] = item.order_no
             if item.transit_type:
-                data["type"]=item.transit_type
+                item_data["type"] = item.transit_type
             if item.zone:
-                data["zone"]=item.zone
+                item_data["zone"] = item.zone
             if item.latitude:
-                data["lat"]=item.latitude
+                item_data["lat"] = item.latitude
             if item.longitude:
-                data["lon"]=item.longitude
+                item_data["lon"] = item.longitude
             if item.remarks:
-                data["remark"]=item.remarks
-            return data
+                item_data["remark"] = item.remarks
+
+            data.append(item_data)
+
+        return data
+
             
 
 

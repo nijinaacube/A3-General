@@ -47,7 +47,7 @@ frappe.ui.form.on('Vehicle Assignment', {
                                         var child = frm.add_child('routes', {});
                                         child.order_id = opportunity;
                                         child.order_no = pickupRow.order_no
-                                        child.location = pickupRow.zone;
+                                        child.zone = pickupRow.zone;
                                         child.transit_type = pickupRow.transit_type;
                                         child.latitude=pickupRow.latitude;
                                         child.longitude=pickupRow.longitude
@@ -151,59 +151,65 @@ frappe.ui.form.on('Vehicle Assignment', {
      
  },
  order: function(frm) {
-   
-
     frappe.call({
         method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
         args: {
             "order_id": frm.doc.order,
-          
         },
         callback: function(response) {
-            if (response.message) {
-                frm.clear_table("routes")
-                console.log(response.message)
-                var target_row=frm.add_child("routes")
-                target_row.order_id=frm.doc.order
-                target_row.order_no=response.message.order_no
-                target_row.transit_type=response.message.type
-                frm.refresh_field("routes")
+            if (response.message && Array.isArray(response.message)) {
+                // Clear the existing rows in the "routes" child table
+                frm.clear_table("routes");
+
+                // Loop through the list of dictionaries in the response
+                response.message.forEach(function(item) {
+                    var target_row = frm.add_child("routes");
+
+                    // Set values for the fields of the new row
+                    target_row.order_id = frm.doc.order;
+                    target_row.order_no = item.order_no;
+                    target_row.transit_type = item.type;
+                    target_row.zone=item.zone
+                    target_row.lat=item.latitude
+                    target_row.lon=item.longitude
+
+                    // Add the new row to the "routes" child table
+                    frm.refresh_field("routes");
+                });
             }
         }
-    })
-    
+    });
 },
- });
- 
+})
 
  
  
  
-  frappe.ui.form.on('Route Details Item', {
-	order_id: function(frm,cdt,cdn) {
-        var child = locals[cdt][cdn];
-    	var order = child.order_id;
-        frappe.throw("kkk")
+//   frappe.ui.form.on('Route Details Item', {
+// 	order_id: function(frm,cdt,cdn) {
+//         var child = locals[cdt][cdn];
+//     	var order = child.order_id;
+//         frappe.throw("kkk")
 
-        frappe.call({
-            method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
-            args: {
-                "order_id": order,
+//         frappe.call({
+//             method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
+//             args: {
+//                 "order_id": order,
               
-            },
-            callback: function(response) {
-                if (response.message) {
+//             },
+//             callback: function(response) {
+//                 if (response.message) {
                     
-                }
-            }
-        })
+//                 }
+//             }
+//         })
     	
-	},
+// 	},
 	 
     	 
    	 
     
-});
+// });
  
  
  
