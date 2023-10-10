@@ -1,9 +1,9 @@
 frappe.ui.form.on('Payment Entry', {
-	order_id: function(frm) {
-       
+    order_id: function(frm) {
+      
         if (frm.doc.order_id){
             frm.clear_table('items')
-          
+         
             frappe.call({
                 method: "a3trans.a3trans.events.opportunity.get_payment_items",
                 args:{
@@ -13,10 +13,11 @@ frappe.ui.form.on('Payment Entry', {
                     console.log("hiii",r.message)
                     r.message.data.forEach((element)=>{
                         frm.set_value("party", element.cus);
-                        cur_frm.refresh_field("party"); 
+                        cur_frm.refresh_field("party");
                         cur_frm.set_value("party_name", element.party)
                         cur_frm.refresh_field("party_name");
-
+ 
+ 
                         cur_frm.set_value("booking_type", element.b_type);
                         cur_frm.refresh_field("booking_type");
                         cur_frm.set_value("party_name", element.party);
@@ -41,21 +42,22 @@ frappe.ui.form.on('Payment Entry', {
                         cur_frm.refresh_field("total_allocated_amount");
                         cur_frm.set_value("received_amount", element.total_allocated_amount);
                         cur_frm.refresh_field("received_amount");
-                       
-
                         const target_row=frm.add_child('references')
-		                target_row.reference_doctype="Sales Invoice"
+                        target_row.reference_doctype="Sales Invoice"
                         target_row.reference_name=element.invoice
                         target_row.total_amount=element.total_allocated_amount
                         target_row.allocated_amount=element.total_allocated_amount
                         target_row.outstanding_amount=element.total_allocated_amount
                         frm.refresh_field("references")
-
-                         
+ 
+ 
+                        
                     })
-
+ 
+ 
                 }
             })
         }
     }
-})
+ })
+ 

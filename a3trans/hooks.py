@@ -125,43 +125,48 @@ fixtures = [
 ]
 
 doctype_js = {
-	"Opportunity": "a3trans/client_scripts/opportunity.js",
-	"Warehouse": "a3trans/client_scripts/warehouse.js",
-	"Delivery Note":"a3trans/client_scripts/delivery_note.js",
-	"Stock Entry":"a3trans/client_scripts/stock_entry.js",
-	"Sales Invoice":"a3trans/client_scripts/sales_invoice.js",
-	"Payment Entry":"a3trans/client_scripts/payment_entry.js",
-	"Lead":"a3trans/client_scripts/lead.js",
-	"Address":"a3trans/client_scripts/address.js",
-	
- }
-doc_events = {
-	 "Customer": {
-		"after_insert":"a3trans.a3trans.events.customer.after_insert"
-	 },
-	  "Lead": {
-		"after_insert":"a3trans.a3trans.events.lead.after_insert"
-	 },
-	 "Opportunity":{
-		"after_insert":"a3trans.a3trans.events.opportunity.after_insert"
-	 },
-	 "Warehouse":{
-		# "validate":"a3trans.a3trans.events.warehouse.validate",
-		"after_insert":"a3trans.a3trans.events.warehouse.after_insert"
-	 },
-	 "Delivery Note":{
-		"on_submit":"a3trans.a3trans.events.delivery_note.on_submit"
-	 },
-
-	"Stock Entry":{
-		"on_submit":"a3trans.a3trans.events.stock_entry.on_submit"
-	 },
-
-	"Address":{
-		"after_insert":"a3trans.a3trans.events.address.after_insert",
-		"validate":"a3trans.a3trans.events.address.validate"
-	 },
+   "Opportunity": "a3trans/client_scripts/opportunity.js",
+   "Warehouse": "a3trans/client_scripts/warehouse.js",
+   "Delivery Note":"a3trans/client_scripts/delivery_note.js",
+   "Stock Entry":"a3trans/client_scripts/stock_entry.js",
+   "Sales Invoice":"a3trans/client_scripts/sales_invoice.js",
+   "Payment Entry":"a3trans/client_scripts/payment_entry.js",
+   "Lead":"a3trans/client_scripts/lead.js",
+   "Address":"a3trans/client_scripts/address.js",
+  
 }
+
+doc_events = {
+    "Customer": {
+       "after_insert":"a3trans.a3trans.events.customer.after_insert"
+    },
+     "Lead": {
+       "after_insert":"a3trans.a3trans.events.lead.after_insert"
+    },
+    "Opportunity":{
+       "after_insert":"a3trans.a3trans.events.opportunity.after_insert"
+    },
+    "Warehouse":{
+       # "validate":"a3trans.a3trans.events.warehouse.validate",
+       "after_insert":"a3trans.a3trans.events.warehouse.after_insert"
+    },
+    "Delivery Note":{
+       "on_submit":"a3trans.a3trans.events.delivery_note.on_submit"
+    },
+
+
+   "Stock Entry":{
+       "on_submit":"a3trans.a3trans.events.stock_entry.on_submit"
+    },
+
+
+   "Address":{
+       "after_insert":"a3trans.a3trans.events.address.after_insert",
+       "validate":"a3trans.a3trans.events.address.validate"
+    },
+   
+}
+
 # Scheduled Tasks
 # ---------------
 
