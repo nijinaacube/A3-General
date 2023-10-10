@@ -1,0 +1,61 @@
+{
+ "cards": [
+  {
+   "card": "New Lead (Last 1 Month)"
+  },
+  {
+   "card": "Active Customers"
+  },
+  {
+   "card": "Total Bookings"
+  },
+  {
+   "card": "New Bookings"
+  },
+  {
+   "card": "Trucks Assigned"
+  },
+  {
+   "card": "Available Trucks"
+  },
+  {
+   "card": "Trucks On Duty"
+  },
+  {
+   "card": "Available Drivers"
+  },
+  {
+   "card": "Drivers On Duty"
+  }
+ ],
+ "charts": [
+  {
+   "chart": "Bookings",
+   "width": "Half"
+  },
+  {
+   "chart": "Incoming Leads",
+   "width": "Half"
+  },
+  {
+   "chart": "Outgoing Bills (Sales Invoice)",
+   "width": "Half"
+  },
+  {
+   "chart": "Truck Assignments",
+   "width": "Half"
+  }
+ ],
+ "creation": "2023-10-09 10:35:36.544729",
+ "dashboard_name": "Logistics Dashboard",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2023-10-10 10:43:19.539360",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Logistics Dashboard",
+ "owner": "Administrator"
+}
