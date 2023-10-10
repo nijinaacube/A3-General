@@ -1,6 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "format:EPE-{######}",
  "creation": "2023-10-10 13:37:31.375981",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -119,7 +120,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-10 15:30:13.901714",
+ "modified": "2023-10-10 17:42:22.621892",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Employee Performance Evaluation",

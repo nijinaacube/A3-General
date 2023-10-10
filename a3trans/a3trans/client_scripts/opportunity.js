@@ -39,6 +39,12 @@ frappe.ui.form.on('Opportunity', {
        	 
         	})
     	}
+
+		frm.add_custom_button(__("Execute"), function() {
+
+		}).addClass('btn-primary');
+
+
     	}
 	}
     
@@ -473,58 +479,71 @@ frappe.ui.form.on('Transit Details', {
 
    
     
-
 	choose_required_labour_service: function(frm, cdt, cdn) {
-    	var child1 = locals[cdt][cdn];
-    	var item_selected = child1.choose_required_labour_service;
-
-    	if (!child1.labour_id) {
-        	// If labour_id is not set, add a new row
-        	const target_row = frm.add_child('transit_charges');
-        	target_row.charges = item_selected;
-        	target_row.quantity = 1;
-        	child1.labour_id = target_row.idx;
-        	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
-        	frm.refresh_field('transit_charges');
-    	} else {
-        	// If labour_id is already set, update the existing row
-        	var existing_row = frm.doc.transit_charges.find(row => row.idx === child1.labour_id);
-        	if (existing_row) {
-            	existing_row.charges = item_selected;
-            	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
-            	frm.refresh_field('transit_charges');
-        	} else {
-            	// Handle the case where the existing row with labour_id is not found
-            	frappe.msgprint('Row not found with labour_id: ' + child1.labour_id);
-        	}
-    	}
-	},
-	choose_required_handling_service: function(frm, cdt, cdn) {
-    	var child1 = locals[cdt][cdn];
-    	var item_selected = child1.choose_required_handling_service;
-
-    	if (!child1.handle_id) {
-        	// If labour_id is not set, add a new row
-        	const target_row = frm.add_child('transit_charges');
-        	target_row.charges = item_selected;
-        	target_row.quantity = 1;
-        	child1.handle_id = target_row.idx;
-        	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
-        	frm.refresh_field('transit_charges');
-    	} else {
-        	// If labour_id is already set, update the existing row
-        	var existing_row = frm.doc.transit_charges.find(row => row.idx === child1.handle_id);
-        	if (existing_row) {
-            	existing_row.charges = item_selected;
-            	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
-            	frm.refresh_field('transit_charges');
-        	} else {
-            	// Handle the case where the existing row with labour_id is not found
-            	frappe.msgprint('Row not found with labour_id: ' + child1.labour_id);
-        	}
-    	}
-	},
-
+		var child_labour = locals[cdt][cdn];
+		var item_selected = child_labour.choose_required_labour_service;
+		if (!child_labour.labour_id) {
+		// If labour_id is not set, add a new row
+		const target_row = frm.add_child('transit_charges');
+		target_row.charges = item_selected;
+		target_row.quantity = 1;
+		child_labour.labour_id = target_row.idx;
+		frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+		frm.refresh_field('transit_charges');
+		} else {
+		// If labour_id is already set, update the existing row
+		var existing_row = frm.doc.transit_charges.find(row => row.idx === child_labour.labour_id);
+		if (existing_row) {
+		if (item_selected) {
+		existing_row.charges = item_selected;
+		frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+		frm.refresh_field('transit_charges');
+		} else {
+		// Remove the existing row from the child table
+		frm.get_field("transit_charges").grid.grid_rows[existing_row.idx - 1].remove();
+		// Reset child_labour.labour_id after deletion
+		child_labour.labour_id = null;
+		}
+		} else {
+		// Handle the case where the existing row with labour_id is not found
+		frappe.msgprint('Row not found with labour_id: ' + child_labour.labour_id);
+		}
+		}
+		},
+		choose_required_handling_service: function(frm, cdt, cdn) {
+		var child_handling = locals[cdt][cdn];
+		var item_selected = child_handling.choose_required_handling_service;
+		if (!child_handling.handle_id) {
+		// If handle_id is not set, add a new row
+		const target_row = frm.add_child('transit_charges');
+		target_row.charges = item_selected;
+		target_row.quantity = 1;
+		child_handling.handle_id = target_row.idx;
+		frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+		frm.refresh_field('transit_charges');
+		} else {
+		// If handle_id is already set, update the existing row
+		var existing_row = frm.doc.transit_charges.find(row => row.idx === child_handling.handle_id);
+		if (existing_row) {
+		if (item_selected) {
+		existing_row.charges = item_selected;
+		frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+		frm.refresh_field('transit_charges');
+		} else {
+		// Remove the existing row from the child table
+		frm.get_field("transit_charges").grid.grid_rows[existing_row.idx - 1].remove();
+		// Reset child_handling.handle_id after deletion
+		child_handling.handle_id = null;
+		}
+		} else {
+		// Handle the case where the existing row with handle_id is not found
+		frappe.msgprint('Row not found with handle_id: ' + child_handling.handle_id);
+		}
+		}
+		},
+		
+		
+		
 
 
 	 
