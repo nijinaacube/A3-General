@@ -13,8 +13,9 @@ frappe.ui.form.on('Sales Invoice', {
                     "doc": frm.doc.order_id
                 },
                 callback: (r) => {
-                    console.log(r.message);
+                    console.log(r.message.data);
                     r.message.data.forEach((element) => {
+                        
                         cur_frm.set_value("booking_type", element.b_type);
                         cur_frm.refresh_field("booking_type");
 

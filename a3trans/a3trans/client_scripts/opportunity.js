@@ -46,7 +46,7 @@ frappe.ui.form.on('Opportunity', {
 				// Open the Sales Invoice
 				frappe.set_route("Form", "Sales Invoice", frm.doc.invoice_id);
 			} else {
-				frappe.msgprint(__('No invoice created against this order. Please create via connections'));
+				frappe.msgprint(__('No invoice linked against this order.'));
 			}
 		}).addClass('btn-primary');
 	}

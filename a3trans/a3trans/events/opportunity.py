@@ -57,7 +57,7 @@ def after_insert(doc,method):
                    for packing in doc.packing_items:
                        sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
           
-            #    sales_invoice.insert()
+               sales_invoice.insert()
             #    sales_invoice.submit()
                doc.invoice_id = sales_invoice.name
            doc.status="Converted"
@@ -671,26 +671,22 @@ def create_stock_entry(doc):
 
 
 
-
 @frappe.whitelist()
-def  get_invoice_items(doc):
-   print(doc)
-   oppo=frappe.get_doc("Opportunity",doc)
-
-
-   data_from_receipt = []
-   data = {}
-  
-   data["b_type"]=oppo.booking_type
-   data["party"]=oppo.party_name
-   if oppo.opportunity_line_item:
-       for line in oppo.opportunity_line_item:
-           data["item"] = line.item
-           data["quantity"]=line.quantity
-           data["rate"]=line.average_rate
-           data_from_receipt.append(data)
-   print(data_from_receipt)
-   return {"data": data_from_receipt}
+def get_invoice_items(doc):
+    oppo = frappe.get_doc("Opportunity", doc)
+    data_from_receipt = []
+    
+    if oppo.opportunity_line_item:
+        for line in oppo.opportunity_line_item:
+            data = {}
+            data["b_type"] = oppo.booking_type
+            data["party"] = oppo.party_name
+            data["item"] = line.item
+            data["quantity"] = line.quantity
+            data["rate"] = line.average_rate
+            data_from_receipt.append(data)
+        
+    return {"data": data_from_receipt}
 
 
           

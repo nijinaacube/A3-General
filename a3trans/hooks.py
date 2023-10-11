@@ -153,6 +153,9 @@ doc_events = {
     "Delivery Note":{
        "on_submit":"a3trans.a3trans.events.delivery_note.on_submit"
     },
+   "Sales Invoice":{
+   "on_submit":"a3trans.a3trans.events.sales_invoice.attach_pdf"
+   },
 
 
    "Stock Entry":{
