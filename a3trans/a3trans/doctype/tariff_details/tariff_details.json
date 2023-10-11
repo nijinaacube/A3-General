@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:TARIFF-{customer}-{####}",
+ "autoname": "format:TARIFF-{####}",
  "creation": "2023-09-14 10:51:31.174501",
  "doctype": "DocType",
  "editable_grid": 1,
@@ -9,6 +9,8 @@
  "field_order": [
   "is_standard",
   "customer",
+  "contact",
+  "lead_id",
   "transportation_charges_section",
   "tariff_details_item",
   "warehouse_space_rent_charges_section",
@@ -17,14 +19,14 @@
  "fields": [
   {
    "allow_bulk_edit": 1,
+   "allow_in_quick_entry": 1,
    "fieldname": "tariff_details_item",
    "fieldtype": "Table",
    "label": "Tariff Details Item",
-   "options": "Tariff Details Item",
-   "reqd": 1
+   "options": "Tariff Details Item"
   },
   {
-   "depends_on": "eval:doc.is_standard==0",
+   "depends_on": "eval:doc.is_standard==0 && !doc.__islocal",
    "fieldname": "customer",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -37,6 +39,7 @@
    "label": "Warehouse Space Rent Charges"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "warehouse_space_rent_charges",
    "fieldtype": "Table",
    "label": "Warehouse Space Rent Charges",
@@ -49,14 +52,27 @@
   },
   {
    "default": "0",
+   "depends_on": "eval:!doc.__islocal",
    "fieldname": "is_standard",
    "fieldtype": "Check",
    "label": "Is Standard?"
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Link",
+   "label": "Contact",
+   "options": "Contact"
+  },
+  {
+   "fieldname": "lead_id",
+   "fieldtype": "Link",
+   "label": "Lead ID",
+   "options": "Lead"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-22 19:45:41.590144",
+ "modified": "2023-10-11 21:31:07.479010",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Tariff Details",
@@ -75,7 +91,7 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "sort_field": "modified",
- "sort_order": "DESC",
- "track_changes": 1
+ "sort_order": "DESC"
 }
