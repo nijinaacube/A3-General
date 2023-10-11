@@ -252,30 +252,6 @@
    "property_type": "Check",
    "row_name": null,
    "value": "1"
-  },
-  {
-   "_assign": null,
-   "_comments": null,
-   "_liked_by": null,
-   "_user_tags": null,
-   "creation": "2023-09-01 11:31:04.445189",
-   "default_value": null,
-   "doc_type": "Vehicle Assignment",
-   "docstatus": 0,
-   "doctype_or_field": "DocField",
-   "field_name": "type_of_booking",
-   "idx": 0,
-   "modified": "2023-09-01 11:31:04.445189",
-   "modified_by": "Administrator",
-   "name": "Vehicle Assignment-type_of_booking-in_list_view",
-   "owner": "Administrator",
-   "parent": null,
-   "parentfield": null,
-   "parenttype": null,
-   "property": "in_list_view",
-   "property_type": "Check",
-   "row_name": null,
-   "value": "1"
   }
  ],
  "sync_on_migrate": 1

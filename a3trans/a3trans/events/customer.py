@@ -1,12 +1,15 @@
 import frappe
 def after_insert(doc,method):
-   print(doc,"jjjjjjjjj")
+   
    if doc.lead_name:
        lead=frappe.get_doc("Lead",doc.lead_name)
-       if lead.add_select_tariff:
-           tariff_doc=frappe.get_doc("Tariff Details",lead.add_Select_tariff)
-           doc.tariff=tariff_doc.name
-           tariff_doc.customer=tariff_doc.name
+       print(lead.add_select_tariff,"llllllllll")
+      
+       if lead.add_select_tariff:      
+           doc.tariff=lead.add_select_tariff
+           tariff_doc= frappe.get_doc("Tariff Details",lead.add_select_tariff)
+           print(tariff_doc)
+           tariff_doc.customer=doc.name
            tariff_doc.save()
 
 

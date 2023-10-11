@@ -153,35 +153,39 @@ frappe.ui.form.on('Vehicle Assignment', {
      
  },
  order: function(frm) {
-    frappe.call({
-        method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
-        args: {
-            "order_id": frm.doc.order,
-        },
-        callback: function(response) {
-            if (response.message && Array.isArray(response.message)) {
-                // Clear the existing rows in the "routes" child table
-                frm.clear_table("routes");
+    if (frm.doc.order) {
+        frappe.call({
+            method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
+            args: {
+                "order_id": frm.doc.order,
+            },
+            callback: function(response) {
+                if (response.message) {
+                    // Clear the existing rows in the "routes" child table
+                    frm.clear_table("routes");
 
-                // Loop through the list of dictionaries in the response
-                response.message.forEach(function(item) {
-                    var target_row = frm.add_child("routes");
+                    // Loop through the response.message as an object
+                    for (var i in response.message) {
+                        var item = response.message[i];
+                        var target_row = frm.add_child("routes");
 
-                    // Set values for the fields of the new row
-                    target_row.order_id = frm.doc.order;
-                    target_row.order_no = item.order_no;
-                    target_row.transit_type = item.type;
-                    target_row.zone=item.zone
-                    target_row.lat=item.latitude
-                    target_row.lon=item.longitude
+                        // Set values for the fields of the new row
+                        target_row.order_id = frm.doc.order;
+                        target_row.order_no = item.order_no;
+                        target_row.transit_type = item.type;
+                        target_row.zone = item.zone;
+                        target_row.lat = item.lat;
+                        target_row.lon = item.lon;
+                        target_row.remark = item.remark;
 
-                    // Add the new row to the "routes" child table
-                    frm.refresh_field("routes");
-                });
+                        // Add the new row to the "routes" child table
+                        frm.refresh_field("routes");
+                    }
+                }
             }
-        }
-    });
-},
+        });
+    }
+}
 })
 
  

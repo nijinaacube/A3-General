@@ -58,7 +58,7 @@ def after_insert(doc,method):
                        sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
           
                sales_invoice.insert()
-               sales_invoice.submit()
+            #    sales_invoice.submit()
                doc.invoice_id = sales_invoice.name
            doc.status="Converted"
            doc.save()
@@ -559,6 +559,7 @@ def get_warehouse_data(doc):
 
 
 
+
 @frappe.whitelist()
 def fetch_charges_price(charges):
    print(charges)
@@ -571,8 +572,6 @@ def fetch_charges_price(charges):
 
 
 import json
-
-
 @frappe.whitelist()
 def calculate_transportation_cost(customer, zone, vehicle_type, length):
    zone_list = json.loads(zone)

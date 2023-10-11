@@ -34,14 +34,23 @@ frappe.ui.form.on('Opportunity', {
        	 
         	})
     	}
-
 		frm.add_custom_button(__("Execute"), function() {
-
+			// Check if the invoice_id is set
+			if (frm.doc.invoice_id) {
+				// Specify the document type and name to open
+				frappe.route_options = {
+					'name': frm.doc.invoice_id,
+					'doctype': 'Sales Invoice'
+				};
+		
+				// Open the Sales Invoice
+				frappe.set_route("Form", "Sales Invoice", frm.doc.invoice_id);
+			} else {
+				frappe.msgprint(__('No invoice created against this order. Please create via connections'));
+			}
 		}).addClass('btn-primary');
-
-
-    	}
 	}
+}
     
 });
 
