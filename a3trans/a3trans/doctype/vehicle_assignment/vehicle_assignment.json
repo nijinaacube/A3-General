@@ -158,8 +158,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Helper ID",
-   "options": "Staff Member",
-   "reqd": 1
+   "options": "Staff Member"
   },
   {
    "fetch_from": "helper_id.full_name",
@@ -195,7 +194,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-19 16:04:02.973756",
+ "modified": "2023-10-11 12:17:50.459248",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Assignment",

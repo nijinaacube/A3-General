@@ -31,7 +31,9 @@ frappe.ui.form.on('Tariff Details', {
 			callback: function(r) {
 				if (r.message) {
 					console.log(r.message)
-			frm.set_value("contact",r.message );
+			
+			
+			frm.set_value("contact",r.message[0] );
 			frm.refresh_field('contact');
 
 

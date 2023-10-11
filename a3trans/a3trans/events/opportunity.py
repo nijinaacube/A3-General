@@ -57,7 +57,7 @@ def after_insert(doc,method):
                    for packing in doc.packing_items:
                        sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
           
-               sales_invoice.insert()
+            #    sales_invoice.insert()
             #    sales_invoice.submit()
                doc.invoice_id = sales_invoice.name
            doc.status="Converted"
@@ -220,7 +220,7 @@ def after_insert(doc,method):
                            customer=frappe.get_doc("Customer",doc.party_name)
                            print(customer)
                            fromdate=frappe.utils.nowdate()
-                           dur=int(war.duration)
+                           dur=int(war.no_of_days)
                            todate=add_to_date(fromdate,days=dur,as_string=True)   
                            table_len=len(customer.customer_warehouse_details)                           
                            if table_len ==0:                               

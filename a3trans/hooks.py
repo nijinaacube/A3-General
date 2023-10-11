@@ -146,10 +146,10 @@ doc_events = {
     "Opportunity":{
        "after_insert":"a3trans.a3trans.events.opportunity.after_insert"
     },
-    "Warehouse":{
-       # "validate":"a3trans.a3trans.events.warehouse.validate",
-       "after_insert":"a3trans.a3trans.events.warehouse.after_insert"
-    },
+   #  "Warehouse":{
+   #     # "validate":"a3trans.a3trans.events.warehouse.validate",
+   #     "after_insert":"a3trans.a3trans.events.warehouse.after_insert"
+   #  },
     "Delivery Note":{
        "on_submit":"a3trans.a3trans.events.delivery_note.on_submit"
     },
@@ -190,9 +190,9 @@ doc_events = {
 #		"a3trans.tasks.weekly"
 #	]
 	# "monthly": [
-	# "a3trans.a3trans.events.monthly_invoic.create_invoices"
+	# "a3trans.a3trans.events.monthly_invoice.create_invoices"
 	# ]
-# }
+#  }
 
 # Testing
 # -------

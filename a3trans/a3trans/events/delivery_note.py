@@ -7,26 +7,63 @@ def on_submit(doc,methods):
 		oppo=frappe.get_doc("Opportunity",doc.order_id)
 		oppo.order_status="Closed"
 		
-		if oppo.party_name:
-			customer_warehouse = frappe.get_list("Warehouse", filters={"customer": oppo.party_name})
-			print(customer_warehouse, "******")
-			
-			for warehouse in customer_warehouse:
-				print(warehouse["name"], "oooooo")
-				warehouse_doc = frappe.get_doc("Warehouse", warehouse["name"])
-				for item in warehouse_doc.warehouse_item:
-					if item.booking_id==oppo.name:
-						if float(item.quantity)>0:
-							qty=float(item.quantity)-doc.total_qty
-							print(qty,"@@@@")
-							item.quantity=qty
-						
-							if qty==0:
-								item.status="Delivered"
-							warehouse_doc.save()				
-		oppo.save()
 	
+		if doc.customer:
+				
+				customer_warehouse = frappe.get_list("Warehouse", filters={"customer": doc.customer})
+				print(customer_warehouse, "******")
+				for itm in doc.items:
+				
+					for warehouse in customer_warehouse:
+						print(warehouse["name"], "oooooo")
+						warehouse_doc = frappe.get_doc("Warehouse", itm.warehouse)
+						for items in warehouse_doc.warehouse_item:
+							if items.booking_id==oppo.name and items.item==itm.item_code:
+								if float(items.quantity)>0 :
+									qty=float(items.quantity)-itm.qty
+									if qty < 0:
+										frappe.throw("No sufficient item in Warehouse")
+									print(qty,"@@@@")
+									items.quantity=qty
+								
+									if qty == 0:
+										items.status="Delivered"
+							
 
+						
+						warehouse_doc.total_quantity = sum(item.quantity for item in warehouse_doc.warehouse_item)
+						warehouse_doc.save()
+		oppo.save()
+	else:
+		if doc.customer:
+				
+				customer_warehouse = frappe.get_list("Warehouse", filters={"customer": doc.customer})
+				print(customer_warehouse, "******")
+				for itm in doc.items:
+				
+					warehouse_doc = frappe.get_doc("Warehouse", itm.warehouse)
+					for items in warehouse_doc.warehouse_item:
+							if items.item==itm.item_code:
+								if float(items.quantity)>0 :
+									qty=float(items.quantity)-itm.qty
+									if qty < 0:
+										frappe.throw("No sufficient item in Warehouse")
+									print(qty,"@@@@")
+									items.quantity=qty
+
+								
+									if qty == 0:
+										items.status="Delivered"
+							
+
+						
+					warehouse_doc.total_quantity = sum(item.quantity for item in warehouse_doc.warehouse_item)
+					warehouse_doc.save()
+	
+								
+		
+	
+# 
 @frappe.whitelist()
 def  get_items(doc):
 	print(doc)

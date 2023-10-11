@@ -1,47 +1,46 @@
 
 import frappe
 def on_submit(doc,methods):
-
-
-	# if doc.order_id=="":
-	# 	if doc.party_name and doc.stock_entry_type=="Material Receipt":
-	# 		oppo=frappe.new_doc("Opportunity")
-	# 		oppo.party_name=doc.party_name
-	# 		oppo.booking_type="Warehouse"
-	# 		if doc.items:
-	# 			for item in doc.items:
-	# 				oppo.append("warehouse_space_details",{"warehouse":item.t_warehouse})
-
 					
 	if doc.order_id:
 		oppo = frappe.get_doc("Opportunity", doc.order_id)
 		oppo.order_status = "Stock Updated"
-    
-		if oppo.party_name:
-			customer_warehouse = frappe.get_list("Warehouse", filters={"customer": oppo.party_name})
-			print(customer_warehouse, "******")
+		if doc.party_name:
+			for itm in doc.items:
 			
-			for warehouse in customer_warehouse:
-				print(warehouse["name"], "oooooo")
-				warehouse_doc = frappe.get_doc("Warehouse", warehouse["name"])
-				
-				for item in warehouse_doc.warehouse_item:
-					print(item)
-					
-					if item.booking_id == oppo.name:
+			
+				warehouse_doc = frappe.get_doc("Warehouse", itm.t_warehouse)
+
+				for items in warehouse_doc.warehouse_item:
+					print(items)
+
+					if items.booking_id == oppo.name :
 						if doc.items:
 							for itm in doc.items:
 								if itm.qty:
-									item.quantity=float(item.quantity)+itm.qty
-									
-									item.status = "Received"
-							
-									warehouse_doc.save()
+									items.quantity = float(items.quantity) + itm.qty
+									items.status = "Received"
+									items.stock_entry_id=doc.name
 
-							
-				
-		
+				warehouse_doc.total_quantity = sum(item.quantity for item in warehouse_doc.warehouse_item)
+				warehouse_doc.save()
+
 		oppo.save()
+	else:
+		if doc.party_name:
+				
+				customer_warehouse = frappe.get_all("Warehouse", filters={"customer": doc.party_name}, pluck="name")
+				print(customer_warehouse, "******")
+				for itm in doc.items:
+					for warehouse_name in customer_warehouse:
+						print(warehouse_name, "oooooo")
+						warehouses = frappe.get_doc("Warehouse", itm.t_warehouse)
+						warehouses.append("warehouse_item",{"stock_entry_id":doc.name,"item":itm.item_code,"quantity":itm.qty,"status":"Received"})
+						warehouses.total_quantity = sum(item.quantity for item in warehouses.warehouse_item)
+						warehouses.save()
+
+			
+
 
 
 @frappe.whitelist()
