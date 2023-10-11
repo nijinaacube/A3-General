@@ -10,7 +10,7 @@ frappe.ui.form.on('Vehicle Assignment', {
     refresh: function(frm) {
         if  (frm.is_new()){
             frm.set_value('assignment_date', frappe.datetime.get_today());
-          }
+          
         frm.add_custom_button(__('Get Orders'), function() {
             // Clear existing routes before adding new ones
             frm.clear_table('routes');
@@ -81,6 +81,7 @@ frappe.ui.form.on('Vehicle Assignment', {
                 }
             });
         });
+    }
     },
  
  

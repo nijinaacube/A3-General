@@ -13,7 +13,11 @@
   "uom",
   "column_break_ht1em",
   "handling_required",
-  "labour_required"
+  "labour_required",
+  "choose_labour_service",
+  "choose_handling_service",
+  "labour_id",
+  "handle_id"
  ],
  "fields": [
   {
@@ -57,6 +61,7 @@
    "default": "0",
    "fieldname": "handling_required",
    "fieldtype": "Check",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Handling Required"
   },
@@ -64,14 +69,43 @@
    "default": "0",
    "fieldname": "labour_required",
    "fieldtype": "Check",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Labour Required"
+  },
+  {
+   "fieldname": "choose_labour_service",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Choose Labour Service",
+   "options": "Item"
+  },
+  {
+   "fieldname": "choose_handling_service",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Choose Handling Service",
+   "options": "Item"
+  },
+  {
+   "fieldname": "labour_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "labour id"
+  },
+  {
+   "fieldname": "handle_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "handle id"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-08 13:20:10.169525",
+ "modified": "2023-10-11 21:49:48.256410",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Stock Items",
