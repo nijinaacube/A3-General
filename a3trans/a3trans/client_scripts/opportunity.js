@@ -35,6 +35,7 @@ frappe.ui.form.on('Opportunity', {
         	})
     	}
 		frm.add_custom_button(__("Execute"), function() {
+			
 			// Check if the invoice_id is set
 			if (frm.doc.invoice_id) {
 				// Specify the document type and name to open

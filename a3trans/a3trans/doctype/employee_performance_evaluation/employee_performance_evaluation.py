@@ -10,13 +10,16 @@ class EmployeePerformanceEvaluation(Document):
 def get_employee(doc):
 	print(doc)
 	opp=frappe.get_doc("Opportunity",doc)
-	va=frappe.get_doc("Vehicle Assignment",{"order":doc})
-	data={}
-	if opp.driver:
-		staff=frappe.get_doc("Staff Member",opp.driver)
-		data["employee"]=staff.employee
-		data["va_id"]=va.name
-		return data
+	if frappe.db.exists("Vehicle Assignment",{"order":doc}):
+		va=frappe.get_doc("Vehicle Assignment",{"order":doc})
+		data={}
+		if opp.driver:
+			staff=frappe.get_doc("Staff Member",opp.driver)
+			data["employee"]=staff.employee
+			data["va_id"]=va.name
+			return data
+	else:
+		frappe.throw("No Trip is Completed against this order")
 
 	
          
