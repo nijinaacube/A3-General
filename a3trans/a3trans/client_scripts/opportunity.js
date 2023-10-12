@@ -34,6 +34,7 @@ frappe.ui.form.on('Opportunity', {
        	 
         	})
     	}
+		if (frm.doc.order_status !== "Closed"){
 		frm.add_custom_button(__("Execute"), function() {
 			
 			// Check if the invoice_id is set
@@ -49,9 +50,13 @@ frappe.ui.form.on('Opportunity', {
 			} else {
 				frappe.msgprint(__('No invoice linked against this order.'));
 			}
+		
 		}).addClass('btn-primary');
 	}
+	}
+
 }
+
     
 });
 

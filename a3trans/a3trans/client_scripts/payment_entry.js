@@ -16,8 +16,6 @@ frappe.ui.form.on('Payment Entry', {
                         cur_frm.refresh_field("party");
                         cur_frm.set_value("party_name", element.party)
                         cur_frm.refresh_field("party_name");
- 
- 
                         cur_frm.set_value("booking_type", element.b_type);
                         cur_frm.refresh_field("booking_type");
                         cur_frm.set_value("party_name", element.party);
@@ -49,9 +47,7 @@ frappe.ui.form.on('Payment Entry', {
                         target_row.allocated_amount=element.total_allocated_amount
                         target_row.outstanding_amount=element.total_allocated_amount
                         frm.refresh_field("references")
- 
- 
-                        
+  
                     })
  
  
