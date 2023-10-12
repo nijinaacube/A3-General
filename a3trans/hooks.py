@@ -133,6 +133,8 @@ doctype_js = {
    "Payment Entry":"a3trans/client_scripts/payment_entry.js",
    "Lead":"a3trans/client_scripts/lead.js",
    "Address":"a3trans/client_scripts/address.js",
+   "Vehicle":"a3trans/client_scripts/vehicle.js",
+
   
 }
 
