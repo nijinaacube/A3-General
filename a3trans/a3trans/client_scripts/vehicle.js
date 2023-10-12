@@ -4,8 +4,8 @@ frappe.ui.form.on('Vehicle', {
     function onPositionRecieved(position){
     var longitude= position.coords.longitude;
     var latitude= position.coords.latitude;
-    // frm.set_value('longitude',longitude);
-    // frm.set_value('latitude',latitude);
+    frm.set_value('longitude',longitude);
+    frm.set_value('latitude',latitude);
     console.log(longitude);
     console.log(latitude);
     fetch('https://api.opencagedata.com/geocode/v1/json?q='+latitude+'+'+longitude+'&key=de1bf3be66b546b89645e500ec3a3a28')
@@ -15,7 +15,7 @@ frappe.ui.form.on('Vehicle', {
     
     var current_location=data['results'][0].formatted;
     frm.set_value('city',city);
-    frm.set_value('current_location',current_location);
+    
    
     console.log(data);
     
@@ -44,8 +44,8 @@ frappe.ui.form.on('Vehicle', {
             function onPositionRecieved(position){
             var longitude= position.coords.longitude;
             var latitude= position.coords.latitude;
-            // frm.set_value('longitude',longitude);
-            // frm.set_value('latitude',latitude);
+            frm.set_value('longitude',longitude);
+            frm.set_value('latitude',latitude);
             console.log(longitude);
             console.log(latitude);
             fetch('https://api.opencagedata.com/geocode/v1/json?q='+latitude+'+'+longitude+'&key=de1bf3be66b546b89645e500ec3a3a28')
@@ -55,7 +55,7 @@ frappe.ui.form.on('Vehicle', {
             
             var current_location=data['results'][0].formatted;
             frm.set_value('city',city);
-            frm.set_value('current_location',current_location);
+           
            
             console.log(data);
             
