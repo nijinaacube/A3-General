@@ -985,7 +985,10 @@ customer_name:function(frm){
 	}
 
 },
+
 onload: function(frm) {
+	if  (frm.is_new()){
+
 	if (frm.doc.lead_id) {
     	console.log(frm.doc.lead_id, );
 
@@ -1016,6 +1019,7 @@ onload: function(frm) {
         	}
     	});
 	}
+}
 
 
    	 

@@ -20,7 +20,8 @@
   "remarks",
   "column_break_ao8dp",
   "date",
-  "time_difference"
+  "time_difference",
+  "order_id"
  ],
  "fields": [
   {
@@ -116,11 +117,18 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "order_id",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Order ID",
+   "options": "Opportunity"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-10 17:42:22.621892",
+ "modified": "2023-10-12 09:43:49.044460",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Employee Performance Evaluation",
