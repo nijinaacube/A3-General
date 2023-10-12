@@ -191,7 +191,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-09-21 21:57:22.364177",
+ "modified": "2023-10-12 10:58:04.775098",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Logistics",
@@ -203,6 +203,7 @@
    "color": "#29CD42",
    "doc_view": "New",
    "format": "New",
+   "icon": "lead",
    "label": "New Lead",
    "link_to": "Lead",
    "type": "DocType"
@@ -242,6 +243,12 @@
    "label": "Add Stock Without Booking",
    "link_to": "Stock Entry",
    "type": "DocType"
+  },
+  {
+   "doc_view": "Dashboard",
+   "label": "Dashboard",
+   "link_to": "Logistics Dashboard",
+   "type": "Dashboard"
   }
  ],
  "shortcuts_label": "Booking Management"
