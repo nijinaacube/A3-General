@@ -4,6 +4,9 @@
    "card": "New Lead (Last 1 Month)"
   },
   {
+   "card": "New Leads"
+  },
+  {
    "card": "Active Customers"
   },
   {
@@ -53,7 +56,7 @@
  "idx": 0,
  "is_default": 0,
  "is_standard": 1,
- "modified": "2023-10-10 10:43:19.539360",
+ "modified": "2023-10-12 20:56:51.109888",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Logistics Dashboard",

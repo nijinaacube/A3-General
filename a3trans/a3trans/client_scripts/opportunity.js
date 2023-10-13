@@ -1,4 +1,19 @@
 frappe.ui.form.on('Opportunity', {
+	
+	after_save: function(frm) {
+        // Create a new Project
+        frappe.new_doc("Vehicle Assignment", {
+            order: frm.doc.name, // Link the Opportunity to the Project
+            // Set other Project fields as needed
+            // project_name: frm.doc.opportunity_name,
+            // status: "Open", // Set the initial status
+            // Add other fields here
+        }).then(doc => {
+            // Redirect to the newly created Project page
+            frappe.set_route("Form", "Vehicle Assignment", doc.name);
+        });
+    },
+	
     
 	refresh: function(frm) {
    	 
@@ -1006,8 +1021,10 @@ onload: function(frm) {
         	callback: function(r) {
             	console.log(r.message["to"]);
             	if (r.message && frm.doc.booking_type === "Vehicle") {
+					if (!frm.doc.receiver_information){
                 	// Add a "Pickup" row
                 	const pickup_row = frm.add_child('receiver_information');
+					
                 	pickup_row.transit_type = "Pickup";
                 	pickup_row.order_no=1
                 	pickup_row.zone = r.message["from"];
@@ -1021,6 +1038,7 @@ onload: function(frm) {
                 	frm.script_manager.trigger('zone', dropoff_row.doctype, dropoff_row.name);
 
                 	frm.refresh_field("receiver_information");
+					}
             	}
         	}
     	});

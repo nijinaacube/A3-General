@@ -59,7 +59,7 @@
    "fieldname": "assignment_status",
    "fieldtype": "Select",
    "label": "Assignment Status",
-   "options": "Vehicle Assigned\nIn-Transit\nArrived\nDelivered\nClosed"
+   "options": "Vehicle Assigned\nIn-Transit\nDelivered\nClosed\nCancelled"
   },
   {
    "fieldname": "route_details_section",
@@ -194,7 +194,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-11 12:17:50.459248",
+ "modified": "2023-10-13 10:19:30.215571",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Assignment",

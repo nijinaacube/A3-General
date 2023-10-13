@@ -44,6 +44,8 @@ def after_insert(doc,method):
                sales_invoice.customer_name = doc.customer_name
                sales_invoice.order_id=doc.name
                sales_invoice.booking_type=doc.booking_type
+               if  doc.job_number:
+                    sales_invoice.job_number = doc.job_number
                sales_invoice.order_status="New"
                sales_invoice.due_date=frappe.utils.nowdate()
                if doc.booking_type=="Vehicle" or doc.booking_type=="Warehouse" :
@@ -680,6 +682,10 @@ def get_invoice_items(doc):
         for line in oppo.opportunity_line_item:
             data = {}
             data["b_type"] = oppo.booking_type
+            if oppo.job_number:
+                data["job"]=oppo.job_number
+            else:
+                data["job"]=""
             data["party"] = oppo.party_name
             data["item"] = line.item
             data["quantity"] = line.quantity

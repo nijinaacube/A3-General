@@ -2,15 +2,17 @@ frappe.ui.form.on('Delivery Note', {
 	order_id: function(frm) {
 
 if (frm.doc.order_id){
-    frm.clear_table('items')
+    
     frappe.call({
         method: "a3trans.a3trans.events.delivery_note.get_items",
         args:{
             "doc": frm.doc.order_id
         },
         callback: (r)=>{
-            
+            console.log(r.message)
             r.message.data.forEach((element)=>{
+
+                frm.clear_table('items')
                 const items = frm.add_child("items")
                     items.item_code = element.item
                     items.item_name = element.item
@@ -23,9 +25,13 @@ if (frm.doc.order_id){
                     
                     console.log(element.war)
                     refresh_field("items")
+                    console.log(element.party)
 
                     cur_frm.set_value("customer", element.party);
 			        cur_frm.refresh_field("customer");
+
+                    cur_frm.set_value("job_number", element.job);
+			        cur_frm.refresh_field("job_number");
             })
         }
     })

@@ -66,13 +66,14 @@
   {
    "fieldname": "lead_id",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Lead ID",
    "options": "Lead"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-11 21:31:07.479010",
+ "modified": "2023-10-13 10:26:05.947570",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Tariff Details",
