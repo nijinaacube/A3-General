@@ -8,7 +8,12 @@
  "engine": "InnoDB",
  "field_order": [
   "booking_type",
-  "description"
+  "description",
+  "icon",
+  "column_break_xi4g0",
+  "item",
+  "location_required",
+  "inventory_required"
  ],
  "fields": [
   {
@@ -23,11 +28,38 @@
    "fieldname": "description",
    "fieldtype": "Data",
    "label": "Description"
+  },
+  {
+   "fieldname": "icon",
+   "fieldtype": "Attach",
+   "label": "Icon"
+  },
+  {
+   "fieldname": "column_break_xi4g0",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Item",
+   "options": "Item"
+  },
+  {
+   "default": "0",
+   "fieldname": "location_required",
+   "fieldtype": "Check",
+   "label": "Location Required"
+  },
+  {
+   "default": "0",
+   "fieldname": "inventory_required",
+   "fieldtype": "Check",
+   "label": "Inventory Required"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-09-15 11:28:53.911109",
+ "modified": "2023-10-13 13:18:17.615057",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Booking Type",
