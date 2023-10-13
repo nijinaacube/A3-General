@@ -44,8 +44,8 @@ def after_insert(doc,method):
                sales_invoice.customer_name = doc.customer_name
                sales_invoice.order_id=doc.name
                sales_invoice.booking_type=doc.booking_type
-               if  doc.job_number:
-                    sales_invoice.job_number = doc.job_number
+            #    if  doc.job_number:
+            #         sales_invoice.job_number = doc.job_number
                sales_invoice.order_status="New"
                sales_invoice.due_date=frappe.utils.nowdate()
                if doc.booking_type=="Vehicle" or doc.booking_type=="Warehouse" :
