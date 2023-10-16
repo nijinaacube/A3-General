@@ -2,6 +2,7 @@ frappe.ui.form.on('Opportunity', {
 	
 	after_save: function(frm) {
         // Create a new Project
+
         frappe.new_doc("Vehicle Assignment", {
             order: frm.doc.name, // Link the Opportunity to the Project
             // Set other Project fields as needed
@@ -49,6 +50,66 @@ frappe.ui.form.on('Opportunity', {
        	 
         	})
     	}
+		if (frm.doc.status === "Converted") { // Check if the document is saved
+			frm.add_custom_button(__('Cancel Booking'), function() {
+			frappe.confirm(
+			__('Are you sure you want to Cancel Booking?'),
+			function() {
+			// User clicked "Yes" in the confirmation dialog
+			frappe.call({
+			method: "a3trans.a3trans.events.opportunity.cancel_booking",
+			args: {
+				"name": frm.doc.name,
+				},
+			callback: function(r) {
+
+				console.log(r.message)
+				console.log("rrrrrrrrrrrr")
+			if (r.message=="Vehicle Assigned") {
+				let d = new frappe.ui.Dialog({
+				title: 'Cancellation Charges Details',
+				fields: [
+				{
+				label: 'Cancellation Charge',
+				fieldname: 'cancellation_charge',
+				fieldtype: 'Currency',
+				
+				},
+				{
+				label: ' Reason for Cancellation',
+				fieldname: 'reason_for_cancelation',
+				fieldtype: 'Small Text'
+				},
+				{
+				label: 'Allow with Zero Cost',
+				fieldname: 'zero_cost',
+				fieldtype: 'Check'
+				}
+			],
+			size: 'small', // small, large, extra-large
+			primary_action_label: 'Submit',
+			primary_action(values) {
+				console.log(values);
+				d.hide();
+				}
+			});
+			d.show();
+			}
+			else{
+
+				
+			}
+			}
+			});
+			},
+			function() {
+			// User clicked "No" in the confirmation dialog
+			// Add any behavior you want when the user clicks "No"
+			}
+			);
+			});
+			}
+			
 		if (frm.doc.order_status !== "Closed"){
 		frm.add_custom_button(__("Execute"), function() {
 			
@@ -69,6 +130,8 @@ frappe.ui.form.on('Opportunity', {
 		}).addClass('btn-primary');
 	}
 	}
+
+
 
 }
 
@@ -421,6 +484,7 @@ frappe.ui.form.on('Opportunity', {
 								target_row.from_zone = from_zone;
 								target_row.to_zone = to_zone;
 								frm.doc.trans_id=target_row.idx
+								target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
 								target_row.cost = response.message;
 								frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
 								frm.refresh_field('transit_charges');
@@ -457,6 +521,21 @@ frappe.ui.form.on('Opportunity', {
 				frappe.throw("Please choose vehicle type")
 			}
 		}
+		if(zones.length > 2){
+			console.log(zones[0],zones[1],zones[2])
+			const target_row = frm.add_child('transit_charges');
+			target_row.charges = "Transportation Charges";
+			target_row.quantity = 1;
+			target_row.cost=0
+			target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
+			frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+			frm.refresh_field('transit_charges');
+			
+			
+			
+			
+			}
+			
 	
 
 	},
@@ -607,6 +686,7 @@ zone: function(frm, cdt, cdn) {
 	}
 
 	if (zones.length == 2) {
+
     	// Calculate cost and add transportation charge
     	let from_zone = zones[0];
     	let to_zone = zones[1];
@@ -633,6 +713,7 @@ zone: function(frm, cdt, cdn) {
                         	target_row.from_zone = from_zone;
                         	target_row.to_zone = to_zone;
 							frm.doc.trans_id=target_row.idx
+							target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
                         	target_row.cost = response.message;
                         	frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
                         	frm.refresh_field('transit_charges');
@@ -666,6 +747,21 @@ zone: function(frm, cdt, cdn) {
         	});
     	}
 	}
+	if(zones.length > 2){
+		console.log(zones[0],zones[1],zones[2])
+		const target_row = frm.add_child('transit_charges');
+		target_row.charges = "Transportation Charges";
+		target_row.quantity = 1;
+		target_row.cost=0
+		target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
+		frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+		frm.refresh_field('transit_charges');
+		
+		
+		
+		
+		}
+		
 }
 else{
 	frappe.throw("Please choose vehicle_type")
@@ -902,6 +998,7 @@ from_location:function(frm){
 								target_row.from_zone = from_zone;
 								target_row.to_zone = to_zone;
 								frm.doc.trans_id=target_row.idx
+								target_row.description=from_zone+" "+"to"+" "+ to_zone;
 								target_row.cost = response.message;
 								frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
 								frm.refresh_field('transit_charges');
@@ -911,6 +1008,7 @@ from_location:function(frm){
 								if (existing_row){
 						
 								existing_row.cost = response.message;
+								existing_row.description=from_zone+" "+"to"+" "+ to_zone;
 								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
 								frm.refresh_field('transit_charges');
 								}
@@ -973,6 +1071,7 @@ to_location:function(frm){
 								target_row.to_zone = to_zone;
 								frm.doc.trans_id=target_row.idx
 								target_row.cost = response.message;
+								target_row.description=from_zone+" "+"to"+" "+ to_zone;
 								frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
 								frm.refresh_field('transit_charges');
 							}
@@ -981,6 +1080,7 @@ to_location:function(frm){
 								if (existing_row){
 						
 								existing_row.cost = response.message;
+								existing_row.description=from_zone+" "+"to"+" "+ to_zone;
 								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
 								frm.refresh_field('transit_charges');
 								}

@@ -5,19 +5,39 @@ from datetime import datetime
 import calendar
 from functools import reduce
 from frappe.utils import add_to_date
-def after_insert(doc,methods):
+def after_insert(doc, methods):
     if doc.lead_id:
-        lead_doc=frappe.get_doc("Lead",doc.lead_id)
-        print(lead_doc,"##################")
-        print(lead_doc.status,doc.status)
-        todo=frappe.new_doc("ToDo")
-        todo.date=lead_doc.ends_on
-        todo.owner=lead_doc.contact_by
-        todo.description="Please follow-up and complete the booking"
-        todo.reference_type="Opportunity"
-        todo.reference_name=doc.name
-        todo.save()
-        frappe.msgprint("Opportunity  " f'{doc.name} ' "assigned to " f'{lead_doc.contact_by}')
+        lead_doc = frappe.get_doc("Lead", doc.lead_id)
+        print(lead_doc.status, doc.status, lead_doc.contact_by)
+
+        # Check if 'contact_by' is available and valid
+        if lead_doc.contact_by:
+            sharedoc = frappe.new_doc("DocShare")
+            sharedoc.share_doctype = "Opportunity"
+            sharedoc.share_name = doc.name
+            sharedoc.user = lead_doc.contact_by
+            sharedoc.read = 1
+            sharedoc.write = 1
+            sharedoc.share = 1
+            sharedoc.notify = 1
+            sharedoc.report = 1
+            sharedoc.save(ignore_permissions=True)
+            # frappe.throw("ll")
+            print(lead_doc, "##################")
+            print(lead_doc.status, doc.status, lead_doc.contact_by)
+
+            todo = frappe.new_doc("ToDo")
+            todo.date = lead_doc.ends_on
+            todo.owner = lead_doc.contact_by
+            todo.description = "Please follow-up and complete the booking"
+            todo.reference_type = "Opportunity"
+            todo.reference_name = doc.name
+
+            todo.save()
+            frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
+        else:
+            frappe.msgprint("Error: 'contact_by' not found or is empty in the Lead.")
+
 def validate(doc,method):
    
     if doc.opportunity_from=="Customer":
@@ -701,3 +721,37 @@ def  get_payment_items(doc):
    data_from_receipt.append(data)
    print(data_from_receipt)
    return {"data": data_from_receipt}
+
+
+
+@frappe.whitelist()
+def cancel_booking(name):
+    # frappe.throw("hi")
+    if frappe.db.exists("Opportunity", name):
+        opportunity = frappe.get_doc("Opportunity", name)
+
+
+        # Find the Route Details Items with the specified opportunity ID
+        route_details_items = frappe.get_all(
+        "Route Details Item",
+        filters={"order_id": opportunity.name},
+        fields=["parent"]
+        )
+
+
+        # Extract the parent document names (Vehicle Assignment)
+        vehicle_assignment_names = {item["parent"] for item in route_details_items}
+
+
+        # Convert the set back to a list if needed
+        vehicle_assignment_names = list(vehicle_assignment_names)
+        if len(vehicle_assignment_names)>0:
+        # for i in vehicle_assignment_names:
+        # if frappe.db.exists("Vehicle Assignment",i.name):
+        # veh_ass=frappe.get_doc("Vehicle Assignment",i.name)
+            return vehicle_assignment_names
+
+
+        else:
+            opportunity.order_status="Cancelled"
+            opportunity.save()
