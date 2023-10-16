@@ -24,13 +24,17 @@ def after_insert(doc,methods):
            user.flags.ignore_password_policy = True
            user.insert()
            frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
+   if lead_doc.contact_by:
+       print("hii")
+       
+       
 @frappe.whitelist()
 def convert(doc):
    lead_doc=frappe.get_doc("Lead",doc)
    if lead_doc.address_link == None or lead_doc.address_link == "" :
        frappe.throw("Please add Address details in Lead " f'<a href="/app/lead/{lead_doc.name}" target="blank">{lead_doc.name} </a>')
-   if lead_doc.add_select_tariff== None:
-       frappe.throw("Please add/Select Tariff details in Lead " f'<a href="/app/lead/{lead_doc.name}" target="blank">{lead_doc.name} </a>')
+#    if lead_doc.add_select_tariff== None:
+#        frappe.throw("Please add/Select Tariff details in Lead " f'<a href="/app/lead/{lead_doc.name}" target="blank">{lead_doc.name} </a>')
 
 
    else:

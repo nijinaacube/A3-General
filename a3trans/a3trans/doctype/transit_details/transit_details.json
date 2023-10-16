@@ -11,6 +11,7 @@
   "transit_type",
   "column_break_wye28",
   "quantity",
+  "rate",
   "zone",
   "warehouse",
   "point_of_contact_section",
@@ -312,12 +313,18 @@
    "fieldtype": "Small Text",
    "in_list_view": 1,
    "label": "Remarks"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-10-10 21:51:50.464919",
+ "modified": "2023-10-13 18:07:29.709320",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Details",
