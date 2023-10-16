@@ -47,7 +47,7 @@ def on_submit(doc,methods):
 def  get_items(doc):
 	print(doc)
 	oppo=frappe.get_doc("Opportunity",doc)
-	if oppo.booking_type!="Warehouse":
+	if oppo.booking_type!="Warehousing":
 		frappe.throw("You can't create stock entry other than Warehouse booking")
 	else:
 		if oppo.warehouse_stock_items:

@@ -385,6 +385,7 @@ frappe.ui.form.on('Opportunity', {
 
 frappe.ui.form.on('Opportunity', {
 	vehicle_type: function(frm, cdt, cdn) {
+		
     	const zones = frm.doc.receiver_information.map(receiver => receiver.zone);
 		frm.set_value("table_length",zones.length)
 	
@@ -452,7 +453,12 @@ frappe.ui.form.on('Opportunity', {
 					}
 				});
 			}
+			else{
+				frappe.throw("Please choose vehicle type")
+			}
 		}
+	
+
 	},
 
 
@@ -591,7 +597,7 @@ frappe.ui.form.on('Transit Details', {
 
 zone: function(frm, cdt, cdn) {
 	
-	
+	if (frm.doc.vehicle_type){
 	const zones = frm.doc.receiver_information.map(receiver => receiver.zone);
 	frm.set_value("table_length",zones.length)
 
@@ -660,6 +666,10 @@ zone: function(frm, cdt, cdn) {
         	});
     	}
 	}
+}
+else{
+	frappe.throw("Please choose vehicle_type")
+}
 
 },
 
@@ -994,6 +1004,9 @@ to_location:function(frm){
 					}
 				});
 			}
+			else{
+				frappe.throw("Please add vehicle type")
+			}
 		}
 
 },
@@ -1020,7 +1033,7 @@ onload: function(frm) {
         	},
         	callback: function(r) {
             	console.log(r.message["to"]);
-            	if (r.message && frm.doc.booking_type === "Vehicle") {
+            	if (r.message && frm.doc.booking_type === "Transport") {
 					if (!frm.doc.receiver_information){
                 	// Add a "Pickup" row
                 	const pickup_row = frm.add_child('receiver_information');

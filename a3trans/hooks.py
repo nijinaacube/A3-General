@@ -143,10 +143,13 @@ doc_events = {
        "after_insert":"a3trans.a3trans.events.customer.after_insert"
     },
      "Lead": {
+       "validate":"a3trans.a3trans.events.lead.validate",
        "after_insert":"a3trans.a3trans.events.lead.after_insert"
     },
     "Opportunity":{
+       "validate":"a3trans.a3trans.events.opportunity.validate",
        "after_insert":"a3trans.a3trans.events.opportunity.after_insert"
+
     },
    #  "Warehouse":{
    #     # "validate":"a3trans.a3trans.events.warehouse.validate",
