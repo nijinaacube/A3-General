@@ -221,7 +221,7 @@ def  get_items(doc):
 
 	data_from_receipt = []
 	data = {}
-	if oppo.booking_type=="Warehouse":
+	if oppo.booking_type=="Warehousing":
 		if oppo.job_number:
 			data["job"] = oppo.job_number
 		else:
@@ -236,10 +236,13 @@ def  get_items(doc):
 			data["stock_uom"]=it.stock_uom
 			data["quantity"] = shipment.quantity
 			data_from_receipt.append(data)
-	if oppo.booking_type=="Vehicle":
-		for itm in oppo.shipment_details:
-			print(itm)
-			data["party"]=oppo.party_name
+			print(data)
+		return {"data": data_from_receipt}
+
+	# if oppo.booking_type=="Vehicle":
+	# 	for itm in oppo.shipment_details:
+	# 		print(itm)
+	# 		data["party"]=oppo.party_name
 			# data["item"]=itm.item
 			# data_from_receipt.append(data)
 			# it=frappe.get_doc("Item",itm.item)
@@ -248,4 +251,4 @@ def  get_items(doc):
 			# data["quantity"] = itm.quantity
 
 
-	return {"data": data_from_receipt}
+	

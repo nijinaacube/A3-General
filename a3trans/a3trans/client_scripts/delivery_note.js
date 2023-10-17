@@ -9,7 +9,7 @@ if (frm.doc.order_id){
             "doc": frm.doc.order_id
         },
         callback: (r)=>{
-            console.log(r.message)
+            console.log(r.message.data)
             r.message.data.forEach((element)=>{
 
                 frm.clear_table('items')

@@ -6,37 +6,62 @@ import calendar
 from functools import reduce
 from frappe.utils import add_to_date
 def after_insert(doc, methods):
-    if doc.lead_id:
-        lead_doc = frappe.get_doc("Lead", doc.lead_id)
-        print(lead_doc.status, doc.status, lead_doc.contact_by)
+	if doc.lead_id:
+		lead_doc = frappe.get_doc("Lead", doc.lead_id)
+		print(lead_doc.status, doc.status, lead_doc.contact_by)
 
-        # Check if 'contact_by' is available and valid
-        if lead_doc.contact_by:
-            sharedoc = frappe.new_doc("DocShare")
-            sharedoc.share_doctype = "Opportunity"
-            sharedoc.share_name = doc.name
-            sharedoc.user = lead_doc.contact_by
-            sharedoc.read = 1
-            sharedoc.write = 1
-            sharedoc.share = 1
-            sharedoc.notify = 1
-            sharedoc.report = 1
-            sharedoc.save(ignore_permissions=True)
-            # frappe.throw("ll")
-            print(lead_doc, "##################")
-            print(lead_doc.status, doc.status, lead_doc.contact_by)
+		# Check if 'contact_by' is available and valid
+		if lead_doc.contact_by:
+			sharedoc = frappe.new_doc("DocShare")
+			sharedoc.share_doctype = "Opportunity"
+			sharedoc.share_name = doc.name
+			sharedoc.user = lead_doc.contact_by
+			sharedoc.read = 1
+			sharedoc.write = 1
+			sharedoc.share = 1
+			sharedoc.notify = 1
+			sharedoc.report = 1
+			sharedoc.save(ignore_permissions=True)
+			# frappe.throw("ll")
+			print(lead_doc, "##################")
+			print(lead_doc.status, doc.status, lead_doc.contact_by)
 
-            todo = frappe.new_doc("ToDo")
-            todo.date = lead_doc.ends_on
-            todo.owner = lead_doc.contact_by
-            todo.description = "Please follow-up and complete the booking"
-            todo.reference_type = "Opportunity"
-            todo.reference_name = doc.name
+			todo = frappe.new_doc("ToDo")
+			todo.date = lead_doc.ends_on
+			todo.owner = lead_doc.contact_by
+			todo.description = "Please follow-up and complete the booking"
+			todo.reference_type = "Opportunity"
+			todo.reference_name = doc.name
 
-            todo.save()
-            frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
-        else:
-            frappe.msgprint("Error: 'contact_by' not found or is empty in the Lead.")
+			todo.save()
+			frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
+		else:
+			frappe.msgprint("Error: 'contact_by' not found or is empty in the Lead.")
+	if doc.booking_type == "Warehousing":
+		if doc.warehouse_space_details:
+
+			for war in doc.warehouse_space_details:
+				for itm in doc.warehouse_stock_items:
+					if war.warehouse:
+						warehouses = frappe.get_doc("Warehouse", war.warehouse)
+						warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"zone":war.zone,"status":"Pending"})       
+						warehouses.save()
+
+
+					if doc.party_name:
+						customer=frappe.get_doc("Customer",doc.party_name)
+						print(customer)
+						fromdate=frappe.utils.nowdate()
+						dur=int(war.no_of_days)
+						todate=add_to_date(fromdate,days=dur,as_string=True)   
+						table_len=len(customer.customer_warehouse_details)                           
+						if table_len ==0:                               
+							customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+						else:                               
+							for warehouses_det in customer.customer_warehouse_details:                                   
+								if  war.warehouse not in warehouses_det.warehouse:                                       
+									customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+						customer.save()
 
 def validate(doc,method):
    
@@ -215,31 +240,31 @@ def validate(doc,method):
                 add.insert()
 
 
-        if doc.booking_type == "Warehousing":
-            if doc.warehouse_space_details:
+        # if doc.booking_type == "Warehousing":
+        #     if doc.warehouse_space_details:
 
-                for war in doc.warehouse_space_details:
-                    for itm in doc.warehouse_stock_items:
-                        if war.warehouse:
-                            warehouses = frappe.get_doc("Warehouse", war.warehouse)
-                            warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"zone":war.zone,"status":"Pending"})       
-                            warehouses.save()
+        #         for war in doc.warehouse_space_details:
+        #             for itm in doc.warehouse_stock_items:
+        #                 if war.warehouse:
+        #                     warehouses = frappe.get_doc("Warehouse", war.warehouse)
+        #                     warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"zone":war.zone,"status":"Pending"})       
+        #                     warehouses.save()
 
 
-                        if doc.party_name:
-                            customer=frappe.get_doc("Customer",doc.party_name)
-                            print(customer)
-                            fromdate=frappe.utils.nowdate()
-                            dur=int(war.no_of_days)
-                            todate=add_to_date(fromdate,days=dur,as_string=True)   
-                            table_len=len(customer.customer_warehouse_details)                           
-                            if table_len ==0:                               
-                                customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
-                            else:                               
-                                for warehouses_det in customer.customer_warehouse_details:                                   
-                                    if  war.warehouse not in warehouses_det.warehouse:                                       
-                                        customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
-                            customer.save()
+        #                 if doc.party_name:
+        #                     customer=frappe.get_doc("Customer",doc.party_name)
+        #                     print(customer)
+        #                     fromdate=frappe.utils.nowdate()
+        #                     dur=int(war.no_of_days)
+        #                     todate=add_to_date(fromdate,days=dur,as_string=True)   
+        #                     table_len=len(customer.customer_warehouse_details)                           
+        #                     if table_len ==0:                               
+        #                         customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+        #                     else:                               
+        #                         for warehouses_det in customer.customer_warehouse_details:                                   
+        #                             if  war.warehouse not in warehouses_det.warehouse:                                       
+        #                                 customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+        #                     customer.save()
                         
                     
 
@@ -434,87 +459,87 @@ def get_end_of_month(current_date_str,booked_upto):
    return data
 @frappe.whitelist()
 def calculate_charges(selected_item, no_of_days, uom, customer, area, rate_month, rate_day,types):
-   no_of_days = float(no_of_days)
-   data = {}
-   if frappe.db.exists("Tariff Details", {"customer": customer}):
-      
-       tariff = frappe.get_doc("Tariff Details", {"customer": customer})
+	no_of_days = float(no_of_days)
+	data = {}
+	if frappe.db.exists("Tariff Details", {"customer": customer}):
+		
+		tariff = frappe.get_doc("Tariff Details", {"customer": customer})
 
 
-       if tariff.warehouse_space_rent_charges:
-      
-           for itm in tariff.warehouse_space_rent_charges:
-               rate=0
-               if types == itm.cargo_type and uom == "Cubic Meter":
-                   if rate_month == "1":
-                       rate = itm.rate_per_month
-                   elif rate_day == "1":
-                       if itm.rate_per_day:
-                           rate = itm.rate_per_day
-                       else:
-                           ratemonth= itm.rate_per_month
-                           rate=(ratemonth/30)
-                           print(rate)
+		if tariff.warehouse_space_rent_charges:
+		
+			for itm in tariff.warehouse_space_rent_charges:
+				rate=0
+				if types == itm.cargo_type and uom == "Cubic Meter":
+					if rate_month == "1":
+						rate = itm.rate_per_month
+					elif rate_day == "1":
+						if itm.rate_per_day:
+							rate = itm.rate_per_day
+						else:
+							ratemonth= itm.rate_per_month
+							rate=(ratemonth/30)
+							print(rate)
 
 
-                   total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
-                   data["total_amount"] = total_amount
+					total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+					data["total_amount"] = total_amount
 
 
-               if uom == itm.uom:
-                   if rate_month == "1":
-                       rate = itm.rate_per_month
-                   elif rate_day == "1":
-                       if itm.rate_per_day:
-                           rate = itm.rate_per_day
-                       else:
-                           ratemonth= itm.rate_per_month
-                           rate=(ratemonth/30)
-                      
-                   total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
-                   data["total_amount"] = total_amount
+				if uom == itm.uom:
+					if rate_month == "1":
+						rate = itm.rate_per_month
+					elif rate_day == "1":
+						if itm.rate_per_day:
+							rate = itm.rate_per_day
+						else:
+							ratemonth= itm.rate_per_month
+							rate=(ratemonth/30)
+						
+					total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
+					data["total_amount"] = total_amount
 
 
-           return data
-      
-   else:
-       if customer.tariff:
-           tariff=frappe.get_doc("Tariff Details",customer.tariff)
-           if tariff.warehouse_space_rent_charges:
-      
-               for itm in tariff.warehouse_space_rent_charges:
-                   rate=0
-                   if types == itm.cargo_type and uom == "Cubic Meter":
-                       if rate_month == "1":
-                           rate = itm.rate_per_month
-                       elif rate_day == "1":
-                           if itm.rate_per_day:
-                               rate = itm.rate_per_day
-                           else:
-                               ratemonth= itm.rate_per_month
-                               rate=(ratemonth/30)
-                               print(rate)
+			return data
+		
+	else:
+		if frappe.db.exists("Tariff Details",{"is_standard":1}):
+			tariff=frappe.get_doc("Tariff Details",{"is_standard":1})
+			if tariff.warehouse_space_rent_charges:
+		
+				for itm in tariff.warehouse_space_rent_charges:
+					rate=0
+					if types == itm.cargo_type and uom == "Cubic Meter":
+						if rate_month == "1":
+							rate = itm.rate_per_month
+						elif rate_day == "1":
+							if itm.rate_per_day:
+								rate = itm.rate_per_day
+							else:
+								ratemonth= itm.rate_per_month
+								rate=(ratemonth/30)
+								print(rate)
 
 
-                       total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
-                       data["total_amount"] = total_amount
+						total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+						data["total_amount"] = total_amount
 
 
-                   if uom == itm.uom:
-                       if rate_month == "1":
-                           rate = itm.rate_per_month
-                       elif rate_day == "1":
-                           if itm.rate_per_day:
-                               rate = itm.rate_per_day
-                           else:
-                               ratemonth= itm.rate_per_month
-                               rate=(ratemonth/30)
-                          
-                       total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
-                       data["total_amount"] = total_amount
+					if uom == itm.uom:
+						if rate_month == "1":
+							rate = itm.rate_per_month
+						elif rate_day == "1":
+							if itm.rate_per_day:
+								rate = itm.rate_per_day
+							else:
+								ratemonth= itm.rate_per_month
+								rate=(ratemonth/30)
+							
+						total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
+						data["total_amount"] = total_amount
 
 
-               return data
+				return data
       
 
 
@@ -724,34 +749,31 @@ def  get_payment_items(doc):
 
 
 
+
+from frappe import _
+
+
+
 @frappe.whitelist()
-def cancel_booking(name):
-    # frappe.throw("hi")
+def check_vehicle_assignments(name):
     if frappe.db.exists("Opportunity", name):
         opportunity = frappe.get_doc("Opportunity", name)
 
-
         # Find the Route Details Items with the specified opportunity ID
         route_details_items = frappe.get_all(
-        "Route Details Item",
-        filters={"order_id": opportunity.name},
-        fields=["parent"]
+            "Route Details Item",
+            filters={"order_id": opportunity.name},
+            fields=["parent"]
         )
-
 
         # Extract the parent document names (Vehicle Assignment)
         vehicle_assignment_names = {item["parent"] for item in route_details_items}
 
-
-        # Convert the set back to a list if needed
-        vehicle_assignment_names = list(vehicle_assignment_names)
-        if len(vehicle_assignment_names)>0:
-        # for i in vehicle_assignment_names:
-        # if frappe.db.exists("Vehicle Assignment",i.name):
-        # veh_ass=frappe.get_doc("Vehicle Assignment",i.name)
-            return vehicle_assignment_names
-
-
+        if vehicle_assignment_names:
+            # Vehicle assignments exist
+            return "Yes"
         else:
-            opportunity.order_status="Cancelled"
-            opportunity.save()
+            # No vehicle assignments, ask for reason for cancellation
+            return "No"
+
+

@@ -2,7 +2,8 @@ frappe.ui.form.on('Opportunity', {
 	
 	after_save: function(frm) {
         // Create a new Project
-
+if (frm.doc.order_status=="New" ){
+	if (frm.doc.booking_type=="Transport"){
         frappe.new_doc("Vehicle Assignment", {
             order: frm.doc.name, // Link the Opportunity to the Project
             // Set other Project fields as needed
@@ -10,9 +11,12 @@ frappe.ui.form.on('Opportunity', {
             // status: "Open", // Set the initial status
             // Add other fields here
         }).then(doc => {
+
             // Redirect to the newly created Project page
             frappe.set_route("Form", "Vehicle Assignment", doc.name);
         });
+	}
+	}
     },
 	
     
@@ -50,66 +54,104 @@ frappe.ui.form.on('Opportunity', {
        	 
         	})
     	}
-		if (frm.doc.status === "Converted") { // Check if the document is saved
+		if (frm.doc.status === "Converted") {
+			// Check if the document is saved
 			frm.add_custom_button(__('Cancel Booking'), function() {
-			frappe.confirm(
-			__('Are you sure you want to Cancel Booking?'),
-			function() {
-			// User clicked "Yes" in the confirmation dialog
-			frappe.call({
-			method: "a3trans.a3trans.events.opportunity.cancel_booking",
-			args: {
-				"name": frm.doc.name,
-				},
-			callback: function(r) {
-
-				console.log(r.message)
-				console.log("rrrrrrrrrrrr")
-			if (r.message=="Vehicle Assigned") {
-				let d = new frappe.ui.Dialog({
-				title: 'Cancellation Charges Details',
-				fields: [
-				{
-				label: 'Cancellation Charge',
-				fieldname: 'cancellation_charge',
-				fieldtype: 'Currency',
-				
-				},
-				{
-				label: ' Reason for Cancellation',
-				fieldname: 'reason_for_cancelation',
-				fieldtype: 'Small Text'
-				},
-				{
-				label: 'Allow with Zero Cost',
-				fieldname: 'zero_cost',
-				fieldtype: 'Check'
-				}
-			],
-			size: 'small', // small, large, extra-large
-			primary_action_label: 'Submit',
-			primary_action(values) {
-				console.log(values);
-				d.hide();
-				}
+				frappe.confirm(
+					__('Are you sure you want to Cancel Booking?'),
+					function() {
+						// User clicked "Yes" in the confirmation dialog
+						frappe.call({
+							method: "a3trans.a3trans.events.opportunity.check_vehicle_assignments",
+							args: {
+								"name": frm.doc.name,
+							},
+							callback: function(r) {
+								if (r.message == "Yes") {
+									// Vehicle assignments exist, show cancellation charge dialog
+									let d = new frappe.ui.Dialog({
+										title: 'Cancellation Charges Details',
+										fields: [
+											{
+												label: 'Cancellation Charge',
+												fieldname: 'cancellation_charge',
+												fieldtype: 'Currency',
+											},
+											{
+												label: 'Reason for Cancellation',
+												fieldname: 'reason_for_cancellation',
+												fieldtype: 'Small Text',
+											},
+											{
+												label: 'Allow with Zero Cost',
+												fieldname: 'zero_cost',
+												fieldtype: 'Check',
+											},
+										],
+										size: 'small',
+										primary_action_label: 'Submit',
+										primary_action(values) {
+											// Handle cancellation with charges
+											let cancellationCharge = values.cancellation_charge;
+											let reasonForCancellation = values.reason_for_cancellation;
+											let allowZeroCost = values.zero_cost;
+		
+											// Update the fields
+											frm.doc.order_status = 'Cancelled';
+											frm.doc.status = 'Lost';
+		
+											// Save the Opportunity form
+											frm.save(() => {
+												// Perform further actions as needed
+												d.hide();
+											});
+										},
+									});
+									d.show();
+								} else {
+									// No vehicle assignments, ask for reason for cancellation
+									let reasonDialog = new frappe.ui.Dialog({
+										title: 'Reason for Cancellation',
+										fields: [
+											{
+												label: 'Reason for Cancellation',
+												fieldname: 'cancellation_reason',
+												fieldtype: 'Text',
+												reqd: 1, // Make the field mandatory
+											},
+										],
+										primary_action_label: 'Submit',
+										primary_action(values) {
+											let cancellationReason = values.cancellation_reason;
+											if (cancellationReason) {
+												// User provided a reason, update and save the Opportunity form
+												frm.doc.order_status = 'Cancelled';
+												frm.doc.status = 'Lost';
+		
+												// Save the Opportunity form
+												frm.save(() => {
+													// Perform further actions as needed
+													reasonDialog.hide();
+												});
+											} else {
+												frappe.msgprint("Please provide a reason for cancellation.");
+											}
+										},
+									});
+									reasonDialog.show();
+								}
+							},
+						});
+					},
+					function() {
+						// User clicked "No" in the confirmation dialog
+						// Add any behavior you want when the user clicks "No"
+					}
+				);
 			});
-			d.show();
-			}
-			else{
-
-				
-			}
-			}
-			});
-			},
-			function() {
-			// User clicked "No" in the confirmation dialog
-			// Add any behavior you want when the user clicks "No"
-			}
-			);
-			});
-			}
-			
+		}
+		
+		
 		if (frm.doc.order_status !== "Closed"){
 		frm.add_custom_button(__("Execute"), function() {
 			
@@ -563,7 +605,49 @@ mobile_number: function(frm){
 
 })
 
+frappe.ui.form.on('Return Trips', {
 
+	
+	zone: function(frm, cdt, cdn) {
+		var child = locals[cdt][cdn];
+		const zones = frm.doc.return_trips.map(trip => trip.zone);
+		
+		if (frm.doc.has_return_trip==1){
+			if(!child.return_id){
+		const target_row = frm.add_child('transit_charges');
+		target_row.charges = "Return Charges";
+		child.return_id = target_row.idx
+		target_row.quantity = 1;
+		target_row.cost = 0;
+		if (zones.length >=2 && zones[zones.length-1] != ""){
+		target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
+		}
+		else{
+			
+			
+			target_row.description="To"+" "+zones[zones.length-1];
+		}
+		frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+		frm.refresh_field('transit_charges');
+	}
+	else{
+		var existing_row = frm.doc.transit_charges.find(row => row.idx === child.return_id);
+		if (existing_row) {
+			if (zones.length >=2 && zones[zones.length-1] != ""){
+				existing_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
+				}
+				else{
+					
+					existing_row.description="To"+" "+zones[zones.length-1];
+				}
+		frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+		frm.refresh_field('transit_charges');
+	}
+
+		}
+	}
+	}
+});
 
 frappe.ui.form.on('Transit Details', {
 

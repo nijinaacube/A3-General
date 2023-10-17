@@ -1,0 +1,308 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-16 21:32:24.600981",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "location_details_section",
+  "order_no",
+  "transit_type",
+  "column_break_wye28",
+  "quantity",
+  "zone",
+  "point_of_contact_section",
+  "name1",
+  "contact",
+  "email",
+  "city",
+  "column_break_pp1jg",
+  "is_default",
+  "make_default",
+  "address",
+  "address_line1",
+  "address_line2",
+  "column_break_xqpe6",
+  "latitude",
+  "longitude",
+  "location",
+  "company",
+  "tax_id",
+  "eway_no",
+  "additional_services_section",
+  "choose_required_labour_service",
+  "column_break_wy1zs",
+  "choose_required_handling_service",
+  "labour_id",
+  "handle_id",
+  "handling_details_section",
+  "general_cargo",
+  "personal_cargo",
+  "column_break_gmxry",
+  "hazardous_material",
+  "temperature_controll",
+  "section_break",
+  "remarks",
+  "return_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "location_details_section",
+   "fieldtype": "Section Break",
+   "label": "Location Details"
+  },
+  {
+   "fieldname": "order_no",
+   "fieldtype": "Int",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Order No"
+  },
+  {
+   "default": "Pickup",
+   "fieldname": "transit_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Transit Type",
+   "options": "\nPickup\nDropoff"
+  },
+  {
+   "fieldname": "column_break_wye28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Zone",
+   "options": "Location"
+  },
+  {
+   "fieldname": "point_of_contact_section",
+   "fieldtype": "Section Break",
+   "label": "Point of Contact"
+  },
+  {
+   "fetch_from": "address.address_title",
+   "fieldname": "name1",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "Name"
+  },
+  {
+   "fieldname": "contact",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Contact",
+   "mandatory_depends_on": "eval:doc.booking_type==\"Vehicle\" || doc.transit_required==1",
+   "options": "Phone"
+  },
+  {
+   "fetch_from": "address.email_id",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "options": "Email"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "City"
+  },
+  {
+   "fieldname": "column_break_pp1jg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.make_default==0",
+   "fieldname": "is_default",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Default?"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.is_default==0",
+   "fieldname": "make_default",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Make Default"
+  },
+  {
+   "depends_on": "eval:doc.warehouse == \"\" || doc.is_default==0",
+   "fieldname": "address",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "address_line1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Address Line1"
+  },
+  {
+   "fieldname": "address_line2",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Address Line2"
+  },
+  {
+   "fieldname": "column_break_xqpe6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Longitude"
+  },
+  {
+   "fetch_from": "address.city",
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "label": "Location"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Company"
+  },
+  {
+   "fieldname": "tax_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Tax ID"
+  },
+  {
+   "fieldname": "eway_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Eway Bill No"
+  },
+  {
+   "fieldname": "additional_services_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Services"
+  },
+  {
+   "fieldname": "choose_required_labour_service",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Choose Required Labour Service",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_wy1zs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "choose_required_handling_service",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Choose Required Handling Service",
+   "options": "Item"
+  },
+  {
+   "fieldname": "labour_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "labour id"
+  },
+  {
+   "fieldname": "handle_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "handle_id"
+  },
+  {
+   "fieldname": "handling_details_section",
+   "fieldtype": "Section Break",
+   "label": "Handling Details"
+  },
+  {
+   "default": "0",
+   "fieldname": "general_cargo",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "General Cargo"
+  },
+  {
+   "default": "0",
+   "fieldname": "personal_cargo",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Personal Cargo"
+  },
+  {
+   "fieldname": "column_break_gmxry",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "hazardous_material",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Hazardous Material"
+  },
+  {
+   "default": "0",
+   "fieldname": "temperature_controll",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Temperature Controll"
+  },
+  {
+   "fieldname": "section_break",
+   "fieldtype": "Section Break",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "return_id",
+   "fieldtype": "Data",
+   "label": "return id"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-10-17 10:54:59.608671",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Return Trips",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
