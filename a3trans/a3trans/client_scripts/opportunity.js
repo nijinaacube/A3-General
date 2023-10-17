@@ -77,11 +77,7 @@ if (frm.doc.order_status=="New" ){
 			fieldname: 'cancellation_charge',
 			fieldtype: 'Currency'
 			},
-			{
-			label: ' Reason for Cancellation',
-			fieldname: 'reason_for_cancelation',
-			fieldtype: 'Small Text'
-			},
+			
 			{
 			label: 'Allow with Zero Cost',
 			fieldname: 'zero_cost',
@@ -91,8 +87,10 @@ if (frm.doc.order_status=="New" ){
 			size: 'small', // small, large, extra-large
 			primary_action_label: 'Submit',
 			primary_action(values) {
-
+				frm.set_value("status","Lost")
 				
+				frm.refresh_field("status")
+
 			console.log(values);
 			d.hide();
 			}
