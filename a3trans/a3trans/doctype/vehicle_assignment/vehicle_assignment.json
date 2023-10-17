@@ -25,6 +25,8 @@
   "phone_number",
   "route_details_section",
   "routes",
+  "has_return",
+  "return_trips",
   "section_break_wkz4t",
   "route_changes_details_section",
   "route_changes",
@@ -190,11 +192,24 @@
    "hidden": 1,
    "label": "Type of Booking",
    "options": "Booking Type"
+  },
+  {
+   "default": "0",
+   "fieldname": "has_return",
+   "fieldtype": "Check",
+   "label": "Has Return"
+  },
+  {
+   "depends_on": "eval:doc.has_return ==1",
+   "fieldname": "return_trips",
+   "fieldtype": "Table",
+   "label": "Return Trips",
+   "options": "Return Trip Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-13 10:19:30.215571",
+ "modified": "2023-10-17 14:27:31.923950",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Assignment",

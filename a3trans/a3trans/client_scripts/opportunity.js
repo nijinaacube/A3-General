@@ -87,9 +87,25 @@ if (frm.doc.order_status=="New" ){
 			size: 'small', // small, large, extra-large
 			primary_action_label: 'Submit',
 			primary_action(values) {
+				if (values.zero_cost =="0"){
+				frappe.call({
+					method: "a3trans.a3trans.events.opportunity.cancellation_charges",
+					args: {
+					"name": frm.doc.name,
+					"cost" :values.cancellation_charge,
+					"zero_cost":values.zero_cost
+					},
+					callback: function(r) {
+						console.log(r.message,"cancellation charges")
+						frappe.show_alert("Invoice for Cancellation Charges Created.")
+
+					}
+				})
+			}
 				frm.set_value("status","Lost")
 				
-				frm.refresh_field("status")
+				// frm.refresh_field("status")
+				
 
 			console.log(values);
 			d.hide();
@@ -576,59 +592,42 @@ mobile_number: function(frm){
 })
 
 frappe.ui.form.on('Return Trips', {
-
-	
 	zone: function(frm, cdt, cdn) {
-		var child = locals[cdt][cdn];
+		const child = locals[cdt][cdn];
 		const zones = frm.doc.return_trips.map(trip => trip.zone);
-		
-		if (frm.doc.has_return_trip==1){
-			if(!child.return_id){
-		const target_row = frm.add_child('transit_charges');
-		target_row.charges = "Return Charges";
-		child.return_id = target_row.idx
-		target_row.quantity = 1;
-		target_row.cost = 0;
-		if (zones.length >=2 && zones[zones.length-1] != ""){
-		target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
-		}
-		else{
-			
-			
-			target_row.description="To"+" "+zones[zones.length-1];
-		
-	}
-		frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
-		frm.refresh_field('transit_charges');
-	}
-	else{
-		var existing_row = frm.doc.transit_charges.find(row => row.idx === child.return_id);
-		if (existing_row) {
-			if (zones.length >=2 ){
-				
-				// existing_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
-				if (child.idx == 1){
-					existing_row.description="To"+" "+zones[0];
-					
-					
 
+		if (frm.doc.has_return_trip == 1) {
+			if (!child.return_id) {
+				const target_row = frm.add_child('transit_charges');
+				target_row.charges = "Return Charges";
+				child.return_id = target_row.idx;
+				target_row.quantity = 1;
+				target_row.cost = 0;
+				if (zones.length >= 2 && zones[zones.length - 1] != "") {
+					target_row.description = zones[zones.length - 2] + " to " + zones[zones.length - 1];
+				} else {
+					target_row.description = "To " + zones[zones.length - 1];
 				}
-				if (child.idx >= 2){
-					existing_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
+				frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+				frm.refresh_field('transit_charges');
+			} else {
+				const existing_row = frm.doc.transit_charges.find(row => row.idx === child.return_id);
+				if (existing_row) {
+					if (zones.length >= 2) {
+						if (child.idx == 1) {
+							existing_row.description = "To " + zones[0];
+						} else if (child.idx >= 2) {
+							existing_row.description = zones[zones.length - 2] + " to " + zones[zones.length - 1];
+						}
+					}
+					frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+					frm.refresh_field('transit_charges');
 				}
-				
-				// existing_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
-				
-				}
-				
-		frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
-		frm.refresh_field('transit_charges');
-	}
-
+			}
 		}
-	}
 	}
 });
+
 
 frappe.ui.form.on('Transit Details', {
 
@@ -786,7 +785,7 @@ zone: function(frm, cdt, cdn) {
 						else{
 							var existing_row = frm.doc.transit_charges.find(row => row.idx === frm.doc.trans_id);
 							if (existing_row){
-					
+								existing_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
                         	existing_row.cost = response.message;
                         	frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
                         	frm.refresh_field('transit_charges');

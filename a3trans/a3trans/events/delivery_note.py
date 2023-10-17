@@ -131,7 +131,6 @@ def create_folder(folder, parent):
 
 
 
-
 def get_pdf_data(doctype, name):
 	"""Document -> HTML -> PDF."""
 	html = frappe.get_print(doctype, name)

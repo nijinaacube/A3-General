@@ -65,7 +65,7 @@ def validate(doc,methods):
 
 
             customer.customer_group="Individual"
-            customer.territory="India"
+            customer.territory="Rest Of The World"
             if lead_doc.name:
                 customer.lead_name=lead_doc.name
             

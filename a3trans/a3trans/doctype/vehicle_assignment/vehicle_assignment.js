@@ -54,6 +54,26 @@ frappe.ui.form.on('Vehicle Assignment', {
                                         child.latitude=pickupRow.latitude;
                                         child.longitude=pickupRow.longitude
                                     });
+                                    if (oppo.has_return_trip == 1){
+                                        frm.clear_table("return_trips");
+                                        frm.set_value("has_return",oppo.has_return_trip)
+                                        frm.refresh_field("has_return")
+
+                                        oppo.return_trips.forEach(function(tripRow) {
+                                            var child = frm.add_child('return_trips', {});
+                                            child.order_id = opportunity;
+                                            child.order_no = tripRow.order_no
+                                            child.zone = tripRow.zone;
+                                            child.transit_type = tripRow.transit_type;
+                                            child.latitude=tripRow.latitude;
+                                            child.longitude=tripRow.longitude
+                                                
+                                    $.each(frm.doc.return_trips, function(index, row) {
+                                        row.order_no = index + 1;
+                                    });
+                                            frm.refresh_field('return_trips');
+                                        });
+                                    }
                                
                               
                                     // if (oppo.pickup_from_warehouse){
@@ -69,6 +89,7 @@ frappe.ui.form.on('Vehicle Assignment', {
                                         row.order_no = index + 1;
                                     });
                                     frm.refresh_field('routes');
+                                    
  
  
                                
@@ -153,25 +174,31 @@ frappe.ui.form.on('Vehicle Assignment', {
         }
      
  },
- order: function(frm) {
+   // This is where your 'order' field change event is handled
+   order: function (frm) {
     if (frm.doc.order) {
         frappe.call({
             method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
             args: {
                 "order_id": frm.doc.order,
             },
-            callback: function(response) {
+            callback: function (response) {
                 if (response.message) {
-                    // Clear the existing rows in the "routes" child table
-                    frm.clear_table("routes");
+                    console.log(response.message);
 
-                    // Loop through the response.message as an object
-                    for (var i in response.message) {
-                        var item = response.message[i];
+                    // Clear the existing rows in the "routes" and "return_trips" child tables
+                    frm.clear_table("routes");
+                    frm.clear_table("return_trips");
+
+                    // Loop through the response.message.data1
+                    for (var i in response.message.data1) {
+                        var item = response.message.data1[i];
+
+                        // Add a new row to the "routes" child table
                         var target_row = frm.add_child("routes");
 
                         // Set values for the fields of the new row
-                        target_row.order_id = frm.doc.order;
+                        target_row.order_id = frm.doc.order
                         target_row.order_no = item.order_no;
                         target_row.transit_type = item.type;
                         target_row.zone = item.zone;
@@ -179,19 +206,35 @@ frappe.ui.form.on('Vehicle Assignment', {
                         target_row.lon = item.lon;
                         target_row.remark = item.remark;
 
-                        // Add the new row to the "routes" child table
                         frm.refresh_field("routes");
                     }
+                    // Update the "has_return" field
+                    frm.set_value("has_return", response.message.has_trip);
+                    frm.refresh_field("has_return");
+                    // Loop through the response.message.data2
+                    for (var i in response.message.data2) {
+                        var items = response.message.data2[i];
+
+                        // Add a new row to the "return_trips" child table
+                        var tripRow = frm.add_child("return_trips");
+                        tripRow.order_id = frm.doc.order;
+                        tripRow.order_no = items.trip_order_no;
+                        tripRow.transit_type = items.trip_type;
+                        tripRow.zone = items.trip_zone;
+                        tripRow.lat = items.trip_lat;
+                        tripRow.lon = items.trip_lon;
+                        tripRow.remark = items.trip_remark;
+
+                        frm.refresh_field('return_trips');
+                    }
+
+                 
                 }
             }
         });
     }
 }
-})
-
- 
- 
- 
+});
 
  
  

@@ -66,6 +66,7 @@ def after_insert(doc, methods):
 def validate(doc,method):
     if doc.status == "Lost":
         doc.order_status = "Cancelled"
+        print(doc.order_lost_reason,"*******************************8")
    
     if doc.opportunity_from=="Customer":
         if doc.party_name:
@@ -750,11 +751,33 @@ def  get_payment_items(doc):
    return {"data": data_from_receipt}
 
 
+@frappe.whitelist()
+def cancellation_charges(name,cost,zero_cost):
+    print(name,cost,zero_cost)
+    if cost and zero_cost == "0":
+        doc=frappe.get_doc("Opportunity",name)
+        sales_invoice=frappe.new_doc("Sales Invoice")
+        sales_invoice.customer = doc.party_name
+        sales_invoice.customer_name = doc.customer_name
+        sales_invoice.order_id=doc.name
+        sales_invoice.booking_type=doc.booking_type
+
+        sales_invoice.order_status=doc.order_status
+        sales_invoice.due_date=frappe.utils.nowdate()
+    
+    
+        sales_invoice.append("items",{"item_code":"Cancellation Charges","qty":1,"rate": cost})
+        sales_invoice.save()
+        sales_invoice.submit()
+        print(sales_invoice)
+        return sales_invoice.name
+        
+
+
+
 
 
 from frappe import _
-
-
 
 @frappe.whitelist()
 def cancel_booking(name):

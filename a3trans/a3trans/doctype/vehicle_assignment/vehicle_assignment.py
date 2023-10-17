@@ -7,105 +7,105 @@ from frappe.utils import get_datetime, time_diff
 
 
 class VehicleAssignment(Document):
-   def validate(self):
+    def validate(self):
       
-       if self.driver_id:
-           driver=frappe.get_doc("Staff Member",self.driver_id)
-           if driver.status=="Available":
-               driver.status="On Duty"
-               driver.save()
-       if self.helper_id:
-           helper=frappe.get_doc("Staff Member",self.helper_id)
-           if helper.status=="Available":
-               helper.status="On Duty"
-               helper.save()
-       if self.vehicle_id:
-           vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-           if vehicle.vehicle_status=="Available":
-               vehicle.vehicle_status="On Duty"
-               vehicle.save()
+        if self.driver_id:
+            driver=frappe.get_doc("Staff Member",self.driver_id)
+            if driver.status=="Available":
+                driver.status="On Duty"
+                driver.save()
+        if self.helper_id:
+            helper=frappe.get_doc("Staff Member",self.helper_id)
+            if helper.status=="Available":
+                helper.status="On Duty"
+                helper.save()
+        if self.vehicle_id:
+            vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+            if vehicle.vehicle_status=="Available":
+                vehicle.vehicle_status="On Duty"
+                vehicle.save()
 
 
-       if self.routes:
-           for order in self.routes:
-               if order.order_id:
-                   opportunity = frappe.get_doc("Opportunity", order.order_id)
-                   if self.vehicle_id:
-                       opportunity.vehicle=self.vehicle_id
-                   if self.make:
-                       opportunity.make=self.make
-                   if self.model:
-                       opportunity.model=self.model
-                   if self.driver_id:
-                       opportunity.driver=self.driver_id
-                   if self.driver_name:
-                       opportunity.driver_name=self.driver_name
-                   if self.mobile_number:
-                       opportunity.driver_phone_number=self.mobile_number
-                   if self.helper_id:
-                       opportunity.helper=self.helper_id
-                   if self.helper_name:
-                       opportunity.helper_name=self.helper_name
-                   if self.phone_number:
-                       opportunity.helper_phone_number=self.phone_number
-                   # if self.vehicle_id:
-                   #   vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-                   #   for type in vehicle.allowed_booking_type:
-                   #       if opportunity.booking_type in  type.booking_type:
-                   #           pass
-                   #       else:
-                   #           frappe.throw("You are not allowed to choose the vehicle for this booking.")
+        if self.routes:
+            for order in self.routes:
+                if order.order_id:
+                    opportunity = frappe.get_doc("Opportunity", order.order_id)
+                    if self.vehicle_id:
+                        opportunity.vehicle=self.vehicle_id
+                    if self.make:
+                        opportunity.make=self.make
+                    if self.model:
+                        opportunity.model=self.model
+                    if self.driver_id:
+                        opportunity.driver=self.driver_id
+                    if self.driver_name:
+                        opportunity.driver_name=self.driver_name
+                    if self.mobile_number:
+                        opportunity.driver_phone_number=self.mobile_number
+                    if self.helper_id:
+                        opportunity.helper=self.helper_id
+                    if self.helper_name:
+                        opportunity.helper_name=self.helper_name
+                    if self.phone_number:
+                        opportunity.helper_phone_number=self.phone_number
+                    # if self.vehicle_id:
+                    #   vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                    #   for type in vehicle.allowed_booking_type:
+                    #       if opportunity.booking_type in  type.booking_type:
+                    #           pass
+                    #       else:
+                    #           frappe.throw("You are not allowed to choose the vehicle for this booking.")
+                    # if frappe.db.exists("Sales Order", {"booking_id": opportunity.name}):
+                    sales_order = frappe.get_doc("Sales Order", {"booking_id": opportunity.name})
+                    # if frappe.db.exists("Sales Invoice", {"order_id": opportunity.name}):
+                    sales_invoice = frappe.get_doc("Sales Invoice", {"order_id": opportunity.name})
+                    
+                    if self.assignment_status == "Vehicle Assigned":
+                        opportunity.order_status = "Vehicle Assigned"
+                        sales_order.booking_status = "Vehicle Assigned"
+                        sales_invoice.order_status = "Vehicle Assigned"
+                    elif self.assignment_status == "In-Transit":
+                        opportunity.order_status = "In-Transit"
+                        sales_order.booking_status = "In-Transit"
+                        sales_invoice.order_status = "In-Transit"
+                    elif self.assignment_status == "Arrived":
+                        opportunity.order_status = "Arrived"
+                        sales_order.booking_status = "Arrived"
+                        sales_invoice.order_status = "Arrived"
+                    elif self.assignment_status == "Delivered":
+                        opportunity.order_status = "Delivered"
+                        sales_order.booking_status = "Delivered"
+                        sales_invoice.order_status = "Delivered"
+                        
+                    elif self.assignment_status == "Closed":
+                        if self.driver_id:
+                            driver=frappe.get_doc("Staff Member",self.driver_id)
+                            driver.status="Available"  
+                            driver.save()
+                        if self.helper_id:
+                            helper=frappe.get_doc("Staff Member",self.helper_id)
+                            helper.status="Available"
+                            helper.save()
+                        if self.vehicle_id:
+                            vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                            vehicle.vehicle_status="Available"
+                            vehicle.save()
+                        opportunity.order_status = "Closed"
+                        sales_order.booking_status = "Closed"
+                        sales_invoice.order_status = "Closed"
+                    opportunity.status="Converted"
+                    opportunity.save()
+                    sales_order.save()
+                    sales_invoice.save()
 
 
-                   sales_order = frappe.get_doc("Sales Order", {"booking_id": opportunity.name})
-                   sales_invoice = frappe.get_doc("Sales Invoice", {"order_id": opportunity.name})
-                  
-                   if self.assignment_status == "Vehicle Assigned":
-                       opportunity.order_status = "Vehicle Assigned"
-                       sales_order.booking_status = "Vehicle Assigned"
-                       sales_invoice.order_status = "Vehicle Assigned"
-                   elif self.assignment_status == "In-Transit":
-                       opportunity.order_status = "In-Transit"
-                       sales_order.booking_status = "In-Transit"
-                       sales_invoice.order_status = "In-Transit"
-                   elif self.assignment_status == "Arrived":
-                       opportunity.order_status = "Arrived"
-                       sales_order.booking_status = "Arrived"
-                       sales_invoice.order_status = "Arrived"
-                   elif self.assignment_status == "Delivered":
-                       opportunity.order_status = "Delivered"
-                       sales_order.booking_status = "Delivered"
-                       sales_invoice.order_status = "Delivered"
-                      
-                   elif self.assignment_status == "Closed":
-                       if self.driver_id:
-                           driver=frappe.get_doc("Staff Member",self.driver_id)
-                           driver.status="Available"  
-                           driver.save()
-                       if self.helper_id:
-                           helper=frappe.get_doc("Staff Member",self.helper_id)
-                           helper.status="Available"
-                           helper.save()
-                       if self.vehicle_id:
-                           vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-                           vehicle.vehicle_status="Available"
-                           vehicle.save()
-                       opportunity.order_status = "Closed"
-                       sales_order.booking_status = "Closed"
-                       sales_invoice.order_status = "Closed"
-                   opportunity.status="Converted"
-                   opportunity.save()
-                   sales_order.save()
-                   sales_invoice.save()
-
-
-               if order.status=="Arrived":
+                if order.status=="Arrived":
                     order.actual_arrival_time=frappe.utils.now()
 
 
 
 
-               if order.status=="Completed":
+                if order.status=="Completed":
                     order.completed_date=frappe.utils.nowdate()
                     completed_times=frappe.utils.now_datetime()
                     order.completed_time = completed_times.strftime('%H:%M:%S')
@@ -196,17 +196,38 @@ def get_staff_data(vehicle_id):
 def fetch_order_details(order_id):
     if order_id:
         opportunity = frappe.get_doc("Opportunity", order_id)
-        data = []
+        data1 = []
+        data2 = []
+        data = {}
+
         for item in opportunity.receiver_information:
             if item.order_no:
-                data.append({
+                data1.append({
                     "order_no": item.order_no,
                     "type": item.transit_type,
                     "zone": item.zone,
                     "lat": item.latitude,
                     "lon": item.longitude,
-                    "remark": item.remarks
+                    "remark": item.remarks,
                 })
+        
+        data["data1"] = data1
+
+        if opportunity.has_return_trip == 1:
+            for trip in opportunity.return_trips:
+                
+                    data2.append({
+                        "trip_order_no": trip.order_no,
+                        "trip_type": trip.transit_type,
+                        "trip_zone": trip.zone,
+                        "trip_lat": trip.latitude,
+                        "trip_lon": trip.longitude,
+                        "trip_remark": trip.remarks,
+                    })
+
+            data["data2"] = data2
+            data["has_trip"] = opportunity.has_return_trip
+        
         return data
 
 

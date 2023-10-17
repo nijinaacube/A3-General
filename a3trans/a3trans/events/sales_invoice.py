@@ -33,10 +33,11 @@ def attach_pdf(doc, event=None):
 	}
 	fileurl = execute(**args)
 	print(fileurl.file_url)
-	if doc.order_id:
+	if doc.order_id :
 		opportunity = frappe.get_doc("Opportunity", doc.order_id)
-		opportunity.sales_invoice_pdf_url=fileurl.file_url
-		opportunity.save()
+	
+			# opportunity.sales_invoice_pdf_url=fileurl.file_url
+			# opportunity.save()
 
 
 def enqueue(args):
