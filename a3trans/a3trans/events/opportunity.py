@@ -64,6 +64,8 @@ def after_insert(doc, methods):
 						customer.save()
 
 def validate(doc,method):
+    if doc.status == "Lost":
+        doc.order_status = "Cancelled"
    
     if doc.opportunity_from=="Customer":
         if doc.party_name:
@@ -755,25 +757,34 @@ from frappe import _
 
 
 @frappe.whitelist()
-def check_vehicle_assignments(name):
+def cancel_booking(name):
+# frappe.throw("hi")
     if frappe.db.exists("Opportunity", name):
         opportunity = frappe.get_doc("Opportunity", name)
 
+
         # Find the Route Details Items with the specified opportunity ID
         route_details_items = frappe.get_all(
-            "Route Details Item",
-            filters={"order_id": opportunity.name},
-            fields=["parent"]
+        "Route Details Item",
+        filters={"order_id": opportunity.name},
+        fields=["parent"]
         )
+
 
         # Extract the parent document names (Vehicle Assignment)
         vehicle_assignment_names = {item["parent"] for item in route_details_items}
 
-        if vehicle_assignment_names:
-            # Vehicle assignments exist
-            return "Yes"
+
+        # Convert the set back to a list if needed
+        vehicle_assignment_names = list(vehicle_assignment_names)
+        if len(vehicle_assignment_names)>0:
+        # for i in vehicle_assignment_names:
+        # if frappe.db.exists("Vehicle Assignment",i.name):
+        # veh_ass=frappe.get_doc("Vehicle Assignment",i.name)
+            return vehicle_assignment_names
+
+
         else:
-            # No vehicle assignments, ask for reason for cancellation
-            return "No"
+            return None
 
 
