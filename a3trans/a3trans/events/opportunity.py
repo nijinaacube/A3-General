@@ -6,62 +6,121 @@ import calendar
 from functools import reduce
 from frappe.utils import add_to_date
 def after_insert(doc, methods):
-	if doc.lead_id:
-		lead_doc = frappe.get_doc("Lead", doc.lead_id)
-		print(lead_doc.status, doc.status, lead_doc.contact_by)
-
-		# Check if 'contact_by' is available and valid
-		if lead_doc.contact_by:
-			sharedoc = frappe.new_doc("DocShare")
-			sharedoc.share_doctype = "Opportunity"
-			sharedoc.share_name = doc.name
-			sharedoc.user = lead_doc.contact_by
-			sharedoc.read = 1
-			sharedoc.write = 1
-			sharedoc.share = 1
-			sharedoc.notify = 1
-			sharedoc.report = 1
-			sharedoc.save(ignore_permissions=True)
-			# frappe.throw("ll")
-			print(lead_doc, "##################")
-			print(lead_doc.status, doc.status, lead_doc.contact_by)
-
-			todo = frappe.new_doc("ToDo")
-			todo.date = lead_doc.ends_on
-			todo.owner = lead_doc.contact_by
-			todo.description = "Please follow-up and complete the booking"
-			todo.reference_type = "Opportunity"
-			todo.reference_name = doc.name
-
-			todo.save()
-			frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
-		else:
-			frappe.msgprint("Error: 'contact_by' not found or is empty in the Lead.")
-	if doc.booking_type == "Warehousing":
-		if doc.warehouse_space_details:
-
-			for war in doc.warehouse_space_details:
-				for itm in doc.warehouse_stock_items:
-					if war.warehouse:
-						warehouses = frappe.get_doc("Warehouse", war.warehouse)
-						warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"zone":war.zone,"status":"Pending"})       
-						warehouses.save()
+  
+    if doc.lead_id == "" or doc.lead_id == None:
+            
+        if doc.party_name:
+                if doc.create_invoices==1:
+                    if doc.opportunity_line_item:
+                
+                        #Create sales order
+                        if not frappe.db.exists("Sales Order",{"booking_id":doc.name}):
+                            sales_order=frappe.new_doc("Sales Order")
+                            sales_order.customer = doc.party_name
+                            sales_order.customer_name = doc.customer_name  
+                            sales_order.booking_id=doc.name
+                            sales_order.booking_type=doc.booking_type
+                            sales_order.booking_status="New"
+                            sales_order.delivery_date = frappe.utils.nowdate()
+                            if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
+                                if doc.opportunity_line_item:
+                                        for shipment in doc.opportunity_line_item:
+                                            sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+                                        sales_order.save()
+                                        sales_order.submit()
+                
 
 
-					if doc.party_name:
-						customer=frappe.get_doc("Customer",doc.party_name)
-						print(customer)
-						fromdate=frappe.utils.nowdate()
-						dur=int(war.no_of_days)
-						todate=add_to_date(fromdate,days=dur,as_string=True)   
-						table_len=len(customer.customer_warehouse_details)                           
-						if table_len ==0:                               
-							customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
-						else:                               
-							for warehouses_det in customer.customer_warehouse_details:                                   
-								if  war.warehouse not in warehouses_det.warehouse:                                       
-									customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
-						customer.save()
+
+
+                        # Create sales invoice
+                        if doc.payment_amount != 0:
+                            if not frappe.db.exists("Sales Invoice",{"order_id":doc.name}):
+                                sales_invoice=frappe.new_doc("Sales Invoice")
+                                sales_invoice.customer = doc.party_name
+                                sales_invoice.customer_name = doc.customer_name
+                                sales_invoice.order_id=doc.name
+                                sales_invoice.booking_type=doc.booking_type
+                                #    if  doc.job_number:
+                                #         sales_invoice.job_number = doc.job_number
+                                sales_invoice.order_status="New"
+                                sales_invoice.due_date=frappe.utils.nowdate()
+                                if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
+                                    for shipment in doc.opportunity_line_item:
+                                        sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+                                
+                                if doc.booking_type=="Diesel":
+                                    
+                                    sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
+                                if doc.booking_type=="Packing and Moving":
+                                    for packing in doc.packing_items:
+                                        sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
+
+                                sales_invoice.insert()
+                                #    sales_invoice.submit()
+                                doc.invoice_id = sales_invoice.name
+                            doc.status="Converted"
+                            doc.create_invoices=0
+                        else:
+                            frappe.throw("Please add/update Invoice Items in opportunity line items")
+
+     
+    if doc.lead_id:
+        lead_doc = frappe.get_doc("Lead", doc.lead_id)
+        print(lead_doc.status, doc.status, lead_doc.contact_by)
+
+        # Check if 'contact_by' is available and valid
+        if lead_doc.contact_by:
+            sharedoc = frappe.new_doc("DocShare")
+            sharedoc.share_doctype = "Opportunity"
+            sharedoc.share_name = doc.name
+            sharedoc.user = lead_doc.contact_by
+            sharedoc.read = 1
+            sharedoc.write = 1
+            sharedoc.share = 1
+            sharedoc.notify = 1
+            sharedoc.report = 1
+            sharedoc.save(ignore_permissions=True)
+            # frappe.throw("ll")
+            print(lead_doc, "##################")
+            print(lead_doc.status, doc.status, lead_doc.contact_by)
+
+            todo = frappe.new_doc("ToDo")
+            todo.date = lead_doc.ends_on
+            todo.owner = lead_doc.contact_by
+            todo.description = "Please follow-up and complete the booking"
+            todo.reference_type = "Opportunity"
+            todo.reference_name = doc.name
+
+            todo.save()
+            frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
+        else:
+            frappe.msgprint("Error: 'contact_by' not found or is empty in the Lead.")
+    if doc.booking_type == "Warehousing":
+        if doc.warehouse_space_details:
+
+            for war in doc.warehouse_space_details:
+                for itm in doc.warehouse_stock_items:
+                    if war.warehouse:
+                        warehouses = frappe.get_doc("Warehouse", war.warehouse)
+                        warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"zone":war.zone,"status":"Pending"})       
+                        warehouses.save()
+
+
+                    if doc.party_name:
+                        customer=frappe.get_doc("Customer",doc.party_name)
+                        print(customer)
+                        fromdate=frappe.utils.nowdate()
+                        dur=int(war.no_of_days)
+                        todate=add_to_date(fromdate,days=dur,as_string=True)   
+                        table_len=len(customer.customer_warehouse_details)                           
+                        if table_len ==0:                               
+                            customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+                        else:                               
+                            for warehouses_det in customer.customer_warehouse_details:                                   
+                                if  war.warehouse not in warehouses_det.warehouse:                                       
+                                    customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+                        customer.save()
 
 def validate(doc,method):
     if doc.status == "Lost":
@@ -69,59 +128,67 @@ def validate(doc,method):
         print(doc.order_lost_reason,"*******************************8")
    
     if doc.opportunity_from=="Customer":
-        if doc.party_name:
-            if doc.create_invoices==1:
-                if doc.opportunity_line_item:
-            
-                    #Create sales order
-                    sales_order=frappe.new_doc("Sales Order")
-                    sales_order.customer = doc.party_name
-                    sales_order.customer_name = doc.customer_name  
-                    sales_order.booking_id=doc.name
-                    sales_order.booking_type=doc.booking_type
-                    sales_order.booking_status="New"
-                    sales_order.delivery_date = frappe.utils.nowdate()
-                    if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
-                        if doc.opportunity_line_item:
-                                for shipment in doc.opportunity_line_item:
-                                    sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
-                                sales_order.save()
-                                sales_order.submit()
-            
-
-
-
-
-                    # Create sales invoice
-                    if doc.payment_amount != 0:
-                        sales_invoice=frappe.new_doc("Sales Invoice")
-                        sales_invoice.customer = doc.party_name
-                        sales_invoice.customer_name = doc.customer_name
-                        sales_invoice.order_id=doc.name
-                        sales_invoice.booking_type=doc.booking_type
-                        #    if  doc.job_number:
-                        #         sales_invoice.job_number = doc.job_number
-                        sales_invoice.order_status="New"
-                        sales_invoice.due_date=frappe.utils.nowdate()
-                        if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
-                            for shipment in doc.opportunity_line_item:
-                                sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+        if doc.lead_id:
+            if doc.party_name:
+                if doc.create_invoices==1:
+                    if doc.opportunity_line_item:
                         
-                        if doc.booking_type=="Diesel":
-                            
-                            sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
-                        if doc.booking_type=="Packing and Moving":
-                            for packing in doc.packing_items:
-                                sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
+                
+                        #Create sales order
+                        if not frappe.db.exists("Sales Order",{"booking_id":doc.name}):
+                            sales_order=frappe.new_doc("Sales Order")
+                            sales_order.customer = doc.party_name
+                            sales_order.customer_name = doc.customer_name  
+                            sales_order.booking_id=doc.name
+                            sales_order.booking_type=doc.booking_type
+                            sales_order.booking_status="New"
+                            sales_order.delivery_date = frappe.utils.nowdate()
+                            if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
+                                if doc.opportunity_line_item:
+                                        for shipment in doc.opportunity_line_item:
+                                            sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+                                        sales_order.save()
+                                        sales_order.submit()
+                    
 
-                        sales_invoice.insert()
-                        #    sales_invoice.submit()
-                        doc.invoice_id = sales_invoice.name
-                    doc.status="Converted"
-                    doc.create_invoices=0
-                else:
-                    frappe.throw("Please add/update Invoice Items in opportunity line items")
 
+
+
+                        # Create sales invoice
+                        if doc.payment_amount != 0:
+                            if not frappe.db.exists("Sales Invoice",{"order_id":doc.name}):
+                                sales_invoice=frappe.new_doc("Sales Invoice")
+                                sales_invoice.customer = doc.party_name
+                                sales_invoice.customer_name = doc.customer_name
+                                sales_invoice.order_id=doc.name
+                                sales_invoice.booking_type=doc.booking_type
+                                #    if  doc.job_number:
+                                #         sales_invoice.job_number = doc.job_number
+                                sales_invoice.order_status="New"
+                                sales_invoice.due_date=frappe.utils.nowdate()
+                                if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
+                                    for shipment in doc.opportunity_line_item:
+                                        sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+                                
+                                if doc.booking_type=="Diesel":
+                                    
+                                    sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
+                                if doc.booking_type=="Packing and Moving":
+                                    for packing in doc.packing_items:
+                                        sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
+
+                                sales_invoice.insert()
+                                #    sales_invoice.submit()
+                                doc.invoice_id = sales_invoice.name
+                            doc.status="Converted"
+                            if doc.lead_id:
+                                lead= frappe.get_doc ("Lead", doc.lead_id)
+                                lead.status = "Converted"
+                                lead.save()
+                            doc.create_invoices=0
+                    else:
+                        frappe.throw("Please add/update Invoice Items in opportunity line items")
+        
 
         if frappe.db.exists("ToDo",{"reference_type":"Opportunity","reference_name":doc.name}):
             todo=frappe.get_doc("ToDo",{"reference_type":"Opportunity","reference_name":doc.name})

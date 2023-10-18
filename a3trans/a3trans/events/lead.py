@@ -32,6 +32,10 @@ def validate(doc,methods):
   
 
    if lead_doc.status=="Opportunity":
+        if lead_doc.contact_by == "" or lead_doc.contact_by == None:
+            frappe.throw("Please Assign this lead to a Staff for further follow-up")
+        if lead_doc.address_link == "" or lead_doc.address_link == None:
+            frappe.throw("Please add Biling Address")
       
         if frappe.db.exists("Customer",{"mobile_number":lead_doc.mobile_number}):
             customer=frappe.get_doc("Customer",{"mobile_number":lead_doc.mobile_number})
@@ -39,16 +43,19 @@ def validate(doc,methods):
             opportunity.party_name=customer.customer_name
             opportunity.booking_type=lead_doc.booking_type
             opportunity.lead_id=lead_doc.name
+            if lead_doc.add_select_tariff:
+                customer.tariff = lead_doc.add_select_tariff
+                customer.insert()
              # Define a list of receiver information data
-            receiver_info_data = [
-                {"order_no":1,"transit_type": "Pickup", "zone": lead_doc.from_location},
-                {"order_no":2,"transit_type": "Dropoff", "zone": lead_doc.to_location},
-                # Add more data as needed
-            ]
+            # receiver_info_data = [
+            #     {"order_no":1,"transit_type": "Pickup", "zone": lead_doc.from_location},
+            #     {"order_no":2,"transit_type": "Dropoff", "zone": lead_doc.to_location},
+            #     # Add more data as needed
+            # ]
 
-            # Loop through the data and append it to the "receiver_information" list
-            for info in receiver_info_data:
-                opportunity.append("receiver_information", info)
+            # # Loop through the data and append it to the "receiver_information" list
+            # for info in receiver_info_data:
+            #     opportunity.append("receiver_information", info)
          
             
             opportunity.save()
@@ -110,7 +117,8 @@ def validate(doc,methods):
                 else:
                     customer.city="NIL"
 
-
+            if lead_doc.add_select_tariff:
+                customer.tariff = lead_doc.add_select_tariff
             customer.insert()
             print(customer.name)
             customerr=frappe.get_doc("Customer",customer.name)
@@ -122,15 +130,15 @@ def validate(doc,methods):
             opportunity.booking_date=datetime.date.today()
             opportunity.lead_id=lead_doc.name
              # Define a list of receiver information data
-            receiver_info_data = [
-                {"order_no":1,"transit_type": "Pickup", "zone": lead_doc.from_location},
-                {"order_no":2,"transit_type": "Dropoff", "zone": lead_doc.to_location},
+            # receiver_info_data = [
+            #     {"order_no":1,"transit_type": "Pickup", "zone": lead_doc.from_location},
+            #     {"order_no":2,"transit_type": "Dropoff", "zone": lead_doc.to_location},
                 
-            ]
+            # ]
 
-            # Loop through the data and append it to the "receiver_information" list
-            for info in receiver_info_data:
-                opportunity.append("receiver_information", info)
+            # # Loop through the data and append it to the "receiver_information" list
+            # for info in receiver_info_data:
+            #     opportunity.append("receiver_information", info)
          
             opportunity.save()
             frappe.msgprint("Opportunity Created Successfully")
@@ -150,3 +158,24 @@ def get_location(doc):
    return data
 
 
+import json
+@frappe.whitelist()
+def calculate_transportation_cost(zone, vehicle_type, length):
+    zone_list = json.loads(zone)
+    amount = 0
+
+
+    if len(zone_list) != 2:
+        return 0  # Return 0 if it's not a pair
+
+
+
+    if frappe.db.exists("Tariff Details", {"is_standard": 1}):
+        tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+        for item in tariff.tariff_details_item:
+            if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+                amount = item.amount
+            elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
+                amount = item.amount
+    print(amount,"$$$$$$$$$$$$")
+    return amount 

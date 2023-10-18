@@ -1,0 +1,154 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-18 12:26:53.371365",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "location_details_section",
+  "transit_type",
+  "city",
+  "zone",
+  "column_break_wye28",
+  "quantity",
+  "rate",
+  "column_break_pp1jg",
+  "address_line1",
+  "address_line2",
+  "column_break_xqpe6",
+  "latitude",
+  "longitude",
+  "additional_services_section",
+  "choose_required_labour_service",
+  "column_break_wy1zs",
+  "choose_required_handling_service",
+  "labour_id",
+  "handle_id"
+ ],
+ "fields": [
+  {
+   "fieldname": "location_details_section",
+   "fieldtype": "Section Break",
+   "label": "Location Details"
+  },
+  {
+   "default": "Pickup",
+   "fieldname": "transit_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Transit Type",
+   "options": "\nPickup\nDropoff"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "City"
+  },
+  {
+   "fieldname": "zone",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Zone",
+   "options": "Location"
+  },
+  {
+   "fieldname": "column_break_wye28",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate"
+  },
+  {
+   "fieldname": "column_break_pp1jg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "address_line1",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Address Line1"
+  },
+  {
+   "fieldname": "address_line2",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Address Line2"
+  },
+  {
+   "fieldname": "column_break_xqpe6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Latitude"
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Longitude"
+  },
+  {
+   "fieldname": "additional_services_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Services"
+  },
+  {
+   "fieldname": "choose_required_labour_service",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Choose Required Labour Service",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_wy1zs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "choose_required_handling_service",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Choose Required Handling Service",
+   "options": "Item"
+  },
+  {
+   "fieldname": "labour_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "labour id"
+  },
+  {
+   "fieldname": "handle_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "in_list_view": 1,
+   "label": "handle_id"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-10-18 12:26:53.371365",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Transit Details Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -156,7 +156,9 @@ doc_events = {
    #     "after_insert":"a3trans.a3trans.events.warehouse.after_insert"
    #  },
     "Delivery Note":{
-       "on_submit":"a3trans.a3trans.events.delivery_note.on_submit"
+       "on_submit":"a3trans.a3trans.events.delivery_note.on_submit",
+        "on_submit":"a3trans.a3trans.events.sales_invoice.attach_pdf"
+
     },
    "Sales Invoice":{
    "on_submit":"a3trans.a3trans.events.sales_invoice.attach_pdf"
