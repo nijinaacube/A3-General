@@ -11,7 +11,9 @@
   "quantity",
   "distance",
   "distance_rate",
-  "cost"
+  "cost",
+  "from_id",
+  "to_id"
  ],
  "fields": [
   {
@@ -52,12 +54,24 @@
    "fieldtype": "Small Text",
    "in_list_view": 1,
    "label": "Description"
+  },
+  {
+   "fieldname": "from_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "From ID"
+  },
+  {
+   "fieldname": "to_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "To ID"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-10-16 10:23:56.407688",
+ "modified": "2023-10-18 15:40:49.360444",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Charges",

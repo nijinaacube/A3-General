@@ -47,7 +47,8 @@
   "hazardous_material",
   "temperature_controll",
   "section_break",
-  "remarks"
+  "remarks",
+  "index"
  ],
  "fields": [
   {
@@ -319,12 +320,18 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Rate"
+  },
+  {
+   "fieldname": "index",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Index"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-10-13 18:07:29.709320",
+ "modified": "2023-10-18 15:39:17.669191",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Details",
