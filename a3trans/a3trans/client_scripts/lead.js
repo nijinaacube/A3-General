@@ -107,36 +107,45 @@ frappe.ui.form.on('Transit Details Item', {
 
                         for (let i = 0; i < transit_charges.length; i++) {
                             const charge = transit_charges[i];
-                            if (charge.from_id === from_row.index || charge.to_id === to_row.index) {
-                                console.log("success")
+                            if (charge.from_id === row.index) {
+                                console.log("success",cost);
                                 // Update the existing transportation charge row
                                 charge.cost = cost;
-                                charge.description = from_row.zone + ' to ' + to_row.zone;
+                                console.log(charge.description.split("to"),"$$$$$$$$$$$$$4")
+                                var fromcity = charge.description.split(" to ")
+                                charge.description = row.zone + ' to ' + fromcity[1]; // Updated description
+                                frm.refresh_field('transit_charges_item');
+                            
+                                updated = true;
+                             
+                            }
+                            if (charge.to_id === row.index) {
+                                console.log(charge.description.split("to"),"$$$$$$$$$$$$$4")
+                                console.log("success",cost);
+                                // Update the existing transportation charge row
+                                charge.cost = cost;
+                                var fromcity = charge.description.split(" to ")
+                                charge.description = fromcity[0] + ' to ' + row.zone 
                                 frm.refresh_field('transit_charges_item');
                                 updated = true;
-                                break;
+                                
                             }
-                               
-                            
                         }
-                        
 
                         if (!updated) {
                             // Create a new 'transit_charges_item' child table row
                             const transit_charges_row = frm.add_child('transit_charges_item');
                             transit_charges_row.charges = 'Transportation Charges';
                             transit_charges_row.quantity = 1;
-                            transit_charges_row.description = from_row.zone + ' to ' + to_row.zone;
+                            transit_charges_row.description = from_row.zone + ' to ' + row.zone; // Updated description
                             transit_charges_row.cost = cost;
                             transit_charges_row.from_id = from_row.index;
-                            transit_charges_row.to_id = to_row.index;
+                            transit_charges_row.to_id = row.index;
                             frm.refresh_field('transit_charges_item');
                         }
-                        
                     }
-                })
+                });
             }
         }
     }
-                });
-    
+});
