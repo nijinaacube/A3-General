@@ -47,15 +47,20 @@ def validate(doc,methods):
                 customer.tariff = lead_doc.add_select_tariff
                 customer.insert()
              # Define a list of receiver information data
-            # receiver_info_data = [
-            #     {"order_no":1,"transit_type": "Pickup", "zone": lead_doc.from_location},
-            #     {"order_no":2,"transit_type": "Dropoff", "zone": lead_doc.to_location},
-            #     # Add more data as needed
-            # ]
 
-            # # Loop through the data and append it to the "receiver_information" list
-            # for info in receiver_info_data:
-            #     opportunity.append("receiver_information", info)
+            if lead_doc.vehicle_type:
+                opportunity.vehicle_type = lead_doc.vehicle_type
+            # for transit in doc.transit_details_item:
+
+            #     receiver_info_data = [
+            #         {"transit_type": transit.transit_type, "zone": transit.zone},
+            #         {"transit_type": transit.transit_type, "zone": transit.zone},
+            #         # Add more data as needed
+            #     ]
+
+            #     # Loop through the data and append it to the "receiver_information" list
+            #     for info in receiver_info_data:
+            #         opportunity.append("receiver_information", info)
          
             
             opportunity.save()
@@ -129,7 +134,20 @@ def validate(doc,methods):
             opportunity.booking_type=lead_doc.booking_type
             opportunity.booking_date=datetime.date.today()
             opportunity.lead_id=lead_doc.name
-             # Define a list of receiver information data
+            if lead_doc.vehicle_type:
+                opportunity.vehicle_type = lead_doc.vehicle_type
+            for transit in doc.transit_details_item:
+
+                receiver_info_data = [
+                    {"transit_type": transit.transit_type, "zone": transit.zone},
+                    {"transit_type": transit.transit_type, "zone": transit.zone},
+                    # Add more data as needed
+                ]
+
+                # Loop through the data and append it to the "receiver_information" list
+            for info in receiver_info_data:
+                opportunity.append("receiver_information", info)
+            #  Define a list of receiver information data
             # receiver_info_data = [
             #     {"order_no":1,"transit_type": "Pickup", "zone": lead_doc.from_location},
             #     {"order_no":2,"transit_type": "Dropoff", "zone": lead_doc.to_location},
