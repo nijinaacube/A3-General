@@ -305,8 +305,6 @@ frappe.ui.form.on('Opportunity', {
 	}
 })
 
-
-
 frappe.ui.form.on('Opportunity', {
 
     
@@ -507,6 +505,7 @@ frappe.ui.form.on('Opportunity', {
 							if (!frm.doc.trans_id) {
 								console.log(response.message)
 								const target_row = frm.add_child('transit_charges');
+								
 								target_row.charges = "Transportation Charges";
 								target_row.quantity = 1;
 								target_row.from_zone = from_zone;

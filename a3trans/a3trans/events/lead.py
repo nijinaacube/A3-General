@@ -160,8 +160,9 @@ def get_location(doc):
 
 import json
 @frappe.whitelist()
-def calculate_transportation_cost(zone, vehicle_type, length):
+def calculate_transportation_cost(zone, vehicle_type):
     zone_list = json.loads(zone)
+    print(zone_list,"@@@@@@@@@@@@")
     amount = 0
 
 
