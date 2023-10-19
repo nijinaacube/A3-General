@@ -28,43 +28,97 @@ def after_insert(doc,methods):
 
 def validate(doc,methods):
    lead_doc=doc
-
+   if doc.transit_charges_item:
+        total = 0
+        for pr in doc.transit_charges_item:
+                           
+            if pr.cost:
+                total += pr.cost
+        doc.total_amount = total
   
 
    if lead_doc.status=="Opportunity":
         if lead_doc.contact_by == "" or lead_doc.contact_by == None:
             frappe.throw("Please Assign this lead to a Staff for further follow-up")
-        if lead_doc.address_link == "" or lead_doc.address_link == None:
-            frappe.throw("Please add Biling Address")
+        
+        # if lead_doc.address_link == "" or lead_doc.address_link == None:
+        #     frappe.throw("Please add Biling Address")
       
         if frappe.db.exists("Customer",{"mobile_number":lead_doc.mobile_number}):
             customer=frappe.get_doc("Customer",{"mobile_number":lead_doc.mobile_number})
-            opportunity=frappe.new_doc("Opportunity")
-            opportunity.party_name=customer.customer_name
-            opportunity.booking_type=lead_doc.booking_type
-            opportunity.lead_id=lead_doc.name
-            if lead_doc.add_select_tariff:
-                customer.tariff = lead_doc.add_select_tariff
-                customer.insert()
-             # Define a list of receiver information data
-
+            opportunity = frappe.new_doc("Opportunity")
+            opportunity.party_name = customer.customer_name
+            opportunity.booking_type = lead_doc.booking_type
+            opportunity.booking_date = datetime.date.today()
+            opportunity.lead_id = lead_doc.name
             if lead_doc.vehicle_type:
                 opportunity.vehicle_type = lead_doc.vehicle_type
-            # for transit in doc.transit_details_item:
 
-            #     receiver_info_data = [
-            #         {"transit_type": transit.transit_type, "zone": transit.zone},
-            #         {"transit_type": transit.transit_type, "zone": transit.zone},
-            #         # Add more data as needed
-            #     ]
+            receiver_info_data = []  # Define a list to hold receiver information data
 
-            #     # Loop through the data and append it to the "receiver_information" list
-            #     for info in receiver_info_data:
-            #         opportunity.append("receiver_information", info)
-         
-            
+            for transit in doc.transit_details_item:
+                receiver_info_data.append(
+                    {"transit_type": transit.transit_type, "zone": transit.zone}
+                )
+                # You can add more data as needed for each transit item
+
+            # Loop through the data and append it to the "receiver_information" list
+            for info in receiver_info_data:
+                opportunity.append("receiver_information", info)
+
+            charge_info_data = []  # Define a list to hold transit charges data
+
+            for charge in doc.transit_charges_item:
+                charge_info_data.append(
+                    {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost}
+                )
+
+            # Loop through the data and append it to the "transit_charges" list
+            for info in charge_info_data:
+                opportunity.append("transit_charges", info)
+
+
+            line_itms = []
+
+            # Initialize the opportunity_line_items list to store the aggregated data
+            opportunity_line_items = []
+
+            # Loop through the transit_charges_item
+            for i in doc.transit_charges_item:
+                qty = 0
+                cst = 0
+
+                # Check if i.charge is not in line_itms
+                if i.charges not in line_itms:
+                    line_itms.append(i.charges)
+
+                    # Iterate through the items again to aggregate values for the same charge
+                    for j in doc.transit_charges_item:
+                        if i.charges == j.charges:
+                            qty += j.quantity
+                            cst += j.cost
+
+                    print(qty, cst, "*************", line_itms)
+
+                    # Append the aggregated data to the opportunity_line_items list
+                    opportunity_line_items.append({
+                        "item": i.charges,
+                        "quantity": qty,
+                        "amount": cst
+                    })
+            if doc.total_amount:
+                opportunity.payment_amount = doc.total_amount
+
+            # Append the opportunity_line_items list to the "opportunity" document
+            opportunity.extend("opportunity_line_item", opportunity_line_items)
+
+            # Save the "opportunity" document
             opportunity.save()
-            frappe.msgprint("Opportunity Created Successfully")
+
+
+          
+
+
 
 
         else: 
@@ -129,37 +183,76 @@ def validate(doc,methods):
             customerr=frappe.get_doc("Customer",customer.name)
             print(customerr)
         
-            opportunity=frappe.new_doc("Opportunity")
-            opportunity.party_name=customer.customer_name
-            opportunity.booking_type=lead_doc.booking_type
-            opportunity.booking_date=datetime.date.today()
-            opportunity.lead_id=lead_doc.name
+            opportunity = frappe.new_doc("Opportunity")
+            opportunity.party_name = customer.customer_name
+            opportunity.booking_type = lead_doc.booking_type
+            opportunity.booking_date = datetime.date.today()
+            opportunity.lead_id = lead_doc.name
             if lead_doc.vehicle_type:
                 opportunity.vehicle_type = lead_doc.vehicle_type
+
+            receiver_info_data = []  # Define a list to hold receiver information data
+
             for transit in doc.transit_details_item:
+                receiver_info_data.append(
+                    {"transit_type": transit.transit_type, "zone": transit.zone}
+                )
+                # You can add more data as needed for each transit item
 
-                receiver_info_data = [
-                    {"transit_type": transit.transit_type, "zone": transit.zone},
-                    {"transit_type": transit.transit_type, "zone": transit.zone},
-                    # Add more data as needed
-                ]
-
-                # Loop through the data and append it to the "receiver_information" list
+            # Loop through the data and append it to the "receiver_information" list
             for info in receiver_info_data:
                 opportunity.append("receiver_information", info)
-            #  Define a list of receiver information data
-            # receiver_info_data = [
-            #     {"order_no":1,"transit_type": "Pickup", "zone": lead_doc.from_location},
-            #     {"order_no":2,"transit_type": "Dropoff", "zone": lead_doc.to_location},
-                
-            # ]
 
-            # # Loop through the data and append it to the "receiver_information" list
-            # for info in receiver_info_data:
-            #     opportunity.append("receiver_information", info)
-         
+            charge_info_data = []  # Define a list to hold transit charges data
+
+            for charge in doc.transit_charges_item:
+                charge_info_data.append(
+                    {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost}
+                )
+
+            # Loop through the data and append it to the "transit_charges" list
+            for info in charge_info_data:
+                opportunity.append("transit_charges", info)
+
+
+            line_itms = []
+
+            # Initialize the opportunity_line_items list to store the aggregated data
+            opportunity_line_items = []
+
+            # Loop through the transit_charges_item
+            for i in doc.transit_charges_item:
+                qty = 0
+                cst = 0
+
+                # Check if i.charge is not in line_itms
+                if i.charges not in line_itms:
+                    line_itms.append(i.charges)
+
+                    # Iterate through the items again to aggregate values for the same charge
+                    for j in doc.transit_charges_item:
+                        if i.charges == j.charges:
+                            qty += j.quantity
+                            cst += j.cost
+
+                    print(qty, cst, "*************", line_itms)
+
+                    # Append the aggregated data to the opportunity_line_items list
+                    opportunity_line_items.append({
+                        "item": i.charges,
+                        "quantity": qty,
+                        "amount": cst
+                    })
+            if doc.total_amount:
+                opportunity.payment_amount = doc.total_amount
+
+            # Append the opportunity_line_items list to the "opportunity" document
+            opportunity.extend("opportunity_line_item", opportunity_line_items)
+
+            # Save the "opportunity" document
             opportunity.save()
             frappe.msgprint("Opportunity Created Successfully")
+
          
 
 
