@@ -1,5 +1,10 @@
 import frappe
 import datetime
+from datetime import date
+from frappe.utils import today
+import calendar
+from functools import reduce
+from frappe.utils import add_to_date
 def after_insert(doc,methods):
     lead_doc=doc
     if lead_doc.mobile_number and lead_doc.email_id:
@@ -35,6 +40,12 @@ def validate(doc,methods):
             if pr.cost:
                 total += pr.cost
         doc.total_amount = total
+   if doc.warehouse_charges_item:
+        total = 0
+        for pr in doc.warehouse_charges_item:                           
+            if pr.cost:
+                total += pr.cost
+        doc.total_amount = total
   
 
    if lead_doc.status=="Opportunity":
@@ -49,63 +60,115 @@ def validate(doc,methods):
             opportunity = frappe.new_doc("Opportunity")
             opportunity.party_name = customer.customer_name
             opportunity.booking_type = lead_doc.booking_type
-            opportunity.booking_date = datetime.date.today()
+            current_date = today()
+            opportunity.booking_date = current_date
             opportunity.lead_id = lead_doc.name
             if lead_doc.vehicle_type:
                 opportunity.vehicle_type = lead_doc.vehicle_type
 
             receiver_info_data = []  # Define a list to hold receiver information data
+            if doc.transit_details_item:
+                for transit in doc.transit_details_item:
+                    receiver_info_data.append(
+                        {"transit_type": transit.transit_type, "zone": transit.zone}
+                    )
+                    # You can add more data as needed for each transit item
 
-            for transit in doc.transit_details_item:
-                receiver_info_data.append(
-                    {"transit_type": transit.transit_type, "zone": transit.zone}
-                )
-                # You can add more data as needed for each transit item
-
-            # Loop through the data and append it to the "receiver_information" list
-            for info in receiver_info_data:
-                opportunity.append("receiver_information", info)
-
-            charge_info_data = []  # Define a list to hold transit charges data
-
-            for charge in doc.transit_charges_item:
-                charge_info_data.append(
-                    {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost}
-                )
-
-            # Loop through the data and append it to the "transit_charges" list
-            for info in charge_info_data:
-                opportunity.append("transit_charges", info)
-
+                # Loop through the data and append it to the "receiver_information" list
+                for info in receiver_info_data:
+                    opportunity.append("receiver_information", info)
+            if doc.transit_charges_item:
+                charge_info_data = []  # Define a list to hold transit charges data
+                for charge in doc.transit_charges_item:
+                    charge_info_data.append(
+                        {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost}
+                    )
+                # Loop through the data and append it to the "transit_charges" list
+                for info in charge_info_data:
+                    opportunity.append("transit_charges", info)
+            if doc.warehouse_charges_item:
+                war_info_data = []  # Define a list to hold transit charges data
+                for war in doc.warehouse_charges_item:
+                    war_info_data.append(
+                        {"charges": war.charges, "quantity": 1, "cost": war.cost}
+                    )
+                # Loop through the data and append it to the "transit_charges" list
+                for info in war_info_data:
+                    opportunity.append("warehouse_charges", info)
+                # frappe.throw("LLLLLLll")
 
             line_itms = []
-
             # Initialize the opportunity_line_items list to store the aggregated data
             opportunity_line_items = []
 
             # Loop through the transit_charges_item
-            for i in doc.transit_charges_item:
-                qty = 0
-                cst = 0
+            if doc.transit_charges_item:
 
-                # Check if i.charge is not in line_itms
-                if i.charges not in line_itms:
-                    line_itms.append(i.charges)
+                # Loop through the transit_charges_item
+                for i in doc.transit_charges_item:
+                    qty = 0
+                    cst = 0
 
-                    # Iterate through the items again to aggregate values for the same charge
-                    for j in doc.transit_charges_item:
-                        if i.charges == j.charges:
-                            qty += j.quantity
-                            cst += j.cost
+                    # Check if i.charge is not in line_itms
+                    if i.charges not in line_itms:
+                        line_itms.append(i.charges)
 
-                    print(qty, cst, "*************", line_itms)
+                        # Iterate through the items again to aggregate values for the same charge
+                        for j in doc.transit_charges_item:
+                            if i.charges == j.charges:
+                                qty += j.quantity
+                                cst += j.cost
 
-                    # Append the aggregated data to the opportunity_line_items list
-                    opportunity_line_items.append({
-                        "item": i.charges,
-                        "quantity": qty,
-                        "amount": cst
-                    })
+                        print(qty, cst, "*************", line_itms)
+
+                        # Append the aggregated data to the opportunity_line_items list
+                        opportunity_line_items.append({
+                            "item": i.charges,
+                            "quantity": qty,
+                            "amount": cst
+                        })
+            if doc.warehouse_charges_item:
+               
+                for i in doc.warehouse_charges_item:
+                    qty = 0
+                    cst = 0
+
+                
+                    if i.charges not in line_itms:
+                        line_itms.append(i.charges)
+
+                        # Iterate through the items again to aggregate values for the same charge
+                        for j in doc.warehouse_charges_item:
+                            if i.charges == j.charges:
+                                qty += j.quantity
+                                cst += j.cost
+
+                        print(qty, cst, "*************", line_itms)
+
+                        # Append the aggregated data to the opportunity_line_items list
+                        opportunity_line_items.append({
+                            "item": i.charges,
+                            "quantity": qty,
+                            "amount": cst
+                        })
+            if doc.warehouse and doc.required_area:
+                if doc.warehouse_charges_item:
+                    for cst in doc.warehouse_charges_item:
+                        if cst.charges == "Warehouse Space Rent":
+                            opportunity.append("warehouse_space_details",{"date_from":doc.booking_date,
+                                                                "warehouse":doc.customer_warehouse if doc.customer_warehouse else None,
+                                                                "booked_upto":doc.booked_upto,
+                                                                "rental_charges":"Warehouse Space Rent",
+                                                                "uom":doc.uom,
+                                                                "cargo_type":doc.cargo_type,
+                                                                "required_area":doc.required_area,
+                                                                "no_of_days":doc.no_of_days,
+                                                                "rental_cost":cst.cost})
+            if doc.required_handling_services or doc.required_labour_service:
+                opportunity.append("warehouse_stock_items", {
+                    "choose_handling_service": doc.required_handling_services if doc.required_handling_services else None,
+                    "choose_labour_service": doc.required_labour_service if doc.required_labour_service else None
+                })
             if doc.total_amount:
                 opportunity.payment_amount = doc.total_amount
 
@@ -186,63 +249,118 @@ def validate(doc,methods):
             opportunity = frappe.new_doc("Opportunity")
             opportunity.party_name = customer.customer_name
             opportunity.booking_type = lead_doc.booking_type
-            opportunity.booking_date = datetime.date.today()
+            current_date = today()
+            opportunity.booking_date = current_date
             opportunity.lead_id = lead_doc.name
             if lead_doc.vehicle_type:
                 opportunity.vehicle_type = lead_doc.vehicle_type
 
             receiver_info_data = []  # Define a list to hold receiver information data
+            if doc.transit_details_item:
+                for transit in doc.transit_details_item:
+                    receiver_info_data.append(
+                        {"transit_type": transit.transit_type, "zone": transit.zone}
+                    )
+                    # You can add more data as needed for each transit item
 
-            for transit in doc.transit_details_item:
-                receiver_info_data.append(
-                    {"transit_type": transit.transit_type, "zone": transit.zone}
-                )
-                # You can add more data as needed for each transit item
-
-            # Loop through the data and append it to the "receiver_information" list
-            for info in receiver_info_data:
-                opportunity.append("receiver_information", info)
+                # Loop through the data and append it to the "receiver_information" list
+                for info in receiver_info_data:
+                    opportunity.append("receiver_information", info)
 
             charge_info_data = []  # Define a list to hold transit charges data
+            if doc.transit_charges_item:
+                for charge in doc.transit_charges_item:
+                    charge_info_data.append(
+                        {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost}
+                    )
 
-            for charge in doc.transit_charges_item:
-                charge_info_data.append(
-                    {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost}
-                )
-
-            # Loop through the data and append it to the "transit_charges" list
-            for info in charge_info_data:
-                opportunity.append("transit_charges", info)
-
+                # Loop through the data and append it to the "transit_charges" list
+                for info in charge_info_data:
+                    opportunity.append("transit_charges", info)
+            if doc.warehouse_charges_item:
+                war_info_data = []  # Define a list to hold transit charges data
+                for war in doc.warehouse_charges_item:
+                    war_info_data.append(
+                        {"charges": war.charges, "quantity": 1, "cost": war.cost}
+                    )
+                # Loop through the data and append it to the "transit_charges" list
+                for info in war_info_data:
+                    opportunity.append("warehouse_charges", info)
+                # frappe.throw("LLLLLLll")
 
             line_itms = []
 
             # Initialize the opportunity_line_items list to store the aggregated data
             opportunity_line_items = []
+            if doc.transit_charges_item:
 
-            # Loop through the transit_charges_item
-            for i in doc.transit_charges_item:
-                qty = 0
-                cst = 0
+                # Loop through the transit_charges_item
+                for i in doc.transit_charges_item:
+                    qty = 0
+                    cst = 0
 
-                # Check if i.charge is not in line_itms
-                if i.charges not in line_itms:
-                    line_itms.append(i.charges)
+                    # Check if i.charge is not in line_itms
+                    if i.charges not in line_itms:
+                        line_itms.append(i.charges)
 
-                    # Iterate through the items again to aggregate values for the same charge
-                    for j in doc.transit_charges_item:
-                        if i.charges == j.charges:
-                            qty += j.quantity
-                            cst += j.cost
+                        # Iterate through the items again to aggregate values for the same charge
+                        for j in doc.transit_charges_item:
+                            if i.charges == j.charges:
+                                qty += j.quantity
+                                cst += j.cost
 
-                    print(qty, cst, "*************", line_itms)
+                        print(qty, cst, "*************", line_itms)
 
-                    # Append the aggregated data to the opportunity_line_items list
-                    opportunity_line_items.append({
-                        "item": i.charges,
-                        "quantity": qty,
-                        "amount": cst
-                    })
+                        # Append the aggregated data to the opportunity_line_items list
+                        opportunity_line_items.append({
+                            "item": i.charges,
+                            "quantity": qty,
+                            "amount": cst
+                        })
+            if doc.warehouse_charges_item:
+                 # Loop through the transit_charges_item
+                for i in doc.warehouse_charges_item:
+                    qty = 0
+                    cst = 0
+
+                    # Check if i.charge is not in line_itms
+                    if i.charges not in line_itms:
+                        line_itms.append(i.charges)
+
+                        # Iterate through the items again to aggregate values for the same charge
+                        for j in doc.warehouse_charges_item:
+                            if i.charges == j.charges:
+                                qty += j.quantity
+                                cst += j.cost
+
+                        print(qty, cst, "*************", line_itms)
+
+                        # Append the aggregated data to the opportunity_line_items list
+                        opportunity_line_items.append({
+                            "item": i.charges,
+                            "quantity": qty,
+                            "amount": cst
+                        })
+            if doc.warehouse and doc.required_area:
+                if doc.warehouse_charges_item:
+                    for cst in doc.warehouse_charges_item:
+                        if cst.charges == "Warehouse Space Rent":
+                            opportunity.append("warehouse_space_details",{"date_from":doc.booking_date,
+                                                                "booked_upto":doc.booked_upto,
+                                                                "warehouse":doc.customer_warehouse if doc.customer_warehouse else None,
+                                                                "rental_charges":"Warehouse Space Rent",
+                                                                "uom":doc.uom,
+                                                                "cargo_type":doc.cargo_type,
+                                                                "required_area":doc.required_area,
+                                                                "no_of_days":doc.no_of_days,
+                                                                "rental_cost":cst.cost})
+            if doc.required_handling_services or doc.required_labour_service:
+                opportunity.append("warehouse_stock_items", {
+                    "choose_handling_service": doc.required_handling_services if doc.required_handling_services else None,
+                    "choose_labour_service": doc.required_labour_service if doc.required_labour_service else None
+                })
+
+                    
             if doc.total_amount:
                 opportunity.payment_amount = doc.total_amount
 
@@ -291,3 +409,77 @@ def calculate_transportation_cost(zone, vehicle_type):
                 amount = item.amount
     print(amount,"$$$$$$$$$$$$")
     return amount 
+from datetime import datetime
+import calendar
+@frappe.whitelist()
+def calculate_rental_cost(booked_upto,uom,cargo_type,required_area,booking_date):
+    print("kkkkkkkkkkkk")
+    data={}
+    current_date = datetime.strptime(booking_date, "%Y-%m-%d")
+    print(booked_upto,"kkkkk")
+    booked_upto_date=datetime.strptime(booked_upto, "%Y-%m-%d")
+    print(booked_upto_date,"kkkkk")
+
+    # Extract year and month from the datetime object
+    year = current_date.year
+    month = current_date.month
+    # Calculate the last day of the month
+    _, last_day = calendar.monthrange(year, month)
+    # Create a new date object for the end of the month
+    end_of_month = current_date.replace(day=last_day)
+    if booked_upto_date>end_of_month:
+        # Convert the end_of_month back to a string if needed
+        end_of_month_str = end_of_month.strftime("%Y-%m-%d")
+        data["end_month"]=end_of_month_str
+        days_difference = (end_of_month - current_date).days
+        data["difference"]=days_difference
+        print(end_of_month_str,days_difference,"99999999999999")
+    else:
+        end_of_month_str = end_of_month.strftime("%Y-%m-%d")
+        print(end_of_month)
+        data["end_month"]=end_of_month_str
+        days_difference = (booked_upto_date - current_date).days
+        data["difference"]=days_difference
+        print(days_difference,"ppppppp")
+
+    no_of_days = float(days_difference)
+    print(no_of_days,"@@@@@@@@@@@@2")
+       
+      
+    if frappe.db.exists("Tariff Details",{"is_standard":1}):
+                tariff=frappe.get_doc("Tariff Details",{"is_standard":1})
+                if tariff.warehouse_space_rent_charges:
+            
+                    for itm in tariff.warehouse_space_rent_charges:
+                        rate=0
+                        if cargo_type == itm.cargo_type and uom == "Cubic Meter":
+                            if no_of_days >= 30:
+                                rate = itm.rate_per_month
+                            
+                            else:
+                                    ratemonth= itm.rate_per_month
+                                    rate=(ratemonth/30)
+                                    print(rate)
+
+
+                            total_amount = (rate * no_of_days) * float(required_area)
+                            data["total_amount"] = total_amount
+
+
+                        if uom == itm.uom:
+                            if no_of_days >= 30:
+                                rate = itm.rate_per_month
+                            
+                            else:
+                                    ratemonth= itm.rate_per_month
+                                    rate=(ratemonth/30)
+                                    print(rate)
+
+
+                            total_amount = (rate * no_of_days) * float(required_area)
+                            data["total_amount"] = total_amount
+
+
+
+                    return data
+        

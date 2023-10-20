@@ -107,22 +107,30 @@ def after_insert(doc, methods):
                         warehouses.save()
 
 
-                    if doc.party_name:
-                        customer=frappe.get_doc("Customer",doc.party_name)
-                        print(customer)
-                        fromdate=frappe.utils.nowdate()
-                        dur=int(war.no_of_days)
-                        todate=add_to_date(fromdate,days=dur,as_string=True)   
-                        table_len=len(customer.customer_warehouse_details)                           
-                        if table_len ==0:                               
-                            customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
-                        else:                               
-                            for warehouses_det in customer.customer_warehouse_details:                                   
-                                if  war.warehouse not in warehouses_det.warehouse:                                       
-                                    customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
-                        customer.save()
+                    # if doc.party_name:
+                    #     customer=frappe.get_doc("Customer",doc.party_name)
+                    #     print(customer)
+                    #     fromdate=frappe.utils.nowdate()
+                    #     dur=int(war.no_of_days)
+                    #     todate=add_to_date(fromdate,days=dur,as_string=True)   
+                    #     table_len=len(customer.customer_warehouse_details)                           
+                    #     if table_len ==0:                               
+                    #         customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+                    #     else:                               
+                    #         for warehouses_det in customer.customer_warehouse_details:                                   
+                    #             if  war.warehouse not in warehouses_det.warehouse:                                       
+                    #                 customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+                    #     customer.save()
 
 def validate(doc,method):
+    if doc.lead_id:
+        
+        if doc.booking_type == "Warehousing":
+            
+            for datas in doc.warehouse_space_details:
+              
+                if datas.warehouse == "" or datas.warehouse == None:
+                    frappe.throw("Please add a warehouse for this customer")
     if doc.status == "Lost":
         doc.order_status = "Cancelled"
         print(doc.order_lost_reason,"*******************************8")

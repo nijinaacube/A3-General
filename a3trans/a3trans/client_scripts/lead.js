@@ -10,6 +10,17 @@ frappe.ui.form.on('Lead', {
         if  (frm.is_new()){
              ind = 1
             frm.set_value('booking_date', frappe.datetime.get_today());
+            var today = new Date();
+
+            // Set the day to the last day of the current month
+            today.setMonth(today.getMonth() + 1);  // Move to the next month
+            today.setDate(0);  // Set to the last day of the previous month
+    
+            // Convert the date object to a string in 'yyyy-mm-dd' format
+            var lastDayOfMonth = today.toISOString().split('T')[0];
+    
+            // Set the last day of the current month as the default value
+            frm.set_value('booked_upto', lastDayOfMonth);
           
 
     }
@@ -73,7 +84,140 @@ mobile_number:function(frm) {
         frm.refresh_field("mobile_no")
     }
 
+},
+required_labour_service:function (frm){
+
+    if (!frm.doc.labour_id) {
+        // If labour_id is not set, add a new row
+        const target_row = frm.add_child('warehouse_charges_item');
+        target_row.charges = frm.doc.required_labour_service;
+        target_row.quantity = 1;
+        frm.doc.labour_id = target_row.idx;
+        frm.refresh_field('warehouse_charges_item');
+    } else {
+        // If labour_id is already set, update the existing row
+        var existing_row = frm.doc.warehouse_charges_item.find(row => row.idx ===  frm.doc.labour_id);
+        if (existing_row) {
+            existing_row.charges = frm.doc.required_labour_service;
+          
+            frm.refresh_field('warehouse_charges_item');
+        } 
+    }
+
+},
+required_handling_services:function (frm){
+
+    if (!frm.doc.handle_id) {
+        // If labour_id is not set, add a new row
+        const target_row = frm.add_child('warehouse_charges_item');
+        target_row.charges = frm.doc.required_handling_services;
+        target_row.quantity = 1;
+        frm.doc.handle_id = target_row.idx;
+        frm.refresh_field('warehouse_charges_item');
+    } else {
+        // If labour_id is already set, update the existing row
+        var existing_row = frm.doc.warehouse_charges_item.find(row => row.idx ===  frm.doc.handle_id);
+        if (existing_row) {
+            existing_row.charges = frm.doc.required_handling_services;
+          
+            frm.refresh_field('warehouse_charges_item');
+        } 
+    }
+
+},
+required_area:function(frm){
+    if (frm.doc.warehouse){
+        if (frm.doc.booked_upto && frm.doc.required_area){
+
+            frappe.call({
+                method: 'a3trans.a3trans.events.lead.calculate_rental_cost',
+                args: {
+                    'required_area':frm.doc.required_area ,
+                    'booking_date': frm.doc.booking_date,
+                    'booked_upto' : frm.doc.booked_upto,
+                    'uom' : frm.doc.uom,
+                    "cargo_type":frm.doc.cargo_type
+                },
+                callback: function(response) {
+                    console.log(response.message);
+                    frm.set_value("no_of_days",response.message["difference"])
+                    frm.refresh_field("no_of_days")
+                    if (!frm.doc.space_id){
+                    const target_row = frm.add_child('warehouse_charges_item');
+                    target_row.charges = "Warehouse Space Rent";
+                    target_row.quantity = 1
+                    frm.doc.space_id = target_row.idx
+                    target_row.cost = response.message["total_amount"]
+                    frm.refresh_field('warehouse_charges_item');
+                    
+                    }
+                    else{
+                        var existing_row = frm.doc.warehouse_charges_item.find(row => row.idx ===  frm.doc.space_id);
+                    if (existing_row) {
+                        existing_row.charges = "Warehouse Space Rent";
+                        existing_row.quantity = 1
+                        existing_row.cost = response.message["total_amount"]
+                    
+                        frm.refresh_field('warehouse_charges_item');
+                    }  
+                    }
+                }
+
+            })
+        }
+    }
+    else{
+        frappe.throw("Please choose a Warehouse")
+    }
+
+
+},
+warehouse:function(frm){
+    if (frm.doc.required_area){
+        if (frm.doc.booked_upto && frm.doc.required_area){
+
+            frappe.call({
+                method: 'a3trans.a3trans.events.lead.calculate_rental_cost',
+                args: {
+                    'required_area':frm.doc.required_area ,
+                    'booking_date': frm.doc.booking_date,
+                    'booked_upto' : frm.doc.booked_upto,
+                    'uom' : frm.doc.uom,
+                    "cargo_type":frm.doc.cargo_type
+                },
+                callback: function(response) {
+                    console.log(response.message);
+                    frm.set_value("no_of_days",response.message["difference"])
+                    frm.refresh_field("no_of_days")
+                    if (!frm.doc.space_id){
+                    const target_row = frm.add_child('warehouse_charges_item');
+                    target_row.charges = "Warehouse Space Rent";
+                    target_row.quantity = 1
+                    frm.doc.space_id = target_row.idx
+                    target_row.cost = response.message["total_amount"]
+                    frm.refresh_field('warehouse_charges_item');
+                    
+                    }
+                    else{
+                        var existing_row = frm.doc.warehouse_charges_item.find(row => row.idx ===  frm.doc.space_id);
+                    if (existing_row) {
+                        existing_row.charges = "Warehouse Space Rent";
+                        existing_row.quantity = 1
+                        existing_row.cost = response.message["total_amount"]
+                    
+                        frm.refresh_field('warehouse_charges_item');
+                    }  
+                    }
+
+                }
+
+            })
+        }
+    }
+   
+
 }
+
 });
 frappe.ui.form.on('Transit Details Item', {
     zone: function(frm, cdt, cdn) {
@@ -146,6 +290,9 @@ frappe.ui.form.on('Transit Details Item', {
                     }
                 });
             }
+        }
+        else{
+            frappe.throw("Please choose vehicle Type")
         }
     }
 });

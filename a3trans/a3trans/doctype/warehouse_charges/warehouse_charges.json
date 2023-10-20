@@ -21,10 +21,12 @@
    "options": "Item"
   },
   {
+   "default": "1",
    "fieldname": "quantity",
    "fieldtype": "Int",
    "in_list_view": 1,
-   "label": "Quantity"
+   "label": "Quantity",
+   "read_only": 1
   },
   {
    "fieldname": "cost",
@@ -50,7 +52,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-08 11:04:20.868513",
+ "modified": "2023-10-20 10:53:07.175110",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Charges",

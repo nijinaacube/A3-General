@@ -1498,7 +1498,7 @@ frappe.ui.form.on('Warehouse Space Details', {
     	var selected_item=child.rental_charges
     	console.log(child.rental_charges)
     	const target_row=frm.add_child('warehouse_charges')
-   	 target_row.charges=selected_item
+   	 	target_row.charges=selected_item
     	target_row.quantity=1
     	// frm.refresh_field('warehouse_charges');
     	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
