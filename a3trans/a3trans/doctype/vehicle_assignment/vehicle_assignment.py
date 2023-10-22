@@ -201,17 +201,18 @@ def fetch_order_details(order_id):
         data = {}
 
         for item in opportunity.receiver_information:
-            if item.order_no:
-                data1.append({
-                    "order_no": item.order_no,
-                    "type": item.transit_type,
-                    "zone": item.zone,
-                    "lat": item.latitude,
-                    "lon": item.longitude,
-                    "remark": item.remarks,
-                })
-        
-        data["data1"] = data1
+           
+                
+            data1.append({
+                "order_no": item.order_no,
+                "type": item.transit_type,
+                "zone": item.zone,
+                "lat": item.latitude,
+                "lon": item.longitude,
+                "remark": item.remarks,
+            })
+    
+            data["data1"] = data1
 
         if opportunity.has_return_trip == 1:
             for trip in opportunity.return_trips:
