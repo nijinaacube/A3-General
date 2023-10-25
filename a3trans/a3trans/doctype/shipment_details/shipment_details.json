@@ -10,7 +10,13 @@
   "weight",
   "uom",
   "quantity",
-  "packaging_type"
+  "packaging_type",
+  "column_break_y1lcn",
+  "length",
+  "width",
+  "height",
+  "volume",
+  "description"
  ],
  "fields": [
   {
@@ -49,12 +55,46 @@
    "in_list_view": 1,
    "label": "UOM",
    "options": "UOM"
+  },
+  {
+   "fieldname": "column_break_y1lcn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "length",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Length"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Width"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Height"
+  },
+  {
+   "fieldname": "volume",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Volume"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Description"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-09-18 10:37:16.503233",
+ "modified": "2023-10-25 16:26:36.909059",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Shipment Details",

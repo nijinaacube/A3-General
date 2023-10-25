@@ -2,7 +2,7 @@
 var ind = 1;
 frappe.ui.form.on('Lead', {
     onload :function(frm){
-   
+      
         if (frm.doc.transit_details_item){
             console.log(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1])
             ind = parseInt(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1].index ) + 1
@@ -27,7 +27,18 @@ frappe.ui.form.on('Lead', {
 },
 
 
-    // refresh: function(frm) {
+ refresh: function(frm) {
+
+    frm.fields_dict['add_select_tariff'].get_query = function(doc){
+        return {
+            filters: {
+                'is_standard': 1
+            }
+        };
+    
+
+    }
+ },
     //     if (!cur_frm.doc.__islocal && frm.doc.status === "Lead") {
     //         frm.add_custom_button(__('Convert'), function() {
                 
@@ -59,9 +70,42 @@ frappe.ui.form.on('Lead', {
     //         }).addClass('btn-primary');
     //     }
     // },
-    booking_type:function(frm){
+
+
+booking_type:function(frm){
+    if(frm.doc.booking_type==="Transport"){
+
+        frm.fields_dict['transit_details_item'].grid.get_field('choose_required_labour_service').get_query = function(doc, cdt, cdn) {
+          	 
+            return {
+                filters: {
+                    "item_group": "Labour Charges"
+                }
+            };
+        };
+        frm.fields_dict['transit_details_item'].grid.get_field('choose_required_handling_service').get_query = function(doc, cdt, cdn) {
+          	 
+            return {
+                filters: {
+                    "item_group": "Handling Charges"
+                }
+            };
+        };
+        frm.fields_dict['transit_charges_item'].grid.get_field('charges').get_query = function(doc, cdt, cdn) {
+          	 
+            return {
+                filters: {
+                    "is_stock_item": 0
+                }
+            };
+        };
+
+
+    }
 
         if(frm.doc.booking_type==="Warehousing"){
+           
+       
             frm.fields_dict['warehouse'].get_query = function(doc){
                     return {
                         filters: {
@@ -71,6 +115,32 @@ frappe.ui.form.on('Lead', {
                 
 
                 }
+                frm.fields_dict['required_labour_service'].get_query = function(doc){
+                    return {
+                        filters: {
+                            'item_group': "Labour Charges"
+                        }
+                    };
+                
+
+                }
+                frm.fields_dict['required_handling_services'].get_query = function(doc){
+                    return {
+                        filters: {
+                            'item_group': "Handling Charges"
+                        }
+                    };
+                
+
+                }
+                frm.fields_dict['warehouse_charges_item'].grid.get_field('charges').get_query = function(doc, cdt, cdn) {
+          	 
+                    return {
+                        filters: {
+                            "is_stock_item": 0
+                        }
+                    };
+                };
     }
 
     },
@@ -92,13 +162,16 @@ required_labour_service:function (frm){
         const target_row = frm.add_child('warehouse_charges_item');
         target_row.charges = frm.doc.required_labour_service;
         target_row.quantity = 1;
+        // target_row.description = "Labour Charges"
         frm.doc.labour_id = target_row.idx;
+        frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
         frm.refresh_field('warehouse_charges_item');
     } else {
         // If labour_id is already set, update the existing row
         var existing_row = frm.doc.warehouse_charges_item.find(row => row.idx ===  frm.doc.labour_id);
         if (existing_row) {
             existing_row.charges = frm.doc.required_labour_service;
+            frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
           
             frm.refresh_field('warehouse_charges_item');
         } 
@@ -112,13 +185,16 @@ required_handling_services:function (frm){
         const target_row = frm.add_child('warehouse_charges_item');
         target_row.charges = frm.doc.required_handling_services;
         target_row.quantity = 1;
+        // target_row.description = "Handling Charges"
         frm.doc.handle_id = target_row.idx;
+        frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
         frm.refresh_field('warehouse_charges_item');
     } else {
         // If labour_id is already set, update the existing row
         var existing_row = frm.doc.warehouse_charges_item.find(row => row.idx ===  frm.doc.handle_id);
         if (existing_row) {
             existing_row.charges = frm.doc.required_handling_services;
+            frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
           
             frm.refresh_field('warehouse_charges_item');
         } 
@@ -219,6 +295,7 @@ warehouse:function(frm){
 }
 
 });
+
 frappe.ui.form.on('Transit Details Item', {
     zone: function(frm, cdt, cdn) {
         const row = locals[cdt][cdn];
@@ -253,9 +330,28 @@ frappe.ui.form.on('Transit Details Item', {
                             const charge = transit_charges[i];
                             if (charge.from_id === row.index) {
                                 console.log("success",cost);
+                                var fromcity = charge.description.split(" to ")
+                                
+                                console.log(fromcity,"&&&&&&&&&")
+                                frappe.call({
+                                    method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
+                                    args: {
+                                        'zone': JSON.stringify([fromcity[0], fromcity[1]]),
+                                        'vehicle_type': frm.doc.vehicle_type,
+                                    },
+                                    callback: function(response) {
+                                        console.log(response.message,fromcity[0],fromcity[1],"@@@@@@@@@@@@@!!!!!!!!!!!1")
+                                         // Update the existing transportation charge row
+                                        charge.cost = response.message;
+                                        console.log(charge.cost)
+                                        frm.refresh_field('transit_charges_item');
+
+                                    }
+
+                                })
                                 // Update the existing transportation charge row
-                                charge.cost = cost;
-                                console.log(charge.description.split("to"),"$$$$$$$$$$$$$4")
+                                // charge.cost = 0;
+                               
                                 var fromcity = charge.description.split(" to ")
                                 charge.description = row.zone + ' to ' + fromcity[1]; // Updated description
                                 frm.refresh_field('transit_charges_item');
@@ -264,11 +360,28 @@ frappe.ui.form.on('Transit Details Item', {
                              
                             }
                             if (charge.to_id === row.index) {
-                                console.log(charge.description.split("to"),"$$$$$$$$$$$$$4")
-                                console.log("success",cost);
-                                // Update the existing transportation charge row
-                                charge.cost = cost;
+                                // console.log(charge.description.split("to"),"$$$$$$$$$$$$$4")
                                 var fromcity = charge.description.split(" to ")
+                                console.log(fromcity,"^^^^^^^^^^^^^^^^^^^^")
+                                console.log("success",cost);
+                                frappe.call({
+                                    method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
+                                    args: {
+                                        'zone': JSON.stringify([fromcity[1], fromcity[0]]),
+                                        'vehicle_type': frm.doc.vehicle_type,
+                                    },
+                                    callback: function(response) {
+                                        // console.log(response.message,fromcity[1],row.zone,"@@@@@@@@@@@@@")
+                                        //  // Update the existing transportation charge row
+                                        charge.cost = response.message;
+                                        frm.refresh_field('transit_charges_item');
+
+
+                                    }
+
+                                })
+                               
+                               
                                 charge.description = fromcity[0] + ' to ' + row.zone 
                                 frm.refresh_field('transit_charges_item');
                                 updated = true;
@@ -294,5 +407,117 @@ frappe.ui.form.on('Transit Details Item', {
         else{
             frappe.throw("Please choose vehicle Type")
         }
-    }
+    },
+
+
+
+   
+    
+choose_required_labour_service: function(frm, cdt, cdn) {
+            var child_labour = locals[cdt][cdn];
+            var item_selected = child_labour.choose_required_labour_service;
+            if (!child_labour.labour_id) {
+            // If labour_id is not set, add a new row
+            const target_row = frm.add_child('transit_charges_item');
+            target_row.charges = item_selected;
+            target_row.quantity = 1;
+            target_row.description = "Labour Charges"
+            child_labour.labour_id = target_row.idx;
+            frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+            frm.refresh_field('transit_charges_item');
+            } else {
+            // If labour_id is already set, update the existing row
+            var existing_row = frm.doc.transit_charges_item.find(row => row.idx === child_labour.labour_id);
+            if (existing_row) {
+            if (item_selected) {
+            existing_row.charges = item_selected;
+            frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+            frm.refresh_field('transit_charges_item');
+            } else {
+            // Remove the existing row from the child table
+            frm.get_field("transit_charges_item").grid.grid_rows[existing_row.idx - 1].remove();
+            // Reset child_labour.labour_id after deletion
+            child_labour.labour_id = null;
+            }
+            } 
+            }
+            },
+choose_required_handling_service: function(frm, cdt, cdn) {
+            var child_handling = locals[cdt][cdn];
+            var item_selected = child_handling.choose_required_handling_service;
+            if (!child_handling.handle_id) {
+            // If handle_id is not set, add a new row
+            const target_row = frm.add_child('transit_charges_item');
+            target_row.charges = item_selected;
+            target_row.quantity = 1;
+            target_row.description = "Handling Charges"
+            child_handling.handle_id = target_row.idx;
+            frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+            frm.refresh_field('transit_charges_item');
+            } else {
+            // If handle_id is already set, update the existing row
+            var existing_row = frm.doc.transit_charges_item.find(row => row.idx === child_handling.handle_id);
+            if (existing_row) {
+            if (item_selected) {
+            existing_row.charges = item_selected;
+            frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+            frm.refresh_field('transit_charges_item');
+            } else {
+            // Remove the existing row from the child table
+            frm.get_field("transit_charges_item").grid.grid_rows[existing_row.idx - 1].remove();
+            // Reset child_handling.handle_id after deletion
+            child_handling.handle_id = null;
+            }
+            } 
+            }
+            },
+
 });
+
+
+frappe.ui.form.on('Transit Charges', {
+    charges: function(frm, cdt, cdn) {
+        const charges_row = locals[cdt][cdn];
+
+
+if (charges_row.charges) {
+    frappe.call({
+        method: "a3trans.a3trans.events.opportunity.fetch_charges_price",
+        args: {
+            charges: charges_row.charges
+        },
+        callback: function(response) {
+            console.log("successs price")
+            if (response && response.message) {
+                frappe.model.set_value(cdt, cdn, 'cost', response.message["price_list_rate"]);
+                frappe.model.set_value(cdt, cdn, 'quantity', 1);
+            }
+        }
+    });
+}
+    }
+})
+
+
+frappe.ui.form.on('Warehouse Charges', {
+    charges: function(frm, cdt, cdn) {
+        const charges_row = locals[cdt][cdn];
+
+
+if (charges_row.charges) {
+    frappe.call({
+        method: "a3trans.a3trans.events.opportunity.fetch_charges_price",
+        args: {
+            charges: charges_row.charges
+        },
+        callback: function(response) {
+            console.log("successs price")
+            if (response && response.message) {
+                frappe.model.set_value(cdt, cdn, 'cost', response.message["price_list_rate"]);
+                frappe.model.set_value(cdt, cdn, 'quantity', 1);
+            }
+        }
+    });
+}
+    }
+})

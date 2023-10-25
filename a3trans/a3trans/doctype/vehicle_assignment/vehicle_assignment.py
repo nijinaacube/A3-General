@@ -215,19 +215,22 @@ def fetch_order_details(order_id):
             data["data1"] = data1
 
         if opportunity.has_return_trip == 1:
-            for trip in opportunity.return_trips:
-                
-                    data2.append({
-                        "trip_order_no": trip.order_no,
-                        "trip_type": trip.transit_type,
-                        "trip_zone": trip.zone,
-                        "trip_lat": trip.latitude,
-                        "trip_lon": trip.longitude,
-                        "trip_remark": trip.remarks,
-                    })
+            if opportunity.return_trips:
+                for trip in opportunity.return_trips:
+                    
+                        data2.append({
+                            "trip_order_no": trip.order_no,
+                            "trip_type": trip.transit_type,
+                            "trip_zone": trip.zone,
+                            "trip_lat": trip.latitude,
+                            "trip_lon": trip.longitude,
+                            "trip_remark": trip.remarks,
+                        })
 
             data["data2"] = data2
             data["has_trip"] = opportunity.has_return_trip
+        if opportunity.is_return ==1:
+            data["is_return"] =1
         
         return data
 

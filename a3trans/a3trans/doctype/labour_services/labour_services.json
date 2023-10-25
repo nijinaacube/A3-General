@@ -1,0 +1,31 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-10-25 15:41:57.131558",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "labour_services"
+ ],
+ "fields": [
+  {
+   "fieldname": "labour_services",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Labour Services",
+   "options": "Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-10-25 15:41:57.131558",
+ "modified_by": "Administrator",
+ "module": "A3Trans",
+ "name": "Labour Services",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

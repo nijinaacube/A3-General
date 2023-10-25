@@ -154,6 +154,7 @@ frappe.ui.form.on('Vehicle Assignment', {
  
  
     if (frm.doc.vehicle_id){
+
  
  
         frappe.call({
@@ -177,6 +178,7 @@ frappe.ui.form.on('Vehicle Assignment', {
    // This is where your 'order' field change event is handled
    order: function (frm) {
     if (frm.doc.order) {
+
         frappe.call({
             method: "a3trans.a3trans.doctype.vehicle_assignment.vehicle_assignment.fetch_order_details",
             args: {
@@ -185,6 +187,17 @@ frappe.ui.form.on('Vehicle Assignment', {
             callback: function (response) {
                 if (response.message) {
                     console.log(response.message);
+                    if (response.message.is_return ==1){
+                        cur_frm.fields_dict['vehicle_id'].get_query = function(doc) {
+                            return {
+                                filters: [
+                                    ["vehicle_status", "in",["Available","On Duty"]]
+                                   
+                                ]
+                             }
+                            }
+
+                    }
 
                     // Clear the existing rows in the "routes" and "return_trips" child tables
                     frm.clear_table("routes");

@@ -95,7 +95,7 @@ def validate(doc,methods):
                 # Loop through the data and append it to the "transit_charges" list
                 for info in war_info_data:
                     opportunity.append("warehouse_charges", info)
-                # frappe.throw("LLLLLLll")
+                
 
             line_itms = []
             # Initialize the opportunity_line_items list to store the aggregated data
@@ -482,4 +482,3 @@ def calculate_rental_cost(booked_upto,uom,cargo_type,required_area,booking_date)
 
 
                     return data
-        

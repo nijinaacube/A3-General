@@ -1,25 +1,75 @@
 frappe.ui.form.on('Opportunity', {
 	
 	after_save: function(frm) {
-        // Create a new Project
-if (frm.doc.order_status=="New" ){
-	if (frm.doc.booking_type=="Transport"){
-        frappe.new_doc("Vehicle Assignment", {
-            order: frm.doc.name, // Link the Opportunity to the Project
-            // Set other Project fields as needed
-            // project_name: frm.doc.opportunity_name,
-            // status: "Open", // Set the initial status
-            // Add other fields here
-        }).then(doc => {
+			// Create a new Project
+		if (frm.doc.order_status=="New" ){
+		if (frm.doc.booking_type=="Transport"){
+			frappe.new_doc("Vehicle Assignment", {
+				order: frm.doc.name, // Link the Opportunity to the Project
+				// Set other Project fields as needed
+				// project_name: frm.doc.opportunity_name,
+				// status: "Open", // Set the initial status
+				// Add other fields here
+			}).then(doc => {
 
-            // Redirect to the newly created Project page
-            frappe.set_route("Form", "Vehicle Assignment", doc.name);
-        });
-	}
-	}
-    },
+				// Redirect to the newly created Project page
+				frappe.set_route("Form", "Vehicle Assignment", doc.name);
+			});
+		}
+		}
+		},
 	
-    
+    order_id:function(frm){
+		if (frm.doc.is_return ==1 && frm.doc.order_id){
+			frappe.call({
+                method: "a3trans.a3trans.events.opportunity.get_return_order",
+                args: {
+                    
+                    name: frm.doc.order_id,
+                },
+                callback: function(response) {
+                    var oppo = response.message;
+                    console.log(oppo, "!!!");
+					frm.clear_table("receiver_information")
+					var target_row = frm.add_child("receiver_information")
+					target_row.transit_type = oppo.last_transit_type
+					target_row.zone = oppo.last_zone
+					target_row.latitude = oppo.latitude
+					target_row.longitude = oppo.longitude
+					target_row.city = oppo.city
+					target_row.address_line1 = oppo.line1
+					target_row.address_line2 = oppo.line2
+					frm.refresh_field("receiver_information")
+
+                }
+            });
+			
+
+		}
+
+	},
+has_return_trip: function (frm) {
+		if (frm.doc.has_return_trip == 1) {
+			if (!frm.doc.receiver_information) {
+				frappe.throw("Please add Transit details First");
+			} else {
+				var rows = frm.doc.receiver_information;
+				var zoneCount = 0;
+	
+				for (var i = 0; i < rows.length; i++) {
+					if (rows[i].zone) {
+						zoneCount++;
+					}
+				}
+	
+				if (zoneCount !== 2) {
+					frappe.throw("Please add exactly two zones (pickup and drop off) to enable return trips");
+				}
+			}
+		}
+	},
+	
+
 	refresh: function(frm) {
    	 
     	// if (frm.doc.booking_type!="Warehouse"){
@@ -594,8 +644,24 @@ frappe.ui.form.on('Return Trips', {
 	zone: function(frm, cdt, cdn) {
 		const child = locals[cdt][cdn];
 		const zones = frm.doc.return_trips.map(trip => trip.zone);
-
+		
 		if (frm.doc.has_return_trip == 1) {
+			if (!frm.doc.receiver_information) {
+				frappe.throw("Please add Transit details First");
+			} else {
+				var rows = frm.doc.receiver_information;
+				var zoneCount = 0;
+	
+				for (var i = 0; i < rows.length; i++) {
+					if (rows[i].zone) {
+						zoneCount++;
+					}
+				}
+	
+				if (zoneCount !== 2) {
+					frappe.throw("Please add exactly two zones (pickup and drop off) in transit details to enable return trips");
+				}
+			}
 			if (!child.return_id) {
 				const target_row = frm.add_child('transit_charges');
 				target_row.charges = "Return Charges";
@@ -632,7 +698,7 @@ frappe.ui.form.on('Transit Details', {
 
    
     
-	choose_required_labour_service: function(frm, cdt, cdn) {
+choose_required_labour_service: function(frm, cdt, cdn) {
 		var child_labour = locals[cdt][cdn];
 		var item_selected = child_labour.choose_required_labour_service;
 		if (!child_labour.labour_id) {
@@ -640,6 +706,7 @@ frappe.ui.form.on('Transit Details', {
 		const target_row = frm.add_child('transit_charges');
 		target_row.charges = item_selected;
 		target_row.quantity = 1;
+		target_row.description = "Labour Charges"
 		child_labour.labour_id = target_row.idx;
 		frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
 		frm.refresh_field('transit_charges');
@@ -663,7 +730,7 @@ frappe.ui.form.on('Transit Details', {
 		}
 		}
 		},
-		choose_required_handling_service: function(frm, cdt, cdn) {
+choose_required_handling_service: function(frm, cdt, cdn) {
 		var child_handling = locals[cdt][cdn];
 		var item_selected = child_handling.choose_required_handling_service;
 		if (!child_handling.handle_id) {
@@ -671,6 +738,7 @@ frappe.ui.form.on('Transit Details', {
 		const target_row = frm.add_child('transit_charges');
 		target_row.charges = item_selected;
 		target_row.quantity = 1;
+		target_row.description = "Handling Charges"
 		child_handling.handle_id = target_row.idx;
 		frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
 		frm.refresh_field('transit_charges');
@@ -1286,7 +1354,14 @@ onload: function(frm) {
             	};
 
 
-
+				frm.fields_dict['receiver_information'].grid.get_field('choose_required_loading_service').get_query = function(doc, cdt, cdn) {
+                  	 
+					return {
+						filters: {
+							"item_group": ["in", "Loading Charges"]
+						}
+					};
+				};
  	 
 
        	 
@@ -1749,8 +1824,11 @@ frappe.ui.form.on('Warehouse Space Details', {
             	},
             	callback: function(response) {
                 	if (response && response.message) {
+						console.log(response.message,"$$$",response.message["item_group"])
                     	frappe.model.set_value(cdt, cdn, 'cost', response.message["price_list_rate"]);
                     	frappe.model.set_value(cdt, cdn, 'quantity', 1);
+						frappe.model.set_value(cdt, cdn, 'description',response.message["item_group"]);
+                		
                 	}
             	}
         	});
@@ -2094,6 +2172,7 @@ frappe.ui.form.on('Warehouse Charges', {
                 	console.log(response.message);
                 	frappe.model.set_value(cdt, cdn, 'cost',response.message["price_list_rate"]);
                 	frm.refresh_field('cost');
+					
 
               	 
                	 

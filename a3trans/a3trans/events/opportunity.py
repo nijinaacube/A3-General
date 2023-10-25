@@ -663,8 +663,38 @@ def fetch_charges_price(charges):
        print(itm)
        return itm.as_dict()
 
+@frappe.whitelist()
+def get_return_order(name):
+    print(name)
+    data ={}
+    if frappe.db.exists("Opportunity",name):
+        oppo=frappe.get_doc("Opportunity",name)
+        print(oppo)
+        if oppo.receiver_information:
+            for details in oppo.receiver_information:
+                if details.zone:
+                    data["last_zone"]=details.zone 
+                if details.transit_type:
+                    data["last_transit_type"]= details.transit_type
+                if details.latitude:
+                    data["latitude"]=details.latitude
+                if details.longitude:
+                    data["longitude"] = details.longitude
+                if details.address_line1:
+                    data["line1"] = details.address_line1
+                if details.address_line1:
+                    data["line2"] = details.address_line1
+                if details.city:
+                    data["city"] = details.city
+                print(data)
+            return data
 
 
+
+            
+
+    return 
+get_return_order
 
 import json
 @frappe.whitelist()
