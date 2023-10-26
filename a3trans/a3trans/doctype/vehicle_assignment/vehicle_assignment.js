@@ -11,97 +11,97 @@ frappe.ui.form.on('Vehicle Assignment', {
         if  (frm.is_new()){
             frm.set_value('assignment_date', frappe.datetime.get_today());
           
-        frm.add_custom_button(__('Get Orders'), function() {
-            // Clear existing routes before adding new ones
-            frm.clear_table('routes');
+        // frm.add_custom_button(__('Get Orders'), function() {
+        //     // Clear existing routes before adding new ones
+        //     frm.clear_table('routes');
  
  
-            var dialog = new frappe.ui.form.MultiSelectDialog({
-                doctype: 'Opportunity',
-                target: frm,
-                setters: {
-                    // status: 'Converted',
-                    party_name:frm.doc.party_name,
-                    booking_date:frm.doc.booking_date,
-                    vehicle_type:frm.doc.vehicle_type,
-                    booking_type:frm.doc.booking_type
+        //     var dialog = new frappe.ui.form.MultiSelectDialog({
+        //         doctype: 'Opportunity',
+        //         target: frm,
+        //         setters: {
+        //             // status: 'Converted',
+        //             party_name:frm.doc.party_name,
+        //             booking_date:frm.doc.booking_date,
+        //             vehicle_type:frm.doc.vehicle_type,
+        //             booking_type:frm.doc.booking_type
  
  
-                },
-                add_filters_group: 1,
-                // allow_child_item_selection: 1,
-                // child_fieldname: 'receiver_information',
-                columns: ['party_name'],
-                get_query() {
-                    return {
-                        filters: { status: ['=', 'converted'] ,order_status:['=','New']}
-                    };
-                },
-                action(selections, args) {
-                    if (selections && selections.length > 0) {
+        //         },
+        //         add_filters_group: 1,
+        //         // allow_child_item_selection: 1,
+        //         // child_fieldname: 'receiver_information',
+        //         columns: ['party_name'],
+        //         get_query() {
+        //             return {
+        //                 filters: { status: ['=', 'converted'] ,order_status:['=','New']}
+        //             };
+        //         },
+        //         action(selections, args) {
+        //             if (selections && selections.length > 0) {
                    
-                        selections.forEach(function(opportunity) {
+        //                 selections.forEach(function(opportunity) {
                           
-                            frappe.model.with_doc('Opportunity', opportunity, function() {
-                                let oppo = frappe.model.get_doc('Opportunity', opportunity);
+        //                     frappe.model.with_doc('Opportunity', opportunity, function() {
+        //                         let oppo = frappe.model.get_doc('Opportunity', opportunity);
                                
-                                    oppo.receiver_information.forEach(function(pickupRow) {
-                                        var child = frm.add_child('routes', {});
-                                        child.order_id = opportunity;
-                                        child.order_no = pickupRow.order_no
-                                        child.zone = pickupRow.zone;
-                                        child.transit_type = pickupRow.transit_type;
-                                        child.latitude=pickupRow.latitude;
-                                        child.longitude=pickupRow.longitude
-                                    });
-                                    if (oppo.has_return_trip == 1){
-                                        frm.clear_table("return_trips");
-                                        frm.set_value("has_return",oppo.has_return_trip)
-                                        frm.refresh_field("has_return")
+        //                             oppo.receiver_information.forEach(function(pickupRow) {
+        //                                 var child = frm.add_child('routes', {});
+        //                                 child.order_id = opportunity;
+        //                                 child.order_no = pickupRow.order_no
+        //                                 child.zone = pickupRow.zone;
+        //                                 child.transit_type = pickupRow.transit_type;
+        //                                 child.latitude=pickupRow.latitude;
+        //                                 child.longitude=pickupRow.longitude
+        //                             });
+        //                             if (oppo.has_return_trip == 1){
+        //                                 frm.clear_table("return_trips");
+        //                                 frm.set_value("has_return",oppo.has_return_trip)
+        //                                 frm.refresh_field("has_return")
 
-                                        oppo.return_trips.forEach(function(tripRow) {
-                                            var child = frm.add_child('return_trips', {});
-                                            child.order_id = opportunity;
-                                            child.order_no = tripRow.order_no
-                                            child.zone = tripRow.zone;
-                                            child.transit_type = tripRow.transit_type;
-                                            child.latitude=tripRow.latitude;
-                                            child.longitude=tripRow.longitude
+        //                                 oppo.return_trips.forEach(function(tripRow) {
+        //                                     var child = frm.add_child('return_trips', {});
+        //                                     child.order_id = opportunity;
+        //                                     child.order_no = tripRow.order_no
+        //                                     child.zone = tripRow.zone;
+        //                                     child.transit_type = tripRow.transit_type;
+        //                                     child.latitude=tripRow.latitude;
+        //                                     child.longitude=tripRow.longitude
                                                 
-                                    $.each(frm.doc.return_trips, function(index, row) {
-                                        row.order_no = index + 1;
-                                    });
-                                            frm.refresh_field('return_trips');
-                                        });
-                                    }
+        //                             $.each(frm.doc.return_trips, function(index, row) {
+        //                                 row.order_no = index + 1;
+        //                             });
+        //                                     frm.refresh_field('return_trips');
+        //                                 });
+        //                             }
                                
                               
-                                    // if (oppo.pickup_from_warehouse){
-                                    //     oppo.pickup_from_warehouse.forEach(function(Row) {
-                                    //         var child = frm.add_child('routes', {});
-                                    //         child.order_id = opportunity;
-                                    //         child.location = Row.warehouse;
+        //                             // if (oppo.pickup_from_warehouse){
+        //                             //     oppo.pickup_from_warehouse.forEach(function(Row) {
+        //                             //         var child = frm.add_child('routes', {});
+        //                             //         child.order_id = opportunity;
+        //                             //         child.location = Row.warehouse;
            
-                                    //         child.type_of_location = "Pickup";
-                                    //     });
+        //                             //         child.type_of_location = "Pickup";
+        //                             //     });
                                    
-                                    $.each(frm.doc.routes, function(index, row) {
-                                        row.order_no = index + 1;
-                                    });
-                                    frm.refresh_field('routes');
+        //                             $.each(frm.doc.routes, function(index, row) {
+        //                                 row.order_no = index + 1;
+        //                             });
+        //                             frm.refresh_field('routes');
                                     
  
  
                                
-                            });
-                        });
+        //                     });
+        //                 });
  
  
-                        dialog.dialog.hide(); // Hide the dialog immediately after processing the selections
-                    }
-                }
-            });
-        });
+        //                 dialog.dialog.hide(); // Hide the dialog immediately after processing the selections
+        //             }
+        //         }
+        //     });
+        // });
     }
     },
  
@@ -123,6 +123,18 @@ frappe.ui.form.on('Vehicle Assignment', {
                 }
              }
             }
+            cur_frm.fields_dict['order'].get_query = function(doc) {
+                return {
+                    filters: 
+                        {
+                            "order_status": "New",
+                            "transportation_required": 1
+                        },
+                       
+                    
+                }
+            }
+            
  
  
         cur_frm.fields_dict['driver_id'].get_query = function(doc) {
@@ -188,12 +200,28 @@ frappe.ui.form.on('Vehicle Assignment', {
                 if (response.message) {
                     console.log(response.message);
                     if (response.message.is_return ==1){
+
+                        frm.set_value("return_trip",response.message.is_return)
+                        frm.refresh_field("return_trip")
                         cur_frm.fields_dict['vehicle_id'].get_query = function(doc) {
                             return {
                                 filters: [
                                     ["vehicle_status", "in",["Available","On Duty"]]
                                    
                                 ]
+                             }
+                            }
+
+                    }
+                    else{
+                        frm.set_value("return_trip",0)
+                        frm.refresh_field("return_trip")
+                        cur_frm.fields_dict['vehicle_id'].get_query = function(doc) {
+                            return {
+                                filters: {
+                                    "vehicle_status":[ "in","Available"]
+                                   
+                                }
                              }
                             }
 

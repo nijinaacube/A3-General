@@ -2,6 +2,7 @@
 var ind = 1;
 frappe.ui.form.on('Lead', {
     onload :function(frm){
+        if(frm.doc.booking_type==="Transport"){ 
       
         if (frm.doc.transit_details_item){
             console.log(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1])
@@ -24,6 +25,90 @@ frappe.ui.form.on('Lead', {
           
 
     }
+
+    frm.fields_dict['transit_details_item'].grid.get_field('choose_required_labour_service').get_query = function(doc, cdt, cdn) {
+          	 
+        return {
+            filters: {
+                "item_group": "Labour Charges"
+            }
+        };
+    };
+    frm.fields_dict['transit_details_item'].grid.get_field('choose_required_handling_service').get_query = function(doc, cdt, cdn) {
+           
+        return {
+            filters: {
+                "item_group": "Handling Charges"
+            }
+        };
+    };
+    frm.fields_dict['transit_details_item'].grid.get_field('choose_required_loading_service').get_query = function(doc, cdt, cdn) {
+           
+        return {
+            filters: {
+                "item_group": "Loading Charges"
+            }
+        };
+    };
+    frm.fields_dict['transit_charges_item'].grid.get_field('charges').get_query = function(doc, cdt, cdn) {
+           
+        return {
+            filters: {
+                "is_stock_item": 0
+            }
+        };
+    };
+
+}
+
+if(frm.doc.booking_type==="Warehousing"){
+
+    frm.fields_dict['warehouse'].get_query = function(doc){
+        return {
+            filters: {
+                'is_group': 1
+            }
+        };
+    
+
+    }
+    frm.fields_dict['required_labour_service'].get_query = function(doc){
+        return {
+            filters: {
+                'item_group': "Labour Charges"
+            }
+        };
+    
+
+    }
+    frm.fields_dict['required_handling_services'].get_query = function(doc){
+        return {
+            filters: {
+                'item_group': "Handling Charges"
+            }
+        };
+    
+
+    }
+    frm.fields_dict['required_loading_service'].get_query = function(doc){
+        return {
+            filters: {
+                'item_group': "Loading Charges"
+            }
+        };
+    
+
+    }
+    frm.fields_dict['warehouse_charges_item'].grid.get_field('charges').get_query = function(doc, cdt, cdn) {
+   
+        return {
+            filters: {
+                "is_stock_item": 0
+            }
+        };
+    };
+}
+
 },
 
 
@@ -91,6 +176,14 @@ booking_type:function(frm){
                 }
             };
         };
+        frm.fields_dict['transit_details_item'].grid.get_field('choose_required_loading_service').get_query = function(doc, cdt, cdn) {
+          	 
+            return {
+                filters: {
+                    "item_group": "Loading Charges"
+                }
+            };
+        };
         frm.fields_dict['transit_charges_item'].grid.get_field('charges').get_query = function(doc, cdt, cdn) {
           	 
             return {
@@ -133,6 +226,15 @@ booking_type:function(frm){
                 
 
                 }
+                frm.fields_dict['required_loading_service'].get_query = function(doc){
+                    return {
+                        filters: {
+                            'item_group': "Loading Charges"
+                        }
+                    };
+                
+
+                }
                 frm.fields_dict['warehouse_charges_item'].grid.get_field('charges').get_query = function(doc, cdt, cdn) {
           	 
                     return {
@@ -152,6 +254,29 @@ mobile_number:function(frm) {
         frm.refresh_field("phone")
         cur_frm.set_value("mobile_no",frm.doc.mobile_number)
         frm.refresh_field("mobile_no")
+    }
+
+},
+required_loading_service:function (frm){
+
+    if (!frm.doc.load_id) {
+        // If labour_id is not set, add a new row
+        const target_row = frm.add_child('warehouse_charges_item');
+        target_row.charges = frm.doc.required_loading_service;
+        target_row.quantity = 1;
+        // target_row.description = "Labour Charges"
+        frm.doc.load_id = target_row.idx;
+        frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+        frm.refresh_field('warehouse_charges_item');
+    } else {
+        // If labour_id is already set, update the existing row
+        var existing_row = frm.doc.warehouse_charges_item.find(row => row.idx ===  frm.doc.load_id);
+        if (existing_row) {
+            existing_row.charges = frm.doc.required_loading_service;
+            frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+          
+            frm.refresh_field('warehouse_charges_item');
+        } 
     }
 
 },
@@ -410,7 +535,35 @@ frappe.ui.form.on('Transit Details Item', {
     },
 
 
-
+choose_required_loading_service: function(frm, cdt, cdn) {
+        var child_load = locals[cdt][cdn];
+        var item_selected = child_load.choose_required_loading_service;
+        if (!child_load.load_id) {
+        // If labour_id is not set, add a new row
+        const target_row = frm.add_child('transit_charges_item');
+        target_row.charges = item_selected;
+        target_row.quantity = 1;
+        target_row.description = "Loading Charges"
+        child_load.load_id = target_row.idx;
+        frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+        frm.refresh_field('transit_charges_item');
+        } else {
+        // If labour_id is already set, update the existing row
+        var existing_row = frm.doc.transit_charges_item.find(row => row.idx === child_load.load_id);
+        if (existing_row) {
+        if (item_selected) {
+        existing_row.charges = item_selected;
+        frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+        frm.refresh_field('transit_charges_item');
+        } else {
+        // Remove the existing row from the child table
+        frm.get_field("transit_charges_item").grid.grid_rows[existing_row.idx - 1].remove();
+        // Reset child_labour.labour_id after deletion
+        child_load.load_id = null;
+        }
+        } 
+        }
+        },
    
     
 choose_required_labour_service: function(frm, cdt, cdn) {

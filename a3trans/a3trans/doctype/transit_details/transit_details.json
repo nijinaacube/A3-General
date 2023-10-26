@@ -41,6 +41,7 @@
   "choose_required_handling_service",
   "labour_id",
   "handle_id",
+  "load_id",
   "handling_details_section",
   "general_cargo",
   "personal_cargo",
@@ -334,12 +335,18 @@
    "in_list_view": 1,
    "label": "Choose Required Loading Service",
    "options": "Item"
+  },
+  {
+   "fieldname": "load_id",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "load_id"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-10-25 16:06:44.070297",
+ "modified": "2023-10-26 13:37:03.946439",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Details",

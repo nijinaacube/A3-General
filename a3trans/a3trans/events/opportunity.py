@@ -6,6 +6,11 @@ import calendar
 from functools import reduce
 from frappe.utils import add_to_date
 def after_insert(doc, methods):
+    if doc.booking_type == "Transport":
+        doc.transportation_required =1
+    if doc.required_transit == 1:
+        doc.transportation_required = 1
+    doc.db_update()
   
     if doc.lead_id == "" or doc.lead_id == None:
             
@@ -133,7 +138,7 @@ def validate(doc,method):
                     frappe.throw("Please add a warehouse for this customer")
     if doc.status == "Lost":
         doc.order_status = "Cancelled"
-        print(doc.order_lost_reason,"*******************************8")
+        print(doc.order_lost_reason,"*******************************")
    
     if doc.opportunity_from=="Customer":
         if doc.lead_id:

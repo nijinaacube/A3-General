@@ -492,12 +492,20 @@ frappe.ui.form.on('Opportunity', {
     	};
     
 
-    	if (frm.doc.booking_type == "Warehouse") {
+    	if (frm.doc.booking_type == "Warehousing") {
         	frm.fields_dict['warehouse_stock_items'].grid.get_field('choose_labour_service').get_query = function(doc, cdt, cdn) {
           	 
             	return {
                 	filters: {
                     	"item_group": ["in", "Labour Charges"]
+                	}
+            	};
+        	};
+			frm.fields_dict['warehouse_stock_items'].grid.get_field('choose_loading_service').get_query = function(doc, cdt, cdn) {
+          	 
+            	return {
+                	filters: {
+                    	"item_group": ["in", "Loading Charges"]
                 	}
             	};
         	};
@@ -695,6 +703,35 @@ frappe.ui.form.on('Return Trips', {
 
 
 frappe.ui.form.on('Transit Details', {
+choose_required_loading_service: function(frm, cdt, cdn) {
+        var child_load = locals[cdt][cdn];
+        var item_selected = child_load.choose_required_loading_service;
+        if (!child_load.load_id) {
+        // If labour_id is not set, add a new row
+        const target_row = frm.add_child('transit_charges');
+        target_row.charges = item_selected;
+        target_row.quantity = 1;
+        target_row.description = "Loading Charges"
+        child_load.load_id = target_row.idx;
+        frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+        frm.refresh_field('transit_charges');
+        } else {
+        // If labour_id is already set, update the existing row
+        var existing_row = frm.doc.transit_charges.find(row => row.idx === child_load.load_id);
+        if (existing_row) {
+        if (item_selected) {
+        existing_row.charges = item_selected;
+        frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+        frm.refresh_field('transit_charges');
+        } else {
+        // Remove the existing row from the child table
+        frm.get_field("transit_charges").grid.grid_rows[existing_row.idx - 1].remove();
+        // Reset child_labour.labour_id after deletion
+        child_load.load_id = null;
+        }
+        } 
+        }
+        },
 
    
     
@@ -1850,6 +1887,30 @@ frappe.ui.form.on('Warehouse Space Details', {
 //  }
  
 frappe.ui.form.on('Warehouse Stock Items', {
+	choose_loading_service: function(frm, cdt, cdn) {
+    	var child1 = locals[cdt][cdn];
+    	var item_selected = child1.choose_loading_service;
+
+    	if (!child1.load_id) {
+        	// If labour_id is not set, add a new row
+        	const target_row = frm.add_child('warehouse_charges');
+        	target_row.charges = item_selected;
+        	target_row.quantity = 1;
+        	child1.load_id = target_row.idx;
+        	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+        	frm.refresh_field('warehouse_charges');
+    	} else {
+        	// If labour_id is already set, update the existing row
+        	var existing_row = frm.doc.warehouse_charges.find(row => row.idx === child1.load_id);
+        	if (existing_row) {
+            	existing_row.charges = item_selected;
+            	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+            	frm.refresh_field('warehouse_charges');
+        	} 
+    	}
+	},
+
+
 	choose_labour_service: function(frm, cdt, cdn) {
     	var child1 = locals[cdt][cdn];
     	var item_selected = child1.choose_labour_service;
@@ -1869,10 +1930,7 @@ frappe.ui.form.on('Warehouse Stock Items', {
             	existing_row.charges = item_selected;
             	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
             	frm.refresh_field('warehouse_charges');
-        	} else {
-            	// Handle the case where the existing row with labour_id is not found
-            	frappe.msgprint('Row not found with labour_id: ' + child1.labour_id);
-        	}
+        	} 
     	}
 	},
 	choose_handling_service: function(frm, cdt, cdn) {
@@ -1894,10 +1952,7 @@ frappe.ui.form.on('Warehouse Stock Items', {
             	existing_row.charges = item_selected;
             	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
             	frm.refresh_field('warehouse_charges');
-        	} else {
-            	// Handle the case where the existing row with labour_id is not found
-            	frappe.msgprint('Row not found with labour_id: ' + child1.labour_id);
-        	}
+        	} 
     	}
 	},
 

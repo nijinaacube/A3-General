@@ -7,8 +7,40 @@ from frappe.utils import get_datetime, time_diff
 
 
 class VehicleAssignment(Document):
-    def validate(self):
-      
+    def after_insert(self):
+        if self.order:
+            opportunity = frappe.get_doc("Opportunity", self.order)
+            # for data in opportunity.vehicle_details_item:
+            #     data.vehicle_type = "1 Ton"
+            #     data.vehicle_number = self.vehicle_id
+            #     data.vehicle_assignment = self.name
+                    
+            opportunity.append("vehicle_details_item", {
+                        "vehicle_type": "",
+                        "vehicle_number": self.vehicle_id,
+                        "vehicle_assignment": self.name
+                    })
+                    
+            opportunity.save()  # Save the opportunity 
+
+        # if self.routes:
+        #     for orders in self.routes:
+        #         if orders.order_id:
+        #             opportunity = frappe.get_doc("Opportunity", orders.order_id)
+                    
+        #             opportunity.append("vehicle_details_item", {
+        #                 "vehicle_type": "1 Ton",
+        #                 "vehicle_number": self.vehicle_id,
+        #                 "vehicle_assignment": self.name
+        #             })
+                    
+        #             opportunity.save()  # Save the opportunity to update it
+        #             print(opportunity.vehicle_details_item)  # Print the updated opportunity
+
+
+                  
+
+    def validate(self):   
         if self.driver_id:
             driver=frappe.get_doc("Staff Member",self.driver_id)
             if driver.status=="Available":
@@ -28,6 +60,11 @@ class VehicleAssignment(Document):
 
         if self.routes:
             for order in self.routes:
+                if self.vehicle_id:
+                    vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                    vehicle.last_location_of_vehicle_assignment = order.zone
+                    vehicle.save()
+
                 if order.order_id:
                     opportunity = frappe.get_doc("Opportunity", order.order_id)
                     if self.vehicle_id:
@@ -48,6 +85,7 @@ class VehicleAssignment(Document):
                         opportunity.helper_name=self.helper_name
                     if self.phone_number:
                         opportunity.helper_phone_number=self.phone_number
+                   
                     # if self.vehicle_id:
                     #   vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
                     #   for type in vehicle.allowed_booking_type:
@@ -56,26 +94,22 @@ class VehicleAssignment(Document):
                     #       else:
                     #           frappe.throw("You are not allowed to choose the vehicle for this booking.")
                     # if frappe.db.exists("Sales Order", {"booking_id": opportunity.name}):
-                    sales_order = frappe.get_doc("Sales Order", {"booking_id": opportunity.name})
-                    # if frappe.db.exists("Sales Invoice", {"order_id": opportunity.name}):
-                    sales_invoice = frappe.get_doc("Sales Invoice", {"order_id": opportunity.name})
+                    # sales_order = frappe.get_doc("Sales Order", {"booking_id": opportunity.name})
+                    # # if frappe.db.exists("Sales Invoice", {"order_id": opportunity.name}):
+                    # sales_invoice = frappe.get_doc("Sales Invoice", {"order_id": opportunity.name})
                     
                     if self.assignment_status == "Vehicle Assigned":
                         opportunity.order_status = "Vehicle Assigned"
-                        sales_order.booking_status = "Vehicle Assigned"
-                        sales_invoice.order_status = "Vehicle Assigned"
+                      
                     elif self.assignment_status == "In-Transit":
                         opportunity.order_status = "In-Transit"
-                        sales_order.booking_status = "In-Transit"
-                        sales_invoice.order_status = "In-Transit"
+                       
                     elif self.assignment_status == "Arrived":
                         opportunity.order_status = "Arrived"
-                        sales_order.booking_status = "Arrived"
-                        sales_invoice.order_status = "Arrived"
+                       
                     elif self.assignment_status == "Delivered":
                         opportunity.order_status = "Delivered"
-                        sales_order.booking_status = "Delivered"
-                        sales_invoice.order_status = "Delivered"
+                       
                         
                     elif self.assignment_status == "Closed":
                         if self.driver_id:
@@ -89,14 +123,13 @@ class VehicleAssignment(Document):
                         if self.vehicle_id:
                             vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
                             vehicle.vehicle_status="Available"
+                            vehicle.last_location_of_vehicle_assignment = ""
                             vehicle.save()
                         opportunity.order_status = "Closed"
-                        sales_order.booking_status = "Closed"
-                        sales_invoice.order_status = "Closed"
+                      
                     opportunity.status="Converted"
-                    opportunity.save()
-                    sales_order.save()
-                    sales_invoice.save()
+                    opportunity.db_update()
+                 
 
 
                 if order.status=="Arrived":
@@ -196,6 +229,12 @@ def get_staff_data(vehicle_id):
 def fetch_order_details(order_id):
     if order_id:
         opportunity = frappe.get_doc("Opportunity", order_id)
+        if opportunity.booking_type != "Transport" and opportunity.required_transit == 0:
+            frappe.throw("Please choose an Order that needs transportation")
+        if opportunity.order_status == "Vehicle Assigned":
+            frappe.throw("Please check the order. The order is already assigned in another trip ")
+        if opportunity.status == "Closed":
+            frappe.throw("Plese Check. You are choosing a closed opportunity")
         data1 = []
         data2 = []
         data = {}

@@ -73,6 +73,7 @@
   {
    "fieldname": "order_no",
    "fieldtype": "Int",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "Order No"
   },
@@ -222,7 +223,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-10-10 12:57:20.942843",
+ "modified": "2023-10-26 13:33:32.506904",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Route Details Item",
