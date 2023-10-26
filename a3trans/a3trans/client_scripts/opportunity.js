@@ -57,18 +57,8 @@ frappe.ui.form.on('Opportunity', {
 				frappe.throw("Please add at least one pickup and drop-off in transit details");
 			}
 			
-			// Check if the 'zones' column in the table has values
-			let hasZones = false;
-			for (const row of frm.doc.receiver_information) {
-				if (row.zones) {
-					hasZones = true;
-					break; // If at least one row has 'zones', exit the loop
-				}
-			}
 			
-			if (!hasZones) {
-				frappe.throw("Please add values in the 'zones' column of transit details");
-			}
+			
 		}
 	},
 	
