@@ -161,7 +161,9 @@ doc_events = {
 
     },
    "Sales Invoice":{
-   "on_submit":"a3trans.a3trans.events.sales_invoice.attach_pdf"
+   "after_insert": "a3trans.a3trans.events.sales_invoice.after_insert",
+   "on_submit":"a3trans.a3trans.events.sales_invoice.attach_pdf",
+   
    },
 
 

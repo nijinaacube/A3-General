@@ -18,8 +18,8 @@ frappe.ui.form.on('Sales Invoice', {
                         
                         cur_frm.set_value("booking_type", element.b_type);
                         cur_frm.refresh_field("booking_type");
-                        cur_frm.set_value("job_number", element.job);
-                        cur_frm.refresh_field("job_number");
+                        // cur_frm.set_value("job_number", element.job);
+                        // cur_frm.refresh_field("job_number");
 
                         cur_frm.set_value("customer", element.party);
                         cur_frm.refresh_field("customer");

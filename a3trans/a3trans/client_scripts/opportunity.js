@@ -202,7 +202,7 @@ has_return_trip: function (frm) {
 				// Open the Sales Invoice
 				frappe.set_route("Form", "Sales Invoice", frm.doc.invoice_id);
 			} else {
-				frappe.msgprint(__('No invoice linked against this order.'));
+				frappe.msgprint(__('No invoice linked against this order. Please create invoice via connections'));
 			}
 		
 		}).addClass('btn-primary');

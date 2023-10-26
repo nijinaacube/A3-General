@@ -20,7 +20,15 @@ import pdfkit
 
 
 
+def after_insert(doc,methods):
+	if doc.order_id:
+		if frappe.db.exists("Opportunity",doc.order_id):
+			oppo = frappe.get_doc("Opportunity",doc.order_id)
+			
+			oppo.invoice_id = doc.name
 
+			oppo.save()
+			frappe.db.commit()	
 
 def attach_pdf(doc, event=None):
 	fallback_language = frappe.db.get_single_value("System Settings", "language") or "en"
