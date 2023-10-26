@@ -2,14 +2,8 @@
 var ind = 1;
 frappe.ui.form.on('Lead', {
     onload :function(frm){
-        if(frm.doc.booking_type==="Transport"){ 
-      
-        if (frm.doc.transit_details_item){
-            console.log(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1])
-            ind = parseInt(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1].index ) + 1
-        }
         if  (frm.is_new()){
-             ind = 1
+            ind = 1
             frm.set_value('booking_date', frappe.datetime.get_today());
             var today = new Date();
 
@@ -25,6 +19,13 @@ frappe.ui.form.on('Lead', {
           
 
     }
+        if(frm.doc.booking_type==="Transport"){ 
+      
+        if (frm.doc.transit_details_item){
+            console.log(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1])
+            ind = parseInt(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1].index ) + 1
+        }
+        
 
     frm.fields_dict['transit_details_item'].grid.get_field('choose_required_labour_service').get_query = function(doc, cdt, cdn) {
           	 
