@@ -826,6 +826,17 @@ def get_invoice_items(doc):
                 data["job"]=""
             data["party"] = oppo.party_name
             data["item"] = line.item
+            if frappe.db.exists("Item",line.item):
+                it =frappe.get_doc("Item",line.item)
+                if it.stock_uom:
+                    data["uom"] = it.stock_uom
+                if it.description:
+                    data["description"] = it.description
+                if oppo.company:
+                    comp = frappe.get_doc("Company",oppo.company)
+                    if comp.default_income_account:
+                        data["account"] =  comp.default_income_account
+           
             data["quantity"] = line.quantity
             data["rate"] = line.average_rate
             data_from_receipt.append(data)

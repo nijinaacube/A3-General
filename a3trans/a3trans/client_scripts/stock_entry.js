@@ -28,7 +28,7 @@ frappe.ui.form.on('Stock Entry', {
                     items.allow_zero_valuation_rate=1
                     console.log(element.war)
                     frm.script_manager.trigger('item_code', items.doctype, items.name);
-                    refresh_field("items")
+                    frm.refresh_field("items")
 
                     cur_frm.set_value("party_name", element.party);
 			        cur_frm.refresh_field("party_name");

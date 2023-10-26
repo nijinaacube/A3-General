@@ -27,9 +27,15 @@ frappe.ui.form.on('Sales Invoice', {
 
                         const items = frm.add_child("items");
                         items.item_code = element.item;
+                        items.uom = element.uom
+                        items.description = element.description
+                        items.income_account = element.account
+                        // frm.script_manager.trigger('item_code', items.doctype, items.name);
                         items.item_name = element.item;
                         items.qty = element.quantity;
                         items.rate = element.rate;
+                      
+                        
                         frm.refresh_field("items");
                     });
                 }
