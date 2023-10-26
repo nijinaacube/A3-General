@@ -98,7 +98,9 @@ def after_insert(doc, methods):
             todo.reference_name = doc.name
 
             todo.save()
-            frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
+            frappe.msgprint('Opportunity ' f'<a href="/app/user/{doc.name}" target="blank">{doc.name} </a> assigned to {lead_doc.contact_by} ')
+
+            # frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
         else:
             frappe.msgprint("Error: 'contact_by' not found or is empty in the Lead.")
     if doc.booking_type == "Warehousing":

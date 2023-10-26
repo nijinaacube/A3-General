@@ -138,6 +138,7 @@
   {
    "fieldname": "order_no",
    "fieldtype": "Int",
+   "hidden": 1,
    "ignore_user_permissions": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
@@ -346,7 +347,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-10-26 13:37:03.946439",
+ "modified": "2023-10-26 15:42:12.802879",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Details",
