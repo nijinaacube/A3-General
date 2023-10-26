@@ -30,7 +30,7 @@ frappe.ui.form.on('Opportunity', {
                 callback: function(response) {
                     var oppo = response.message;
                     console.log(oppo, "!!!");
-					frm.clear_table("receiver_information")
+				
 					var target_row = frm.add_child("receiver_information")
 					target_row.transit_type = oppo.last_transit_type
 					target_row.zone = oppo.last_zone
@@ -48,26 +48,30 @@ frappe.ui.form.on('Opportunity', {
 		}
 
 	},
-has_return_trip: function (frm) {
+	has_return_trip: function (frm) {
 		if (frm.doc.has_return_trip == 1) {
 			if (!frm.doc.receiver_information) {
 				frappe.throw("Please add Transit details First");
-			} else {
-				var rows = frm.doc.receiver_information;
-				var zoneCount = 0;
-	
-				for (var i = 0; i < rows.length; i++) {
-					if (rows[i].zone) {
-						zoneCount++;
-					}
+			}
+			if (frm.doc.receiver_information.length < 2) {
+				frappe.throw("Please add at least one pickup and drop-off in transit details");
+			}
+			
+			// Check if the 'zones' column in the table has values
+			let hasZones = false;
+			for (const row of frm.doc.receiver_information) {
+				if (row.zones) {
+					hasZones = true;
+					break; // If at least one row has 'zones', exit the loop
 				}
-	
-				if (zoneCount !== 2) {
-					frappe.throw("Please add exactly two zones (pickup and drop off) to enable return trips");
-				}
+			}
+			
+			if (!hasZones) {
+				frappe.throw("Please add values in the 'zones' column of transit details");
 			}
 		}
 	},
+	
 	
 
 	refresh: function(frm) {

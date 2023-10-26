@@ -129,7 +129,25 @@ def after_insert(doc, methods):
                     #                 customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
                     #     customer.save()
 
-def validate(doc,method):
+def validate(doc, method):
+    if doc.has_return_trip == 1:
+        if not doc.return_trips:
+            frappe.throw("Please add return trips")
+
+        if len(doc.receiver_information) < 2:
+            frappe.throw("Please add at least one pickup and dropoff in transit details to enable return trips")
+
+        # Check if 'zones' have values in receiver_information
+        zones_missing = True
+        for entry in doc.receiver_information:
+            if entry.zone:
+                zones_missing = False
+                break
+        
+        if zones_missing:
+            frappe.throw("Please add values in the 'zones' field of transit details")
+
+            
     if doc.lead_id:
         
         if doc.booking_type == "Warehousing":

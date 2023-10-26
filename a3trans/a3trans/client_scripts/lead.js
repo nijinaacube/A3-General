@@ -114,6 +114,12 @@ if(frm.doc.booking_type==="Warehousing"){
 
 
  refresh: function(frm) {
+    
+   
+    frm.set_df_property('opportunity', 'hidden', 1);
+        // frm.get_field('').$wrapper.hide();
+    
+    
 
     frm.fields_dict['add_select_tariff'].get_query = function(doc){
         return {
