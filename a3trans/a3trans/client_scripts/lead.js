@@ -661,6 +661,7 @@ if (charges_row.charges) {
 
 frappe.ui.form.on('Warehouse Charges', {
     charges: function(frm, cdt, cdn) {
+        console.log("jjj")
         const charges_row = locals[cdt][cdn];
 
 

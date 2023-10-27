@@ -7,7 +7,6 @@
  "engine": "InnoDB",
  "field_order": [
   "location_details_section",
-  "order_no",
   "transit_type",
   "column_break_wye28",
   "quantity",
@@ -51,14 +50,6 @@
    "fieldname": "location_details_section",
    "fieldtype": "Section Break",
    "label": "Location Details"
-  },
-  {
-   "fieldname": "order_no",
-   "fieldtype": "Int",
-   "ignore_user_permissions": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Order No"
   },
   {
    "default": "Pickup",
@@ -296,7 +287,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-10-17 10:54:59.608671",
+ "modified": "2023-10-27 11:37:00.108475",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Return Trips",

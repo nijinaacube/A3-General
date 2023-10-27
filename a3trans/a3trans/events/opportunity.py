@@ -148,14 +148,14 @@ def validate(doc, method):
             frappe.throw("Please add values in the 'zones' field of transit details")
 
             
-    if doc.lead_id:
+    # if doc.lead_id:
         
-        if doc.booking_type == "Warehousing":
+    #     if doc.booking_type == "Warehousing":
             
-            for datas in doc.warehouse_space_details:
+    #         for datas in doc.warehouse_space_details:
               
-                if datas.warehouse == "" or datas.warehouse == None:
-                    frappe.throw("Please add a warehouse for this customer")
+    #             if datas.warehouse == "" or datas.warehouse == None:
+    #                 frappe.throw("Please add a warehouse for this customer")
     if doc.status == "Lost":
         doc.order_status = "Cancelled"
         print(doc.order_lost_reason,"*******************************")
@@ -682,7 +682,7 @@ def get_warehouse_data(doc):
 
 @frappe.whitelist()
 def fetch_charges_price(charges):
-   print(charges)
+   print(charges,"2@@@@@@@@@@@@@@@@@@@")
    if frappe.db.exists("Item Price",{"item_code":charges}):
        itm=frappe.get_doc("Item Price",{"item_code":charges})
        print(itm)
