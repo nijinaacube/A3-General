@@ -19,35 +19,38 @@ frappe.ui.form.on('Opportunity', {
 		}
 		},
 	
-    order_id:function(frm){
-		if (frm.doc.is_return ==1 && frm.doc.order_id){
-			frappe.call({
-                method: "a3trans.a3trans.events.opportunity.get_return_order",
-                args: {
-                    
-                    name: frm.doc.order_id,
-                },
-                callback: function(response) {
-                    var oppo = response.message;
-                    console.log(oppo, "!!!");
-				
-					var target_row = frm.add_child("receiver_information")
-					target_row.transit_type = oppo.last_transit_type
-					target_row.zone = oppo.last_zone
-					target_row.latitude = oppo.latitude
-					target_row.longitude = oppo.longitude
-					target_row.city = oppo.city
-					target_row.address_line1 = oppo.line1
-					target_row.address_line2 = oppo.line2
-					frm.refresh_field("receiver_information")
-
-                }
-            });
-			
-
-		}
-
-	},
+		// order_id: function(frm) {
+		// 	if (frm.doc.is_return == 1 && frm.doc.order_id) {
+		// 		frappe.call({
+		// 			method: "a3trans.a3trans.events.opportunity.get_return_order",
+		// 			args: {
+		// 				name: frm.doc.order_id,
+		// 			},
+		// 			callback: function(response) {
+		// 				var oppo = response.message;
+		// 				console.log(oppo, "!!!");
+		
+		// 				// Create a new row and add it at the beginning
+		// 				var target_row = frappe.model.get_new_doc("receiver_information");
+						
+		// 				// Set the data in the new row
+		// 				target_row.transit_type = oppo.last_transit_type;
+		// 				target_row.zone = oppo.last_zone;
+		// 				target_row.latitude = oppo.latitude;
+		// 				target_row.longitude = oppo.longitude;
+		// 				target_row.city = oppo.city;
+		// 				target_row.address_line1 = oppo.line1;
+		// 				target_row.address_line2 = oppo.line2;
+		
+		// 				frm.doc.receiver_information.unshift(target_row);  // Add at the beginning of the array
+		
+		// 				frm.refresh_field("receiver_information");
+		// 			}
+		// 		});
+		// 	}
+		// },
+		
+		
 	has_return_trip: function (frm) {
 		if (frm.doc.has_return_trip == 1) {
 			if (!frm.doc.receiver_information) {
