@@ -77,6 +77,18 @@ def after_insert(doc, methods):
         # Check if 'contact_by' is available and valid
         if lead_doc.contact_by:
             sharedoc = frappe.new_doc("DocShare")
+            sharedoc.share_doctype = "Lead"
+            sharedoc.share_name = doc.lead_id
+            sharedoc.user = lead_doc.contact_by
+            sharedoc.read = 1
+            sharedoc.write = 1
+            sharedoc.share = 1
+            sharedoc.notify = 1
+            sharedoc.report = 1
+            sharedoc.save(ignore_permissions=True)
+
+            
+            sharedoc = frappe.new_doc("DocShare")
             sharedoc.share_doctype = "Opportunity"
             sharedoc.share_name = doc.name
             sharedoc.user = lead_doc.contact_by
@@ -101,8 +113,7 @@ def after_insert(doc, methods):
             frappe.msgprint('Opportunity ' f'<a href="/app/user/{doc.name}" target="blank">{doc.name} </a> assigned to {lead_doc.contact_by} ')
 
             # frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
-        else:
-            frappe.msgprint("Error: 'contact_by' not found or is empty in the Lead.")
+      
     if doc.booking_type == "Warehousing":
         if doc.warehouse_space_details:
 

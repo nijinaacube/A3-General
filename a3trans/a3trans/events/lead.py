@@ -49,8 +49,8 @@ def validate(doc,methods):
   
 
    if lead_doc.status=="Opportunity":
-        if lead_doc.contact_by == "" or lead_doc.contact_by == None:
-            frappe.throw("Please Assign this lead to a Staff for further follow-up")
+        # if lead_doc.contact_by == "" or lead_doc.contact_by == None:
+        #     frappe.throw("Please Assign this lead to a Staff for further follow-up")
         
         # if lead_doc.address_link == "" or lead_doc.address_link == None:
         #     frappe.throw("Please add Biling Address")
