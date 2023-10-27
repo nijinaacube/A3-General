@@ -114,10 +114,10 @@ if(frm.doc.booking_type==="Warehousing"){
 
 
  refresh: function(frm) {
-    
+    // frm.fields_dict.custom_button.$wrapper.hide();
    
     // frm.set_df_property('opportunity', 'hidden', 1);
-        frm.get_field('').$wrapper.hide();
+        // frm.get_field('').$wrapper.hide();
     
     
 

@@ -87,7 +87,7 @@ def after_insert(doc, methods):
             sharedoc.report = 1
             sharedoc.save(ignore_permissions=True)
 
-            
+
             sharedoc = frappe.new_doc("DocShare")
             sharedoc.share_doctype = "Opportunity"
             sharedoc.share_name = doc.name
@@ -110,7 +110,7 @@ def after_insert(doc, methods):
             todo.reference_name = doc.name
 
             todo.save()
-            frappe.msgprint('Opportunity ' f'<a href="/app/user/{doc.name}" target="blank">{doc.name} </a> assigned to {lead_doc.contact_by} ')
+            frappe.msgprint('Opportunity ' f'<a href="/app/opportunity/{doc.name}" target="blank">{doc.name} </a> assigned to {lead_doc.contact_by} ')
 
             # frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
       
