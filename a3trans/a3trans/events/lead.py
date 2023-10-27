@@ -120,12 +120,14 @@ def validate(doc,methods):
                                 cst += j.cost
 
                         print(qty, cst, "*************", line_itms)
+                        print((cst/2),"@@@@@@@@@@@@@@@@@2")
 
                         # Append the aggregated data to the opportunity_line_items list
                         opportunity_line_items.append({
                             "item": i.charges,
                             "quantity": qty,
-                            "amount": cst
+                            "amount": cst,
+                            "average_rate":(cst/2)
                         })
             if doc.warehouse_charges_item:
                
@@ -149,7 +151,8 @@ def validate(doc,methods):
                         opportunity_line_items.append({
                             "item": i.charges,
                             "quantity": qty,
-                            "amount": cst
+                            "amount": cst,
+                            "average_rate":(cst/2)
                         })
             if doc.warehouse and doc.required_area:
                 if doc.warehouse_charges_item:
@@ -315,7 +318,8 @@ def validate(doc,methods):
                         opportunity_line_items.append({
                             "item": i.charges,
                             "quantity": qty,
-                            "amount": cst
+                            "amount": cst,
+                            "average_rate":(cst/2)
                         })
             if doc.warehouse_charges_item:
                  # Loop through the transit_charges_item
@@ -339,7 +343,8 @@ def validate(doc,methods):
                         opportunity_line_items.append({
                             "item": i.charges,
                             "quantity": qty,
-                            "amount": cst
+                            "amount": cst,
+                            "average_rate":(cst/2)
                         })
             if doc.warehouse and doc.required_area:
                 if doc.warehouse_charges_item:
