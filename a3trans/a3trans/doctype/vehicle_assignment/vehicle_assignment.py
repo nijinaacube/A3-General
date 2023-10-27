@@ -129,6 +129,7 @@ class VehicleAssignment(Document):
                       
                     opportunity.status="Converted"
                     opportunity.db_update()
+                    frappe.db.commit()
                  
 
 
