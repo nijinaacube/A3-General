@@ -813,32 +813,53 @@ def create_stock_entry(doc):
            opp.save()
            frappe.msgprint("Stock Updated Successfully")
 
-
-          
-       # if stock.movement_type=="Stock OUT":
-       #   delivery_note=frappe.new_doc('Delivery Note')
-       #   delivery_note.customer=opp.party_name
-       #   delivery_note
-
-
-       #   stock_entry.stock_entry_type="Material Issue"
-       #   stock_entry.purpose="Material Issue"
-       #   for war in opp.warehouse_space_details:
-       #       stock_entry.append("items",{"s_warehouse":war.warehouse,
-       #                   "item_code":stock.item,"qty":stock.quantity,
-       #                   "allow_zero_valuation_rate":1
-      
-       #       })
-      
-  
       
    return "success"
 
 
 
 
+@frappe.whitelist()
+def get_rate(itm, qty, customer):
+    print(itm)
+    data = {}
 
+    if frappe.db.exists("Tariff Details", {"customer": customer}):
+        tariff = frappe.get_doc("Tariff Details", {"customer": customer})
+        if tariff.additional_services:
+            for add in tariff.additional_services:
+                if itm == add.additional_service:
+                    print(add.rate)
+                    data["rate"] = add.rate
+                    amount = int(qty) * add.rate
+                    data["amount"] = amount
+        else:
+            if frappe.db.exists("Tariff Details", {"is_standard": 1}):
+                tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+                if tariff.additional_services:
+                    for add in tariff.additional_services:
+                        if itm == add.additional_service:
+                            print(add.rate)
+                            data["rate"] = add.rate
+                            amount = int(qty) * add.rate
+                            data["amount"] = amount
 
+    else:
+        if frappe.db.exists("Tariff Details", {"is_standard": 1}):
+            tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+            if tariff.additional_services:
+                for add in tariff.additional_services:
+                    if itm == add.additional_service:
+                        print(add.rate)
+                        data["rate"] = add.rate
+                        amount = int(qty) * add.rate
+                        data["amount"] = amount
+
+    return data
+
+                      
+             
+    
 
 @frappe.whitelist()
 def get_invoice_items(doc):

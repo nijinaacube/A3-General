@@ -9,12 +9,15 @@
  "field_order": [
   "is_standard",
   "customer",
+  "column_break_kbieo",
   "contact",
   "lead_id",
   "transportation_charges_section",
   "tariff_details_item",
   "warehouse_space_rent_charges_section",
-  "warehouse_space_rent_charges"
+  "warehouse_space_rent_charges",
+  "additional_service_charges_section",
+  "additional_services"
  ],
  "fields": [
   {
@@ -52,12 +55,13 @@
   },
   {
    "default": "0",
-   "depends_on": "eval:!doc.__islocal",
+   "depends_on": "eval: doc.customer ==\"\" && doc.contact ==\"\"",
    "fieldname": "is_standard",
    "fieldtype": "Check",
    "label": "Is Standard?"
   },
   {
+   "depends_on": "eval:doc.is_standard==0",
    "fieldname": "contact",
    "fieldtype": "Link",
    "label": "Contact",
@@ -69,11 +73,27 @@
    "hidden": 1,
    "label": "Lead ID",
    "options": "Lead"
+  },
+  {
+   "fieldname": "additional_service_charges_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Service Charges"
+  },
+  {
+   "allow_bulk_edit": 1,
+   "fieldname": "additional_services",
+   "fieldtype": "Table",
+   "label": "Additional Service Charges",
+   "options": "Additional Services"
+  },
+  {
+   "fieldname": "column_break_kbieo",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-13 10:26:05.947570",
+ "modified": "2023-11-01 13:48:27.710062",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Tariff Details",

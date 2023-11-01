@@ -40,7 +40,8 @@ class VehicleAssignment(Document):
 
                   
 
-    def validate(self):   
+    def validate(self):  
+
         if self.driver_id:
             driver=frappe.get_doc("Staff Member",self.driver_id)
             if driver.status=="Available":
@@ -103,6 +104,12 @@ class VehicleAssignment(Document):
                       
                     elif self.assignment_status == "In-Transit":
                         opportunity.order_status = "In-Transit"
+                        # vehicle_log = frappe.new_doc ("Vehicle Log")
+                        # vehicle_log.license_plate = self.vehicle_id
+                        # if self.driver_id:
+                        #     staff = frappe.get_doc("Staff Member",self.driver_id)
+                        #     employee =frappe.get_doc("Employee",staff.employee)
+                        #     vehicle_log.employee =employee.name
                        
                     elif self.assignment_status == "Arrived":
                         opportunity.order_status = "Arrived"
@@ -232,13 +239,21 @@ def fetch_order_details(order_id):
         opportunity = frappe.get_doc("Opportunity", order_id)
         if opportunity.booking_type != "Transport" and opportunity.required_transit == 0:
             frappe.throw("Please choose an Order that needs transportation")
-        if opportunity.order_status == "Vehicle Assigned":
-            frappe.throw("Please check the order. The order is already assigned in another trip ")
+        # if opportunity.order_status == "Vehicle Assigned":
+        #     frappe.throw("Please check the order. The order is already assigned in another trip ")
         if opportunity.status == "Closed":
             frappe.throw("Plese Check. You are choosing a closed opportunity")
         data1 = []
         data2 = []
+        data3 = []
         data = {}
+        if opportunity.vehicle_details_item:
+            for vehicle in opportunity.vehicle_details_item:
+                if vehicle.vehicle_type:
+                    data3.append({"vtype": vehicle.vehicle_type,})
+    
+            data["data3"] = data3
+
 
         for item in opportunity.receiver_information:
            

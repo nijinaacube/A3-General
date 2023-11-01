@@ -7,11 +7,12 @@ from frappe.model.document import Document
 
 
 class TariffDetails(Document):
-   def validate(self):
-       if self.customer:
-           self.is_standard=0
-       if self.is_standard==1:
-           self.customer=""
+   def after_insert(self):
+    
+    if self.is_standard == 1:
+        if frappe.db.exists("Tariff Details",{"is_standard":1}):
+            frappe.throw("You have already set one standard tariff. You can't create another standard tariff")
+   
       
    # def after_insert(self):
    #   if self.customer and self.is_standard==0:
@@ -35,3 +36,11 @@ def get_contact(doc):
    contact_names = [contact.parent for contact in linked_contact]
    return contact_names
 
+
+@frappe.whitelist()
+def get_standard(std):
+    if std == "1":
+        if frappe.db.exists("Tariff Details",{"is_standard":1}):
+            frappe.throw("You have already set one standard tariff. You can't create another standard tariff")
+        
+        

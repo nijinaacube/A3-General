@@ -3,6 +3,7 @@
 
 
 frappe.ui.form.on('Tariff Details', {
+
   
 	onload: function (frm) {
 		var prev_route = frappe.get_prev_route();
@@ -41,6 +42,26 @@ frappe.ui.form.on('Tariff Details', {
 				}
 			}
 		});
+	},
+is_standard:function(frm){
+	if (frm.doc.is_standard == 1){
+		frappe.call({
+			method: "a3trans.a3trans.doctype.tariff_details.tariff_details.get_standard",
+			args: {
+				"std": frm.doc.is_standard
+			},
+			callback: function(r) {
+				if (r.message) {
+					console.log(r.message)
+				}
+
+			}
+		})
+		frm.set_value("contact","" );
+		frm.refresh_field('contact');
+		frm.set_value("customer","" );
+		frm.refresh_field('customer');
 	}
+}
 
 });

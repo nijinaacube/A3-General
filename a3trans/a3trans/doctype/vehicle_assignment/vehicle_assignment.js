@@ -226,11 +226,24 @@ frappe.ui.form.on('Vehicle Assignment', {
                             }
 
                     }
+                    var selectedVTypes = []; // Define the array before the loop
 
+                    for (var i in response.message.data3) {
+                        var item = response.message.data3[i];
+                        selectedVTypes.push(item.vtype);
+                        console.log(selectedVTypes,"@@@@@@")
+                           // Assuming "type_of_vehicles_required" is a multiselect field
+                    frm.set_value("type_of_vehicles_required", "1 Ton");
+                    }
+                    
+                    frm.refresh_field("type_of_vehicles_required");
+                    console.log(frm.doc.type_of_vehicles_required,"AAAAAAAAAAAAAA")
+                    
+                    
                     // Clear the existing rows in the "routes" and "return_trips" child tables
                     frm.clear_table("routes");
                     frm.clear_table("return_trips");
-
+                    
                     // Loop through the response.message.data1
                     for (var i in response.message.data1) {
                         var item = response.message.data1[i];
@@ -246,7 +259,6 @@ frappe.ui.form.on('Vehicle Assignment', {
                         target_row.lat = item.lat;
                         target_row.lon = item.lon;
                         target_row.remark = item.remark;
-
                         frm.refresh_field("routes");
                     }
                     // Update the "has_return" field

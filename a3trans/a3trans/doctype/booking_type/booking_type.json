@@ -10,6 +10,7 @@
   "booking_type",
   "description",
   "icon",
+  "order_no",
   "column_break_xi4g0",
   "item",
   "location_required",
@@ -55,11 +56,16 @@
    "fieldname": "inventory_required",
    "fieldtype": "Check",
    "label": "Inventory Required"
+  },
+  {
+   "fieldname": "order_no",
+   "fieldtype": "Int",
+   "label": "Order No"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-10-13 13:18:17.615057",
+ "modified": "2023-11-01 17:15:45.493913",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Booking Type",

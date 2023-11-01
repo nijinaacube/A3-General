@@ -1,3 +1,5 @@
+
+
 frappe.ui.form.on('Opportunity', {
 	
 	after_save: function(frm) {
@@ -700,105 +702,24 @@ frappe.ui.form.on('Return Trips', {
 
 
 frappe.ui.form.on('Transit Details', {
-choose_required_loading_service: function(frm, cdt, cdn) {
-        var child_load = locals[cdt][cdn];
-        var item_selected = child_load.choose_required_loading_service;
-        if (!child_load.load_id) {
-        // If labour_id is not set, add a new row
-        const target_row = frm.add_child('transit_charges');
-        target_row.charges = item_selected;
-        target_row.quantity = 1;
-        target_row.description = "Loading Charges"
-        child_load.load_id = target_row.idx;
-        frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
-        frm.refresh_field('transit_charges');
-        } else {
-        // If labour_id is already set, update the existing row
-        var existing_row = frm.doc.transit_charges.find(row => row.idx === child_load.load_id);
-        if (existing_row) {
-        if (item_selected) {
-        existing_row.charges = item_selected;
-        frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
-        frm.refresh_field('transit_charges');
-        } else {
-        // Remove the existing row from the child table
-        frm.get_field("transit_charges").grid.grid_rows[existing_row.idx - 1].remove();
-        // Reset child_labour.labour_id after deletion
-        child_load.load_id = null;
-        }
-        } 
-        }
-        },
+    additional_service_1: function (frm, cdt, cdn) {
+        updateTransitCharges(frm, cdt, cdn);
 
-   
+    },
+
+    additional_service_1_quantity: function (frm, cdt, cdn) {
+        updateTransitCharges(frm, cdt, cdn);
+    },
+
+    amount: function (frm, cdt, cdn) {
+        updateTransitCharges(frm, cdt, cdn);
+    },
+
+
     
-choose_required_labour_service: function(frm, cdt, cdn) {
-		var child_labour = locals[cdt][cdn];
-		var item_selected = child_labour.choose_required_labour_service;
-		if (!child_labour.labour_id) {
-		// If labour_id is not set, add a new row
-		const target_row = frm.add_child('transit_charges');
-		target_row.charges = item_selected;
-		target_row.quantity = 1;
-		target_row.description = "Labour Charges"
-		child_labour.labour_id = target_row.idx;
-		frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
-		frm.refresh_field('transit_charges');
-		} else {
-		// If labour_id is already set, update the existing row
-		var existing_row = frm.doc.transit_charges.find(row => row.idx === child_labour.labour_id);
-		if (existing_row) {
-		if (item_selected) {
-		existing_row.charges = item_selected;
-		frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
-		frm.refresh_field('transit_charges');
-		} else {
-		// Remove the existing row from the child table
-		frm.get_field("transit_charges").grid.grid_rows[existing_row.idx - 1].remove();
-		// Reset child_labour.labour_id after deletion
-		child_labour.labour_id = null;
-		}
-		} else {
-		// Handle the case where the existing row with labour_id is not found
-		frappe.msgprint('Row not found with labour_id: ' + child_labour.labour_id);
-		}
-		}
-		},
-choose_required_handling_service: function(frm, cdt, cdn) {
-		var child_handling = locals[cdt][cdn];
-		var item_selected = child_handling.choose_required_handling_service;
-		if (!child_handling.handle_id) {
-		// If handle_id is not set, add a new row
-		const target_row = frm.add_child('transit_charges');
-		target_row.charges = item_selected;
-		target_row.quantity = 1;
-		target_row.description = "Handling Charges"
-		child_handling.handle_id = target_row.idx;
-		frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
-		frm.refresh_field('transit_charges');
-		} else {
-		// If handle_id is already set, update the existing row
-		var existing_row = frm.doc.transit_charges.find(row => row.idx === child_handling.handle_id);
-		if (existing_row) {
-		if (item_selected) {
-		existing_row.charges = item_selected;
-		frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
-		frm.refresh_field('transit_charges');
-		} else {
-		// Remove the existing row from the child table
-		frm.get_field("transit_charges").grid.grid_rows[existing_row.idx - 1].remove();
-		// Reset child_handling.handle_id after deletion
-		child_handling.handle_id = null;
-		}
-		} else {
-		// Handle the case where the existing row with handle_id is not found
-		frappe.msgprint('Row not found with handle_id: ' + child_handling.handle_id);
-		}
-		}
-		},
+
 		
-		
-	warehouse: function(frm, cdt, cdn) {
+warehouse: function(frm, cdt, cdn) {
             	var child = locals[cdt][cdn];   	 
                 	 
             	var war=child.warehouse   	 
@@ -829,14 +750,14 @@ choose_required_handling_service: function(frm, cdt, cdn) {
                                     	frm.refresh_field('contact');
                                     	frappe.model.set_value(cdt, cdn, 'address',"");               	 
                                     	frm.refresh_field('address');
-                                   	 
-    
-            	}
-            	})
-        	}
+												
+				
+							}
+							})
+						}
 
-    
-},
+				
+			},
 
 
 zone: function(frm, cdt, cdn) {
@@ -900,53 +821,53 @@ zone: function(frm, cdt, cdn) {
 									frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
 									frm.refresh_field('transit_charges');
 											
-										
+											
+								}
+
+								
 							}
 
-							
 						}
+						
+							}
+						});
+					}
+				}
+				if(zones.length > 2){
+					console.log(zones[0],zones[1],zones[2])
+					const target_row = frm.add_child('transit_charges');
+					target_row.charges = "Transportation Charges";
+					target_row.quantity = 1;
+					target_row.cost=0
+					target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
+					frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+					frm.refresh_field('transit_charges');
+					
+					
+					
+					
+					}
+					
+			}
+			else{
+				frappe.throw("Please choose vehicle_type")
+			}
 
-                	}
-                	
-            	}
-        	});
-    	}
-	}
-	if(zones.length > 2){
-		console.log(zones[0],zones[1],zones[2])
-		const target_row = frm.add_child('transit_charges');
-		target_row.charges = "Transportation Charges";
-		target_row.quantity = 1;
-		target_row.cost=0
-		target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
-		frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
-		frm.refresh_field('transit_charges');
-		
-		
-		
-		
-		}
-		
-}
-else{
-	frappe.throw("Please choose vehicle_type")
-}
-
-},
+			},
 
 
 address:function(frm, cdt, cdn) {
-	var child = locals[cdt][cdn];       	 
-	var add=child.address   	 
-	console.log(child.address)    	 
-     	if (add){
-	frappe.call({
-                	method: "a3trans.a3trans.events.opportunity.fetch_address",       	 
-                	args: {          	 
-                                   	 
-                    	address:add       	 
-                	},       	 
-                	callback: function(r) {
+			var child = locals[cdt][cdn];       	 
+			var add=child.address   	 
+			console.log(child.address)    	 
+				if (add){
+			frappe.call({
+							method: "a3trans.a3trans.events.opportunity.fetch_address",       	 
+							args: {          	 
+											
+								address:add       	 
+							},       	 
+							callback: function(r) {
                     	console.log(r.message)
 
                     	frappe.model.set_value(cdt, cdn, 'name1',r.message["title"]);               	 
@@ -969,14 +890,13 @@ address:function(frm, cdt, cdn) {
                  	 
                    	 
                    	 
-                   	 
-                	}
-            	})
-        	}
+							
+							}
+						})
+					}
 
-    	},
- 	 
-    	labour_required: function(frm, cdt, cdn) {
+				},
+labour_required: function(frm, cdt, cdn) {
         	const child = locals[cdt][cdn];
         	if (child.labour_required == 1) {
             	addCharge(frm, child, "Labour charge per day (10 hours)");
@@ -986,7 +906,7 @@ address:function(frm, cdt, cdn) {
         	frm.refresh_field('transit_charges');
     	},
     
-    	handling_required: function(frm, cdt, cdn) {
+handling_required: function(frm, cdt, cdn) {
         	const child = locals[cdt][cdn];
         	if (child.handling_required == 1) {
             	addCharge(frm, child, "Container loading/off-loading per 20ft");
@@ -1051,76 +971,129 @@ is_default:function(frm,cdt, cdn) {
                     	frm.refresh_field('address');
 
                	 
-                	}
-           	 
-            	}
-        	})
+							}
+					
+						}
+					})
 
-}
+		}
 
-},
+		},
  
-	onload: function(frm) {
+onload: function(frm) {
 
-   	 
-    	// Delay to ensure that the grid is fully loaded
-    	setTimeout(function() {
-        	if(frm.fields_dict['receiver_information'] && frm.fields_dict['receiver_information'].grid.get_field('order_no')) {
-            	frm.fields_dict['receiver_information'].grid.get_field('order_no').df.read_only = true;
-        	}
-    	}, 1000); // Adjust the delay time as needed
-	},
-	refresh: function(frm) {
-    	update_order_no(frm);
-	},
-	transit_type:function(frm) {
-    	update_order_no(frm);
-	},
-	receiver_information_add: function(frm, cdt, cdn) {
-    	update_order_no(frm);
-	},
-	receiver_information_remove: function(frm, cdt, cdn) {
-    	 
-    	console.log(child);
-    	update_order_no(frm);
-	 
-	},
-})
+			
+				// Delay to ensure that the grid is fully loaded
+				setTimeout(function() {
+					if(frm.fields_dict['receiver_information'] && frm.fields_dict['receiver_information'].grid.get_field('order_no')) {
+						frm.fields_dict['receiver_information'].grid.get_field('order_no').df.read_only = true;
+					}
+				}, 1000); // Adjust the delay time as needed
+			},
+			refresh: function(frm) {
+				update_order_no(frm);
+			},
+			transit_type:function(frm) {
+				update_order_no(frm);
+			},
+			receiver_information_add: function(frm, cdt, cdn) {
+				update_order_no(frm);
+			},
+			receiver_information_remove: function(frm, cdt, cdn) {
+				
+				console.log(child);
+				update_order_no(frm);
+			
+			},
+		})
+
+// Additional Servicess 1
+			function updateTransitCharges(frm, cdt, cdn) {
+			const child = locals[cdt][cdn];
+			const item_selected = child.additional_service_1;
+			const quantity = child.additional_service_1_quantity;
+			const amount = child.amount;
+			if (item_selected && quantity && frm.doc.party_name){
+			frappe.call({
+				method: "a3trans.a3trans.events.opportunity.get_rate",
+            	args: {
+                	"itm": item_selected,
+					"qty": quantity,
+					"customer":frm.doc.party_name
+
+            	},
+            	callback: function(r) {
+                	console.log(r.message,"////////////////////")
+					child.additional_service_1_rate = r.message.rate
+					child.amount =r.message.amount
+					frm.refresh_field("receiver_information")
+					if (!child.id1) {
+						// If labour_id is not set, add a new row
+						const target_row = frm.add_child('transit_charges');
+						target_row.charges = item_selected;
+						target_row.quantity = quantity;
+						target_row.cost = r.message.amount;
+						child.id1 = target_row.idx;
+						target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+				
+						frm.refresh_field('transit_charges');
+					} else {
+						// If labour_id is already set, update the existing row
+						const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id1);
+						if (existing_row) {
+							if (item_selected) {
+								existing_row.charges = item_selected;
+								existing_row.quantity = quantity;
+								existing_row.cost = r.message.amount;
+				
+								frm.refresh_field('transit_charges');
+							}
+						}
+					}
 
 
+
+				}
+
+
+			})
+		}
+			
+		}
+		
 
 
 // Helper function to add a charge
-function addCharge(frm, child, chargeName) {
-	// Check if the row is already there with the same reference and specific charge
-	if (!findSpecificChargeRow(frm, child.name, chargeName)) {
-    	const target_row = frm.add_child('transit_charges');
-    	target_row.charges = chargeName;
-    	target_row.source_name = child.name; // Use this as a unique reference
-    	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
-	}
-}
+				function addCharge(frm, child, chargeName) {
+					// Check if the row is already there with the same reference and specific charge
+					if (!findSpecificChargeRow(frm, child.name, chargeName)) {
+						const target_row = frm.add_child('transit_charges');
+						target_row.charges = chargeName;
+						target_row.source_name = child.name; // Use this as a unique reference
+						frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+					}
+				}
 
-// Helper function to find the specific charge row by source row's name/reference and specific charge
-function findSpecificChargeRow(frm, sourceName, chargeName) {
-	return frm.doc.transit_charges && frm.doc.transit_charges.find(row => row.source_name === sourceName && row.charges === chargeName);
-}
+				// Helper function to find the specific charge row by source row's name/reference and specific charge
+				function findSpecificChargeRow(frm, sourceName, chargeName) {
+					return frm.doc.transit_charges && frm.doc.transit_charges.find(row => row.source_name === sourceName && row.charges === chargeName);
+				}
 
-// Helper function to remove a specific charge row based on source row's name/reference and specific charge
-function removeSpecificCharge(frm, sourceName, chargeName) {
-	const targetRow = findSpecificChargeRow(frm, sourceName, chargeName);
-	if (targetRow) {
-    	frm.get_field('transit_charges').grid.grid_rows_by_docname[targetRow.name].remove();
-	}
-}
-function update_order_no(frm) {
-	var index = 1;
-	$.each(frm.doc.receiver_information || [], function(i, row) {
-    	frappe.model.set_value(row.doctype, row.name, 'order_no', index);
-    	index++;
-	});
-	frm.refresh_field('receiver_information');
-}
+				// Helper function to remove a specific charge row based on source row's name/reference and specific charge
+				function removeSpecificCharge(frm, sourceName, chargeName) {
+					const targetRow = findSpecificChargeRow(frm, sourceName, chargeName);
+					if (targetRow) {
+						frm.get_field('transit_charges').grid.grid_rows_by_docname[targetRow.name].remove();
+					}
+				}
+				function update_order_no(frm) {
+					var index = 1;
+					$.each(frm.doc.receiver_information || [], function(i, row) {
+						frappe.model.set_value(row.doctype, row.name, 'order_no', index);
+						index++;
+					});
+					frm.refresh_field('receiver_information');
+				}
 
 
 
@@ -1186,19 +1159,19 @@ from_location:function(frm){
 										frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
 										frm.refresh_field('transit_charges');
 												
+														
+											}
+				
 											
+										}
+				
+									}
+									
 								}
-	
-								
-							}
-	
+							});
 						}
-						
 					}
-				});
-			}
-		}
-},
+			},
 to_location:function(frm){
 	const zones = frm.doc.receiver_information.map(receiver => receiver.zone);
 		frm.set_value("table_length",zones.length)
@@ -1317,11 +1290,18 @@ onload: function(frm) {
 
                 	frm.refresh_field("receiver_information");
 					}
-            	}
-        	}
-    	});
-	}
-}
+					}
+				}
+			});
+		}
+		}
+		frm.fields_dict['order_id'].get_query = function(doc, cdt, cdn) {
+			return {
+				filters: [
+					['order_status', 'in', ['New', 'Vehicle Assigned']]
+				]
+			};
+		};
 
 
    	 
@@ -1388,35 +1368,7 @@ onload: function(frm) {
             	};
 
 
-				frm.fields_dict['receiver_information'].grid.get_field('choose_required_loading_service').get_query = function(doc, cdt, cdn) {
-                  	 
-					return {
-						filters: {
-							"item_group": ["in", "Loading Charges"]
-						}
-					};
-				};
- 	 
-
-       	 
-                	frm.fields_dict['receiver_information'].grid.get_field('choose_required_labour_service').get_query = function(doc, cdt, cdn) {
-                  	 
-                    	return {
-                        	filters: {
-                            	"item_group": ["in", "Labour Charges"]
-                        	}
-                    	};
-                	};
-           	 
-   	 
-                	frm.fields_dict['receiver_information'].grid.get_field('choose_required_handling_service').get_query = function(doc, cdt, cdn) {
-                  	 
-                    	return {
-                        	filters: {
-                            	"item_group": ["in", "Handling Charges"]
-                        	}
-                    	};
-                	};
+			
            	 
        			// frm.fields_dict['warehouse_space_details'].grid.get_field('main_warehouse').get_query = function(doc, cdt, cdn) {
                	 
@@ -1479,17 +1431,17 @@ onload: function(frm) {
             	// 	}
             	// }
    	 
-	},
-	receiver_information_add: function(frm, cdt, cdn) {
-    	refresh_order_no(frm);
-	},
-	// Trigger when a row is removed from 'receiver_information'
-	receiver_information_remove: function(frm, cdt, cdn) {
-   	 
-    	refresh_order_no(frm);
-	}
-   	 
-})
+			},
+			receiver_information_add: function(frm, cdt, cdn) {
+				refresh_order_no(frm);
+			},
+			// Trigger when a row is removed from 'receiver_information'
+			receiver_information_remove: function(frm, cdt, cdn) {
+			
+				refresh_order_no(frm);
+			}
+			
+		})
 
 frappe.ui.form.on('Warehouse Space Details', {
 	warehouse: function(frm, cdt, cdn) {
@@ -2255,4 +2207,42 @@ function calculate_total_amount(frm) {
 
 	frm.set_value('payment_amount', total_amount);
 	frm.refresh_field('payment_amount');  // Refresh to show the updated value on the UI
+}
+
+
+frappe.ui.form.on('Shipment Details', {
+    height: function (frm, cdt, cdn) {
+        calculateVolume(frm, cdt, cdn);
+    },
+
+    length: function (frm, cdt, cdn) {
+        calculateVolume(frm, cdt, cdn);
+    },
+
+    width: function (frm, cdt, cdn) {
+        calculateVolume(frm, cdt, cdn);
+    },
+
+    type_uom: function (frm, cdt, cdn) {
+        calculateVolume(frm, cdt, cdn);
+    }
+});
+
+function calculateVolume(frm, cdt, cdn) {
+    var child = locals[cdt][cdn];
+    var length = child.length || 0;
+    var height = child.height || 0;
+    var width = child.width || 0;
+    var unit = child.type_uom // Default unit is centimeters
+
+    // Convert length, height, and width to meters if the unit is in centimeters
+    if (unit === 'Centimeter') {
+        length = length / 100; // Convert centimeters to meters
+        height = height / 100;
+        width = width / 100;
+    }
+
+    var volume = length * height * width;
+    child.volume = volume;
+    frm.refresh_field('shipment_details');
 }
