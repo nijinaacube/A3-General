@@ -702,6 +702,17 @@ frappe.ui.form.on('Return Trips', {
 
 
 frappe.ui.form.on('Transit Details', {
+	add_more: function (frm, cdt, cdn) {
+		const child = locals[cdt][cdn];
+		if (child.add_more == 0){
+			child.additional_service_2 = ""
+			child.additional_service_2_quantity = ""
+			child.additional_service_2_rate = ""
+			child.amount_2 = ""
+			frm.refresh_field("receiver_information")
+		}
+	},
+
     additional_service_1: function (frm, cdt, cdn) {
         updateTransitCharges(frm, cdt, cdn);
 
@@ -715,10 +726,126 @@ frappe.ui.form.on('Transit Details', {
         updateTransitCharges(frm, cdt, cdn);
     },
 
+	additional_service_2:function (frm, cdt, cdn) {
+        updateTransitCharges2(frm, cdt, cdn);
 
+    },
     
+	additional_service_2_quantity:function (frm, cdt, cdn) {
+        updateTransitCharges2(frm, cdt, cdn);
 
-		
+    },
+	amount_2 :function (frm, cdt, cdn) {
+        updateTransitCharges2(frm, cdt, cdn);
+
+    },
+
+	additional_service_3:function (frm, cdt, cdn) {
+        updateTransitCharges3(frm, cdt, cdn);
+
+    },
+
+	additional_service_3_quantity:function (frm, cdt, cdn) {
+        updateTransitCharges3(frm, cdt, cdn);
+
+    },
+	amount3:function (frm, cdt, cdn) {
+        updateTransitCharges3(frm, cdt, cdn);
+
+    },
+	additional_services_4:function (frm, cdt, cdn) {
+        updateTransitCharges4(frm, cdt, cdn);
+
+    },
+
+	additional_service_4_quantity:function (frm, cdt, cdn) {
+        updateTransitCharges4(frm, cdt, cdn);
+
+    },
+
+	amount4:function (frm, cdt, cdn) {
+        updateTransitCharges4(frm, cdt, cdn);
+
+    },
+	service_5:function (frm, cdt, cdn) {
+        updateTransitCharges5(frm, cdt, cdn);
+
+    },
+	quantity_5:function (frm, cdt, cdn) {
+        updateTransitCharges5(frm, cdt, cdn);
+
+    },
+	amount5:function (frm, cdt, cdn) {
+        updateTransitCharges5(frm, cdt, cdn);
+
+    },
+
+	service6:function (frm, cdt, cdn) {
+        updateTransitCharges6(frm, cdt, cdn);
+
+    },
+	quantity_6:function (frm, cdt, cdn) {
+        updateTransitCharges6(frm, cdt, cdn);
+
+    },
+	amount6:function (frm, cdt, cdn) {
+        updateTransitCharges6(frm, cdt, cdn);
+
+    },
+	service7:function (frm, cdt, cdn) {
+        updateTransitCharges7(frm, cdt, cdn);
+
+    },
+	
+	quantity7:function (frm, cdt, cdn) {
+        updateTransitCharges7(frm, cdt, cdn);
+
+    },
+	amount7:function (frm, cdt, cdn) {
+        updateTransitCharges7(frm, cdt, cdn);
+
+    },
+
+	service8:function (frm, cdt, cdn) {
+        updateTransitCharges8(frm, cdt, cdn);
+
+    },
+	
+	quantity8:function (frm, cdt, cdn) {
+        updateTransitCharges8(frm, cdt, cdn);
+
+    },
+	amount8:function (frm, cdt, cdn) {
+        updateTransitCharges8(frm, cdt, cdn);
+
+    },
+
+	service9:function (frm, cdt, cdn) {
+        updateTransitCharges9(frm, cdt, cdn);
+
+    },
+	
+	quantity9:function (frm, cdt, cdn) {
+        updateTransitCharges9(frm, cdt, cdn);
+
+    },
+	amount9:function (frm, cdt, cdn) {
+        updateTransitCharges9(frm, cdt, cdn);
+
+    },
+	service10:function (frm, cdt, cdn) {
+        updateTransitCharges10(frm, cdt, cdn);
+
+    },
+	
+	quantity10:function (frm, cdt, cdn) {
+        updateTransitCharges10(frm, cdt, cdn);
+
+    },
+	amount10:function (frm, cdt, cdn) {
+        updateTransitCharges10(frm, cdt, cdn);
+
+    },
 warehouse: function(frm, cdt, cdn) {
             	var child = locals[cdt][cdn];   	 
                 	 
@@ -1023,7 +1150,7 @@ onload: function(frm) {
 
             	},
             	callback: function(r) {
-                	console.log(r.message,"////////////////////")
+                	console.log(r.message)
 					child.additional_service_1_rate = r.message.rate
 					child.amount =r.message.amount
 					frm.refresh_field("receiver_information")
@@ -1061,8 +1188,479 @@ onload: function(frm) {
 			
 		}
 		
+// Additional Servicess 2
+		function updateTransitCharges2(frm, cdt, cdn) {
+		const child = locals[cdt][cdn];
+		const item_selected = child.additional_service_2;
+		const quantity = child.additional_service_2_quantity;
+		const amount = child.amount_2;
+
+		if (item_selected && quantity && frm.doc.party_name){
+
+		frappe.call({
+			method: "a3trans.a3trans.events.opportunity.get_rate",
+			args: {
+				"itm": item_selected,
+				"qty": quantity,
+				"customer":frm.doc.party_name
+
+			},
+
+			callback: function(r) {
+				console.log(r.message)
+				child.additional_service_2_rate = r.message.rate
+				child.amount_2 = r.message.amount
+				frm.refresh_field("receiver_information")
+				if (!child.id2) {
+					// If labour_id is not set, add a new row
+					const target_row = frm.add_child('transit_charges');
+					target_row.charges = item_selected;
+					target_row.quantity = quantity;
+					target_row.cost = r.message.amount;
+					child.id2 = target_row.idx;
+					target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+			
+					frm.refresh_field('transit_charges');
+				} else {
+					// If labour_id is already set, update the existing row
+					const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id2);
+					if (existing_row) {
+						if (item_selected) {
+							existing_row.charges = item_selected;
+							existing_row.quantity = quantity;
+							existing_row.cost = r.message.amount;
+			
+							frm.refresh_field('transit_charges');
+								}
+							}
+						}
+					}
 
 
+				})
+				}
+			}
+	
+// Additional Servicess 3
+function updateTransitCharges3(frm, cdt, cdn) {
+	const child = locals[cdt][cdn];
+	const item_selected = child.additional_service_3;
+	const quantity = child.additional_service_3_quantity;
+	const amount = child.amount3;
+
+	if (item_selected && quantity && frm.doc.party_name){
+
+	frappe.call({
+		method: "a3trans.a3trans.events.opportunity.get_rate",
+		args: {
+			"itm": item_selected,
+			"qty": quantity,
+			"customer":frm.doc.party_name
+
+		},
+
+		callback: function(r) {
+			console.log(r.message)
+			child.additional_service_3_rate = r.message.rate
+			child.amount3 = r.message.amount
+			frm.refresh_field("receiver_information")
+			if (!child.id3) {
+				// If labour_id is not set, add a new row
+				const target_row = frm.add_child('transit_charges');
+				target_row.charges = item_selected;
+				target_row.quantity = quantity;
+				target_row.cost = r.message.amount;
+				child.id3 = target_row.idx;
+				target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+		
+				frm.refresh_field('transit_charges');
+			} else {
+				// If labour_id is already set, update the existing row
+				const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id3);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = r.message.amount;
+		
+						frm.refresh_field('transit_charges');
+							}
+						}
+					}
+				}
+
+
+			})
+			}
+		}
+// Additional Servicess 4
+function updateTransitCharges4(frm, cdt, cdn) {
+	const child = locals[cdt][cdn];
+	const item_selected = child.additional_services_4;
+	const quantity = child.additional_service_4_quantity;
+	const amount = child.amount4;
+
+	if (item_selected && quantity && frm.doc.party_name){
+
+	frappe.call({
+		method: "a3trans.a3trans.events.opportunity.get_rate",
+		args: {
+			"itm": item_selected,
+			"qty": quantity,
+			"customer":frm.doc.party_name
+
+		},
+
+		callback: function(r) {
+			console.log(r.message)
+			child.rate4 = r.message.rate
+			child.amount4 = r.message.amount
+			frm.refresh_field("receiver_information")
+			if (!child.id4) {
+				// If labour_id is not set, add a new row
+				const target_row = frm.add_child('transit_charges');
+				target_row.charges = item_selected;
+				target_row.quantity = quantity;
+				target_row.cost = r.message.amount;
+				child.id4 = target_row.idx;
+				target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+		
+				frm.refresh_field('transit_charges');
+			} else {
+				// If labour_id is already set, update the existing row
+				const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id4);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = r.message.amount;
+		
+						frm.refresh_field('transit_charges');
+							}
+						}
+					}
+				}
+
+
+			})
+			}
+		}
+// Additional Servicess 5
+function updateTransitCharges5(frm, cdt, cdn) {
+	const child = locals[cdt][cdn];
+	const item_selected = child.service_5;
+	const quantity = child.quantity_5;
+	const amount = child.amount5;
+
+	if (item_selected && quantity && frm.doc.party_name){
+
+	frappe.call({
+		method: "a3trans.a3trans.events.opportunity.get_rate",
+		args: {
+			"itm": item_selected,
+			"qty": quantity,
+			"customer":frm.doc.party_name
+
+		},
+
+		callback: function(r) {
+			console.log(r.message)
+			child.rate5 = r.message.rate
+			child.amount5 = r.message.amount
+			frm.refresh_field("receiver_information")
+			if (!child.id5) {
+				// If labour_id is not set, add a new row
+				const target_row = frm.add_child('transit_charges');
+				target_row.charges = item_selected;
+				target_row.quantity = quantity;
+				target_row.cost = r.message.amount;
+				child.id5 = target_row.idx;
+				target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+		
+				frm.refresh_field('transit_charges');
+			} else {
+				// If labour_id is already set, update the existing row
+				const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id5);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = r.message.amount;
+		
+						frm.refresh_field('transit_charges');
+							}
+						}
+					}
+				}
+
+
+			})
+			}
+		}
+
+// Additional Servicess 6
+function updateTransitCharges6(frm, cdt, cdn) {
+	const child = locals[cdt][cdn];
+	const item_selected = child.service6;
+	const quantity = child.quantity_6;
+	const amount = child.amount6;
+
+	if (item_selected && quantity && frm.doc.party_name){
+
+	frappe.call({
+		method: "a3trans.a3trans.events.opportunity.get_rate",
+		args: {
+			"itm": item_selected,
+			"qty": quantity,
+			"customer":frm.doc.party_name
+
+		},
+
+		callback: function(r) {
+			console.log(r.message)
+			child.rate6 = r.message.rate
+			child.amount6 = r.message.amount
+			frm.refresh_field("receiver_information")
+			if (!child.id6) {
+				// If labour_id is not set, add a new row
+				const target_row = frm.add_child('transit_charges');
+				target_row.charges = item_selected;
+				target_row.quantity = quantity;
+				target_row.cost = r.message.amount;
+				child.id6 = target_row.idx;
+				target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+		
+				frm.refresh_field('transit_charges');
+			} else {
+				// If labour_id is already set, update the existing row
+				const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id6);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = r.message.amount;
+		
+						frm.refresh_field('transit_charges');
+							}
+						}
+					}
+				}
+
+
+			})
+			}
+		}
+
+
+
+// Additional Servicess 7
+function updateTransitCharges7(frm, cdt, cdn) {
+	const child = locals[cdt][cdn];
+	const item_selected = child.service7;
+	const quantity = child.quantity7;
+	const amount = child.amount7;
+
+	if (item_selected && quantity && frm.doc.party_name){
+
+	frappe.call({
+		method: "a3trans.a3trans.events.opportunity.get_rate",
+		args: {
+			"itm": item_selected,
+			"qty": quantity,
+			"customer":frm.doc.party_name
+
+		},
+
+		callback: function(r) {
+			console.log(r.message)
+			child.rate7 = r.message.rate
+			child.amount7 = r.message.amount
+			frm.refresh_field("receiver_information")
+			if (!child.id7) {
+				// If labour_id is not set, add a new row
+				const target_row = frm.add_child('transit_charges');
+				target_row.charges = item_selected;
+				target_row.quantity = quantity;
+				target_row.cost = r.message.amount;
+				child.id7 = target_row.idx;
+				target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+		
+				frm.refresh_field('transit_charges');
+			} else {
+				// If labour_id is already set, update the existing row
+				const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id7);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = r.message.amount;
+		
+						frm.refresh_field('transit_charges');
+							}
+						}
+					}
+				}
+
+
+			})
+			}
+		}
+// Additional Servicess 8
+function updateTransitCharges8(frm, cdt, cdn) {
+	const child = locals[cdt][cdn];
+	const item_selected = child.service8;
+	const quantity = child.quantity8;
+	const amount = child.amount8;
+
+	if (item_selected && quantity && frm.doc.party_name){
+
+	frappe.call({
+		method: "a3trans.a3trans.events.opportunity.get_rate",
+		args: {
+			"itm": item_selected,
+			"qty": quantity,
+			"customer":frm.doc.party_name
+
+		},
+
+		callback: function(r) {
+			console.log(r.message)
+			child.rate8 = r.message.rate
+			child.amount8 = r.message.amount
+			frm.refresh_field("receiver_information")
+			if (!child.id8) {
+				// If labour_id is not set, add a new row
+				const target_row = frm.add_child('transit_charges');
+				target_row.charges = item_selected;
+				target_row.quantity = quantity;
+				target_row.cost = r.message.amount;
+				child.id8 = target_row.idx;
+				target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+		
+				frm.refresh_field('transit_charges');
+			} else {
+				// If labour_id is already set, update the existing row
+				const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id8);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = r.message.amount;
+		
+						frm.refresh_field('transit_charges');
+							}
+						}
+					}
+				}
+
+
+			})
+			}
+		}
+// Additional Servicess 9
+function updateTransitCharges9(frm, cdt, cdn) {
+	const child = locals[cdt][cdn];
+	const item_selected = child.service9;
+	const quantity = child.quantity9;
+	const amount = child.amount9;
+
+	if (item_selected && quantity && frm.doc.party_name){
+
+	frappe.call({
+		method: "a3trans.a3trans.events.opportunity.get_rate",
+		args: {
+			"itm": item_selected,
+			"qty": quantity,
+			"customer":frm.doc.party_name
+
+		},
+
+		callback: function(r) {
+			console.log(r.message)
+			child.rate9 = r.message.rate
+			child.amount9 = r.message.amount
+			frm.refresh_field("receiver_information")
+			if (!child.id9) {
+				// If labour_id is not set, add a new row
+				const target_row = frm.add_child('transit_charges');
+				target_row.charges = item_selected;
+				target_row.quantity = quantity;
+				target_row.cost = r.message.amount;
+				child.id9 = target_row.idx;
+				target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+		
+				frm.refresh_field('transit_charges');
+			} else {
+				// If labour_id is already set, update the existing row
+				const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id9);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = r.message.amount;
+		
+						frm.refresh_field('transit_charges');
+							}
+						}
+					}
+				}
+
+
+			})
+			}
+		}
+// Additional Servicess 10
+function updateTransitCharges10(frm, cdt, cdn) {
+	const child = locals[cdt][cdn];
+	const item_selected = child.service10;
+	const quantity = child.quantity10;
+	const amount = child.amount10;
+
+	if (item_selected && quantity && frm.doc.party_name){
+
+	frappe.call({
+		method: "a3trans.a3trans.events.opportunity.get_rate",
+		args: {
+			"itm": item_selected,
+			"qty": quantity,
+			"customer":frm.doc.party_name
+
+		},
+
+		callback: function(r) {
+			console.log(r.message)
+			child.rate10 = r.message.rate
+			child.amount10 = r.message.amount
+			frm.refresh_field("receiver_information")
+			if (!child.id10) {
+				// If labour_id is not set, add a new row
+				const target_row = frm.add_child('transit_charges');
+				target_row.charges = item_selected;
+				target_row.quantity = quantity;
+				target_row.cost = r.message.amount;
+				child.id10 = target_row.idx;
+				target_row.description = "Services for " + child.transit_type + " Location " + child.zone;
+		
+				frm.refresh_field('transit_charges');
+			} else {
+				// If labour_id is already set, update the existing row
+				const existing_row = frm.doc.transit_charges.find(row => row.idx === child.id10);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = r.message.amount;
+		
+						frm.refresh_field('transit_charges');
+							}
+						}
+					}
+				}
+
+
+			})
+			}
+		}
 // Helper function to add a charge
 				function addCharge(frm, child, chargeName) {
 					// Check if the row is already there with the same reference and specific charge
