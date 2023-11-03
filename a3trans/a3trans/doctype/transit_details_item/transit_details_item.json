@@ -108,6 +108,7 @@
   {
    "fieldname": "additional_services_section",
    "fieldtype": "Section Break",
+   "hidden": 1,
    "label": "Additional Services"
   },
   {
@@ -166,7 +167,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-10-27 12:30:37.446567",
+ "modified": "2023-11-02 15:18:45.462336",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Transit Details Item",

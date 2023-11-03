@@ -120,6 +120,14 @@ if(frm.doc.booking_type==="Warehousing"){
         // frm.get_field('').$wrapper.hide();
     
     
+        frm.fields_dict['additional_services'].grid.get_field('additional_service').get_query = function(doc, cdt, cdn) {
+          	 
+            return {
+                filters: {
+                    "item_group": "Additional Services"
+                }
+            };
+        };
 
     frm.fields_dict['add_select_tariff'].get_query = function(doc){
         return {
@@ -165,6 +173,16 @@ if(frm.doc.booking_type==="Warehousing"){
 
 
 booking_type:function(frm){
+
+
+    frm.fields_dict['additional_services'].grid.get_field('additional_service').get_query = function(doc, cdt, cdn) {
+          	 
+        return {
+            filters: {
+                "item_group": "Additional Services"
+            }
+        };
+    };
     if(frm.doc.booking_type==="Transport"){
 
         frm.fields_dict['transit_details_item'].grid.get_field('choose_required_labour_service').get_query = function(doc, cdt, cdn) {
@@ -333,6 +351,8 @@ required_handling_services:function (frm){
     }
 
 },
+
+
 required_area:function(frm){
     if (frm.doc.warehouse){
         if (frm.doc.booked_upto && frm.doc.required_area){
@@ -427,6 +447,73 @@ warehouse:function(frm){
 }
 
 });
+frappe.ui.form.on('Additional Services',{
+    additional_service:function(frm,cdt,cdn){
+
+        const row = locals[cdt][cdn];
+        if (row.additional_service){
+            if(row.quantity){
+            frappe.call({
+                method: 'a3trans.a3trans.events.lead.service_charge',
+                args:{
+
+                    "service" : row.additional_service,
+                    "qty"   : row.quantity,
+                   
+
+                },
+                callback:function(r){
+                    console.log(r.message)
+                    row.rate = r.message.rate
+                    row.amount = r.message.amount
+                    frm.refresh_field("additional_services")
+
+                }
+            })
+        }
+   
+    }
+    else{
+        frappe.throw("Please select required service")
+    }
+       
+    },
+quantity : function(frm,cdt,cdn){
+   
+
+        const row = locals[cdt][cdn];
+        if (row.additional_service){
+            if(row.quantity){
+            frappe.call({
+                method: 'a3trans.a3trans.events.lead.service_charge',
+                args:{
+
+                    "service" : row.additional_service,
+                    "qty"   : row.quantity,
+                   
+
+                },
+                callback:function(r){
+                    console.log(r.message)
+                    row.rate = r.message.rate
+                    row.amount = r.message.amount
+                    frm.refresh_field("additional_services")
+
+                }
+            })
+        }
+        else{
+            frappe.throw("Please be sure you have entered quantity")
+        }
+    }
+    else{
+        frappe.throw("Please select required service")
+    }
+       
+    },
+
+})
+
 
 frappe.ui.form.on('Transit Details Item', {
     zone: function(frm, cdt, cdn) {

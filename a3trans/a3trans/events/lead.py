@@ -32,29 +32,32 @@ def after_insert(doc,methods):
             frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
 
 def validate(doc,methods):
-   lead_doc=doc
-   if doc.transit_charges_item:
-        total = 0
+    lead_doc=doc
+    total_tr = 0
+    total_ad = 0
+    total_wr = 0
+    if doc.transit_charges_item:   
         for pr in doc.transit_charges_item:
-                           
+                            
             if pr.cost:
-                total += pr.cost
-        doc.total_amount = total
-   if doc.warehouse_charges_item:
-        total = 0
+                total_tr += pr.cost
+    if doc.additional_services:   
+        for ad in doc.additional_services:
+            if ad.amount:
+                total_ad += ad.amount
+
+    if doc.warehouse_charges_item:  
         for pr in doc.warehouse_charges_item:                           
             if pr.cost:
-                total += pr.cost
-        doc.total_amount = total
-  
-
-   if lead_doc.status=="Opportunity":
+                total_wr += pr.cost
+      
+    doc.total_amount = total_tr + total_ad + total_wr
+    if lead_doc.status=="Opportunity":
         # if lead_doc.contact_by == "" or lead_doc.contact_by == None:
         #     frappe.throw("Please Assign this lead to a Staff for further follow-up")
         
         # if lead_doc.address_link == "" or lead_doc.address_link == None:
         #     frappe.throw("Please add Biling Address")
-      
         if frappe.db.exists("Customer",{"mobile_number":lead_doc.mobile_number}):
             customer=frappe.get_doc("Customer",{"mobile_number":lead_doc.mobile_number})
             opportunity = frappe.new_doc("Opportunity")
@@ -376,7 +379,26 @@ def validate(doc,methods):
             opportunity.save()
             frappe.msgprint("Opportunity Created Successfully")
 
-         
+
+
+@frappe.whitelist()
+def service_charge (service,qty):
+  
+    print(service,qty)  
+    data = {}
+    if frappe.db.exists("Tariff Details",{"is_standard":1}) :
+        tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+        if tariff.additional_services:
+            for add in tariff.additional_services:
+                if service == add.additional_service:
+                    print(add.rate)
+                    data["rate"] = add.rate
+                    amount = int(qty) * add.rate
+                    data["amount"] = amount
+    return data
+
+    
+    
 
 
 @frappe.whitelist()
@@ -414,6 +436,9 @@ def calculate_transportation_cost(zone, vehicle_type):
                 amount = item.amount
     print(amount,"$$$$$$$$$$$$")
     return amount 
+
+
+
 from datetime import datetime
 import calendar
 @frappe.whitelist()
