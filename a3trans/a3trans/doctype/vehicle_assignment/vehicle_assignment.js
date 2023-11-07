@@ -226,19 +226,24 @@ frappe.ui.form.on('Vehicle Assignment', {
                             }
 
                     }
-                    var selectedVTypes = []; // Define the array before the loop
+                    var selectedVTypes = [];
 
                     for (var i in response.message.data3) {
                         var item = response.message.data3[i];
                         selectedVTypes.push(item.vtype);
-                        console.log(selectedVTypes,"@@@@@@")
-                           // Assuming "type_of_vehicles_required" is a multiselect field
-                    frm.set_value("type_of_vehicles_required", "1 Ton");
+                        frm.set_value("type_of_vehicles_required", selectedVTypes);
+                    
+                        // Refresh the field to reflect the changes
+                        frm.refresh_field("type_of_vehicles_required");
                     }
                     
-                    frm.refresh_field("type_of_vehicles_required");
-                    console.log(frm.doc.type_of_vehicles_required,"AAAAAAAAAAAAAA")
+                    // After the loop is complete, set the value of the multi-select field
+                   
                     
+                    console.log(Array.isArray(selectedVTypes)); // Check if selectedVTypes is an array
+                    
+                    console.log(selectedVTypes, "Selected VTypes"); // Log the selected values
+                    console.log(frm.doc.type_of_vehicles_required, "Field Value"); // Log the field value
                     
                     // Clear the existing rows in the "routes" and "return_trips" child tables
                     frm.clear_table("routes");

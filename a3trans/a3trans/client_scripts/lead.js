@@ -268,6 +268,8 @@ booking_type:function(frm){
                         }
                     };
                 };
+
+                
     }
 
     },

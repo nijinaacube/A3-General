@@ -1,5 +1,5 @@
 
-
+var ind = 1;
 frappe.ui.form.on('Opportunity', {
 	
 	after_save: function(frm) {
@@ -76,6 +76,8 @@ frappe.ui.form.on('Opportunity', {
     	// }
  
     	if  (frm.is_new()){
+			
+				ind = 1
         	frm.set_value('booking_date', frappe.datetime.get_today());
       	}
      	 
@@ -635,90 +637,104 @@ frappe.ui.form.on('Opportunity', {
 			frm.doc.transit_charges = [];
 		}
 	
-		if (zones.length == 2) {
-			// Calculate cost and add transportation charge
-			let from_zone = zones[0];
-			let to_zone = zones[1];
+			const row = locals[cdt][cdn];
+			if (!row.index){
+			row.index = ind;
+			ind += 1;
+			}
+			frm.refresh_field("receiver_information");
+			const transit_details = frm.doc.receiver_information;
 			if (frm.doc.vehicle_type) {
-			   
-				frappe.call({
-					method: "a3trans.a3trans.events.opportunity.calculate_transportation_cost",
+			if (transit_details.length > 1) {
+			const from_row = transit_details[transit_details.length - 2];
+			const to_row = transit_details[transit_details.length - 1];
+			// Calculate transportation cost between the current and previous zones
+			frappe.call({
+					method: 'a3trans.a3trans.events.opportunity.calculate_transportation_cost',
 					args: {
-						"customer": frm.doc.party_name,
-						"zone": JSON.stringify([from_zone, to_zone]),
-						"vehicle_type": frm.doc.vehicle_type,
-						"length": frm.doc.receiver_information.length
+					'zone': JSON.stringify([from_row.zone, to_row.zone]),
+					'vehicle_type': frm.doc.vehicle_type,
+					'customer':frm.doc.party_name
 					},
-					callback: function(response) {
-						
-						if (response.message) {
-							
-								
-							if (!frm.doc.trans_id) {
-								console.log(response.message)
-								const target_row = frm.add_child('transit_charges');
-								
-								target_row.charges = "Transportation Charges";
-								target_row.quantity = 1;
-								target_row.from_zone = from_zone;
-								target_row.to_zone = to_zone;
-								frm.doc.trans_id=target_row.idx
-								target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
-								target_row.cost = response.message;
-								frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
-								frm.refresh_field('transit_charges');
-							}
-							else{
-								var existing_row = frm.doc.transit_charges.find(row => row.idx === frm.doc.trans_id);
-								if (existing_row){
-						
-								existing_row.cost = response.message;
-								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
-								frm.refresh_field('transit_charges');
-								}
-								else{
-									
-							
-										const target_row = frm.add_child('transit_charges');
-										
-										target_row.cost = 0;
-										frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
-										frm.refresh_field('transit_charges');
-												
-											
-								}
-	
-								
-							}
-	
-						}
-						
-					}
-				});
+			callback: function(response) {
+			console.log(response.message);
+			const cost = response.message;
+			// Update or create 'transit_charges_item' child table rows
+			const transit_charges = frm.doc.transit_charges || [];
+			let updated = false;
+			for (let i = 0; i < transit_charges.length; i++) {
+			const charge = transit_charges[i];
+			if (charge.from_id === row.index) {
+			console.log("success",cost);
+			var fromcity = charge.description.split(" to ")
+			console.log(fromcity,"&&&&&&&&&")
+			frappe.call({
+					method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
+					args: {
+					'zone': JSON.stringify([fromcity[0], fromcity[1]]),
+					'vehicle_type': frm.doc.vehicle_type,
+					},
+			callback: function(response) {
+			console.log(response.message,fromcity[0],fromcity[1],"@@@@@@@@@@@@@!!!!!!!!!!!1")
+			// Update the existing transportation charge row
+			charge.cost = response.message;
+			console.log(charge.cost)
+			frm.script_manager.trigger('cost', charge.doctype, charge.name);
+			frm.refresh_field('transit_charges');
+			}
+			})
+			// Update the existing transportation charge row
+			// charge.cost = 0;
+			var fromcity = charge.description.split(" to ")
+			charge.description = row.zone + ' to ' + fromcity[1]; // Updated description
+			frm.refresh_field('transit_charges');
+			updated = true;
+			}
+			if (charge.to_id === row.index) {
+			// console.log(charge.description.split("to"),"$$$$$$$$$$$$$4")
+			var fromcity = charge.description.split(" to ")
+			console.log(fromcity,"^^^^^^^^^^^^^^^^^^^^")
+			console.log("success",cost);
+			frappe.call({
+			method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
+			args: {
+			'zone': JSON.stringify([fromcity[1], fromcity[0]]),
+			'vehicle_type': frm.doc.vehicle_type,
+			},
+			callback: function(response) {
+			// console.log(response.message,fromcity[1],row.zone,"@@@@@@@@@@@@@")
+			// // Update the existing transportation charge row
+			charge.cost = response.message;
+			frm.script_manager.trigger('cost', charge.doctype, charge.name);
+			frm.refresh_field('transit_charges');
+			}
+			})
+			charge.description = fromcity[0] + ' to ' + row.zone 
+			frm.script_manager.trigger('cost', charge.doctype, charge.name);
+			frm.refresh_field('transit_charges');
+			updated = true;
+			}
+			}
+			if (!updated) {
+			// Create a new 'transit_charges_item' child table row
+			const transit_charges_row = frm.add_child('transit_charges');
+			transit_charges_row.charges = 'Transportation Charges';
+			transit_charges_row.quantity = 1;
+			transit_charges_row.description = from_row.zone + ' to ' + row.zone; // Updated description
+			transit_charges_row.cost = cost;
+			transit_charges_row.from_id = from_row.index;
+			transit_charges_row.to_id = row.index;
+			frm.script_manager.trigger('cost', transit_charges_row.doctype, transit_charges_row.name);
+			frm.refresh_field('transit_charges');
+			}
+			}
+			});
+			}
 			}
 			else{
-				frappe.throw("Please choose vehicle type")
+			frappe.throw("Please choose vehicle Type")
 			}
-		}
-		if(zones.length > 2){
-			console.log(zones[0],zones[1],zones[2])
-			const target_row = frm.add_child('transit_charges');
-			target_row.charges = "Transportation Charges";
-			target_row.quantity = 1;
-			target_row.cost=0
-			target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
-			frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
-			frm.refresh_field('transit_charges');
-			
-			
-			
-			
-			}
-			
-	
-
-	},
-
+			},
 
 
 mobile_number: function(frm){
@@ -746,6 +762,7 @@ frappe.ui.form.on('Return Trips', {
 	zone: function(frm, cdt, cdn) {
 		const child = locals[cdt][cdn];
 		const zones = frm.doc.return_trips.map(trip => trip.zone);
+	
 		
 		if (frm.doc.has_return_trip == 1) {
 			if (!frm.doc.receiver_information) {
@@ -1521,99 +1538,173 @@ warehouse: function(frm, cdt, cdn) {
 
 zone: function(frm, cdt, cdn) {
 	
-	if (frm.doc.vehicle_type){
-	const zones = frm.doc.receiver_information.map(receiver => receiver.zone);
-	frm.set_value("table_length",zones.length)
+	const row = locals[cdt][cdn];
 
 	
 	if (!frm.doc.transit_charges) {
     	frm.doc.transit_charges = [];
 	}
-
-	if (zones.length == 2) {
-
-    	// Calculate cost and add transportation charge
-    	let from_zone = zones[0];
-    	let to_zone = zones[1];
-    	if (frm.doc.vehicle_type) {
-      	 
-        	frappe.call({
-            	method: "a3trans.a3trans.events.opportunity.calculate_transportation_cost",
-            	args: {
-                	"customer": frm.doc.party_name,
-                	"zone": JSON.stringify([from_zone, to_zone]),
-                	"vehicle_type": frm.doc.vehicle_type,
-                	"length": frm.doc.receiver_information.length
-            	},
-            	callback: function(response) {
-                	
-                	if (response.message) {
-                    	
-                        	
-                    	if (!frm.doc.trans_id) {
-							console.log(response.message)
-                        	const target_row = frm.add_child('transit_charges');
-                        	target_row.charges = "Transportation Charges";
-                        	target_row.quantity = 1;
-                        	target_row.from_zone = from_zone;
-                        	target_row.to_zone = to_zone;
-							frm.doc.trans_id=target_row.idx
-							target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
-                        	target_row.cost = response.message;
-                        	frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
-                        	frm.refresh_field('transit_charges');
-                    	}
-						else{
-							var existing_row = frm.doc.transit_charges.find(row => row.idx === frm.doc.trans_id);
-							if (existing_row){
-								existing_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
-                        	existing_row.cost = response.message;
-                        	frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
-                        	frm.refresh_field('transit_charges');
-							}
-							else{
-								
-						
-									const target_row = frm.add_child('transit_charges');
-									
-									target_row.cost = 0;
-									frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
-									frm.refresh_field('transit_charges');
-											
-											
-								}
-
-								
-							}
-
-						}
-						
-							}
-						});
-					}
-				}
-				if(zones.length > 2){
-					console.log(zones[0],zones[1],zones[2])
-					const target_row = frm.add_child('transit_charges');
-					target_row.charges = "Transportation Charges";
-					target_row.quantity = 1;
-					target_row.cost=0
-					target_row.description=zones[zones.length-2]+" "+"to"+" "+zones[zones.length-1];
-					frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
-					frm.refresh_field('transit_charges');
-					
-					
-					
-					
-					}
-					
-			}
-			else{
-				frappe.throw("Please choose vehicle_type")
-			}
-
-			},
-
+	if (row.id1){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id1);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+	if (row.id2){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id2);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+	if (row.id3){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id3);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+	if (row.id4){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id4);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+	if (row.id5){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id5);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+	if (row.id6){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id6);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+	if (row.id7){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id7);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+	if (row.id8){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id8);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+	if (row.id9){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id9);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+	if (row.id10){
+			
+		const existing_row = frm.doc.transit_charges.find(rows => rows.idx === row.id10);
+		existing_row.description =  "Services for " + row.transit_type + " Location " + row.zone;
+		frm.refresh_field('transit_charges');
+	}
+		const zones = frm.doc.receiver_information.map(receiver => receiver.zone);
+		frm.set_value("table_length",zones.length)
+		
+		
+		if (!row.index){
+		row.index = ind;
+		ind += 1;
+		}
+		frm.refresh_field("receiver_information");
+		const transit_details = frm.doc.receiver_information;
+		if (frm.doc.vehicle_type) {
+		if (transit_details.length > 1) {
+		const from_row = transit_details[transit_details.length - 2];
+		const to_row = transit_details[transit_details.length - 1];
+		// Calculate transportation cost between the current and previous zones
+		frappe.call({
+		method: 'a3trans.a3trans.events.opportunity.calculate_transportation_cost',
+		args: {
+		'zone': JSON.stringify([from_row.zone, to_row.zone]),
+		'vehicle_type': frm.doc.vehicle_type,
+		'customer':frm.doc.party_name
+		},
+		callback: function(response) {
+		console.log(response.message);
+		const cost = response.message;
+		// Update or create 'transit_charges_item' child table rows
+		const transit_charges = frm.doc.transit_charges || [];
+		let updated = false;
+		for (let i = 0; i < transit_charges.length; i++) {
+		const charge = transit_charges[i];
+		if (charge.from_id === row.index) {
+		console.log("success",cost);
+		var fromcity = charge.description.split(" to ")
+		console.log(fromcity,"&&&&&&&&&")
+		frappe.call({
+		method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
+		args: {
+		'zone': JSON.stringify([fromcity[0], fromcity[1]]),
+		'vehicle_type': frm.doc.vehicle_type,
+		},
+		callback: function(response) {
+		console.log(response.message,fromcity[0],fromcity[1],"@@@@@@@@@@@@@!!!!!!!!!!!1")
+		// Update the existing transportation charge row
+		charge.cost = response.message;
+		console.log(charge.cost)
+		frm.script_manager.trigger('cost', charge.doctype, charge.name);
+		frm.refresh_field('transit_charges');
+		}
+		})
+		// Update the existing transportation charge row
+		// charge.cost = 0;
+		var fromcity = charge.description.split(" to ")
+		charge.description = row.zone + ' to ' + fromcity[1]; // Updated description
+		frm.refresh_field('transit_charges');
+		updated = true;
+		}
+		if (charge.to_id === row.index) {
+		// console.log(charge.description.split("to"),"$$$$$$$$$$$$$4")
+		var fromcity = charge.description.split(" to ")
+		console.log(fromcity,"^^^^^^^^^^^^^^^^^^^^")
+		console.log("success",cost);
+		frappe.call({
+		method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
+		args: {
+		'zone': JSON.stringify([fromcity[1], fromcity[0]]),
+		'vehicle_type': frm.doc.vehicle_type,
+		},
+		callback: function(response) {
+		// console.log(response.message,fromcity[1],row.zone,"@@@@@@@@@@@@@")
+		// // Update the existing transportation charge row
+		charge.cost = response.message;
+		frm.script_manager.trigger('cost', charge.doctype, charge.name);
+		frm.refresh_field('transit_charges');
+		}
+		})
+		charge.description = fromcity[0] + ' to ' + row.zone 
+		frm.script_manager.trigger('cost', charge.doctype, charge.name);
+		frm.refresh_field('transit_charges');
+		updated = true;
+		}
+		}
+		if (!updated) {
+		// Create a new 'transit_charges_item' child table row
+		const transit_charges_row = frm.add_child('transit_charges');
+		transit_charges_row.charges = 'Transportation Charges';
+		transit_charges_row.quantity = 1;
+		transit_charges_row.description = from_row.zone + ' to ' + row.zone; // Updated description
+		transit_charges_row.cost = cost;
+		transit_charges_row.from_id = from_row.index;
+		transit_charges_row.to_id = row.index;
+		frm.script_manager.trigger('cost', transit_charges_row.doctype, transit_charges_row.name);
+		frm.refresh_field('transit_charges');
+		}
+		}
+		});
+		}
+		}
+		else{
+		frappe.throw("Please choose vehicle Type")
+		}
+		},
 
 address:function(frm, cdt, cdn) {
 			var child = locals[cdt][cdn];       	 
@@ -1907,7 +1998,7 @@ function updateTransitCharges(frm, cdt, cdn) {
 			},
 
 			callback: function(r) {
-				console.log(r.message)
+				console.log(r.message,"##########33")
 				child.additional_service_2_rate = r.message.rate
 				child.amount_2 = r.message.amount
 				frm.refresh_field("receiver_information")
@@ -2420,7 +2511,7 @@ from_location:function(frm){
 						"customer": frm.doc.party_name,
 						"zone": JSON.stringify([from_zone, to_zone]),
 						"vehicle_type": frm.doc.vehicle_type,
-						"length": frm.doc.receiver_information.length
+					
 					},
 					callback: function(response) {
 						
@@ -2492,7 +2583,7 @@ to_location:function(frm){
 						"customer": frm.doc.party_name,
 						"zone": JSON.stringify([from_zone, to_zone]),
 						"vehicle_type": frm.doc.vehicle_type,
-						"length": frm.doc.receiver_information.length
+						
 					},
 					callback: function(response) {
 						
@@ -2559,7 +2650,7 @@ customer_name:function(frm){
 
 onload: function(frm) {
 	if  (frm.is_new()){
-
+		ind = 1
 	if (frm.doc.lead_id) {
     	console.log(frm.doc.lead_id, );
 
@@ -2594,6 +2685,11 @@ onload: function(frm) {
 			});
 		}
 		}
+		 
+        if (frm.doc.transit_details_item){
+            console.log(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1])
+            ind = parseInt(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1].index ) + 1
+        }
 		frm.fields_dict['order_id'].get_query = function(doc, cdt, cdn) {
 			return {
 				filters: [
@@ -3140,7 +3236,7 @@ required_area: function(frm, cdt, cdn) {
         	$.each(frm.doc.warehouse_charges || [], function(i, charge) {
             	if (charge.charges) {
                 	if (aggregated_items[charge.charges]) {
-            	console.log(aggregated_items,"ppp")
+            	console.log(aggregated_items)
                     	// Aggregate if item already exists
                     	aggregated_items[charge.charges].quantity += charge.quantity;
                     	aggregated_items[charge.charges].amount += charge.cost;
@@ -3289,74 +3385,434 @@ required_area: function(frm, cdt, cdn) {
 //  }
  
 frappe.ui.form.on('Warehouse Stock Items', {
-	choose_loading_service: function(frm, cdt, cdn) {
-    	var child1 = locals[cdt][cdn];
-    	var item_selected = child1.choose_loading_service;
+	service1: function (frm, cdt, cdn) {
+		
+        updateWarehouseCharges1(frm, cdt, cdn);
+			
+    },
 
-    	if (!child1.load_id) {
-        	// If labour_id is not set, add a new row
-        	const target_row = frm.add_child('warehouse_charges');
-        	target_row.charges = item_selected;
-        	target_row.quantity = 1;
-        	child1.load_id = target_row.idx;
-        	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
-        	frm.refresh_field('warehouse_charges');
-    	} else {
-        	// If labour_id is already set, update the existing row
-        	var existing_row = frm.doc.warehouse_charges.find(row => row.idx === child1.load_id);
-        	if (existing_row) {
-            	existing_row.charges = item_selected;
-            	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
-            	frm.refresh_field('warehouse_charges');
-        	} 
-    	}
+    qty1: function (frm, cdt, cdn) {
+        updateWarehouseCharges1(frm, cdt, cdn);
+    },
+
+    amount: function (frm, cdt, cdn) {
+        updateWarehouseCharges1(frm, cdt, cdn);
+    },
+	service2: function (frm, cdt, cdn) {
+		
+        updateWarehouseCharges2(frm, cdt, cdn);
+				
+
+    },
+
+    qty2: function (frm, cdt, cdn) {
+        updateWarehouseCharges2(frm, cdt, cdn);
+    },
+
+    amount2: function (frm, cdt, cdn) {
+        updateWarehouseCharges2(frm, cdt, cdn);
+    },
+	service3: function (frm, cdt, cdn) {
+		
+        updateWarehouseCharges3(frm, cdt, cdn);
+			
+    },
+
+    qty3: function (frm, cdt, cdn) {
+        updateWarehouseCharges3(frm, cdt, cdn);
+    },
+
+    amount3: function (frm, cdt, cdn) {
+        updateWarehouseCharges3(frm, cdt, cdn);
+    },
+
+	service4: function (frm, cdt, cdn) {
+		
+        updateWarehouseCharges4(frm, cdt, cdn);
+			
+    },
+
+    qty4: function (frm, cdt, cdn) {
+        updateWarehouseCharges4(frm, cdt, cdn);
+    },
+
+    amount4: function (frm, cdt, cdn) {
+        updateWarehouseCharges4(frm, cdt, cdn);
+    },
+	service5: function (frm, cdt, cdn) {
+		
+        updateWarehouseCharges5(frm, cdt, cdn);
+				
+
+    },
+
+    qty5: function (frm, cdt, cdn) {
+        updateWarehouseCharges5(frm, cdt, cdn);
+    },
+
+    amount5: function (frm, cdt, cdn) {
+        updateWarehouseCharges5(frm, cdt, cdn);
+    },
+
+
+	rate:function(frm,cdt,cdn){
+		const child = locals[cdt][cdn]
+		const item_selected = child.service1
+		const quantity = child.qty1
+		if (child.rate){
+			var total = (child.rate) * (child.qty1)
+			child.amount = total
+			frm.refresh_field("warehouse_stock_items")
+			const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id1);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = total;
+						frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+						frm.refresh_field('warehouse_charges');
+							}
+						}
+		}
+
+	},
+	rate2:function(frm,cdt,cdn){
+		const child = locals[cdt][cdn]
+		const item_selected = child.service2
+		const quantity = child.qty2
+		if (child.rate2){
+			var total = (child.rate2) * (child.qty2)
+			child.amount2 = total
+			frm.refresh_field("warehouse_stock_items")
+			const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id2);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = total;
+						frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+						frm.refresh_field('warehouse_charges');
+							}
+						}
+		}
+
+	},
+	rate3:function(frm,cdt,cdn){
+		const child = locals[cdt][cdn]
+		const item_selected = child.service3
+		const quantity = child.qty3
+		if (child.rate3){
+			var total = (child.rate3) * (child.qty3)
+			child.amount3 = total
+			frm.refresh_field("warehouse_stock_items")
+			const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id3);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = total;
+						frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+						frm.refresh_field('warehouse_charges');
+							}
+						}
+		}
+
+	},
+	rate4:function(frm,cdt,cdn){
+		const child = locals[cdt][cdn]
+		const item_selected = child.service4
+		const quantity = child.qty4
+		if (child.rate4){
+			var total = (child.rate4) * (child.qty4)
+			child.amount4 = total
+			frm.refresh_field("warehouse_stock_items")
+			const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id4);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = total;
+						frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+						frm.refresh_field('warehouse_charges');
+							}
+						}
+		}
+
+	},
+	rate5:function(frm,cdt,cdn){
+		const child = locals[cdt][cdn]
+		const item_selected = child.service5
+		const quantity = child.qty5
+		if (child.rate5){
+			var total = (child.rate5) * (child.qty5)
+			child.amount5 = total
+			frm.refresh_field("warehouse_stock_items")
+			const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id5);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = total;
+						frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+						frm.refresh_field('warehouse_charges');
+							}
+						}
+		}
+
+	},
+	service1: function (frm, cdt, cdn) {
+		const child = locals[cdt][cdn];
+		if (child.service1 == "") {
+				// Remove the corresponding row from 'transit_charges' if it exists
+				if (child.id1) {
+				
+						// Find the index of the row in the 'transit_charges' table
+						const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id1);
+						if (existing_row) {
+							
+								existing_row.charges = "";
+								existing_row.quantity = 0;
+								existing_row.cost = 0;
+								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+								
+								frm.refresh_field('warehouse_charges');
+							
+							}
+					// Find the index of the row in the 'transit_charges' table
+					const rowIdx = frm.doc.warehouse_charges.findIndex(row => row.idx === child.id1);
+					if (rowIdx !== -1) {
+						// Remove the row from the 'transit_charges' table
+						frm.doc.warehouse_charges.splice(rowIdx, 1);
+						frm.refresh_field('warehouse_charges');
+					}
+				}
+			// Clear the fields associated with additional_service_2
+			child.service1= "";
+			child.qty1 = "";
+			child.rate = "";
+			child.amount = "";
+			child.id1 = ""
+			frm.refresh_field("warehouse_stock_items");
+
+		
+		}
+	},
+	add1: function (frm, cdt, cdn) {
+		const child = locals[cdt][cdn];
+		if (child.add1 == 0) {
+				// Remove the corresponding row from 'warehouse_charges' if it exists
+				if (child.id2) {
+					
+						// Find the index of the row in the 'warehouse_charges' table
+						const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id2);
+						if (existing_row) {
+							
+								existing_row.charges = "";
+								existing_row.quantity = 0;
+								existing_row.cost = 0;
+								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+								
+								frm.refresh_field('warehouse_charges');
+							
+							}
+					// Find the index of the row in the 'warehouse_charges' table
+					const rowIdx = frm.doc.warehouse_charges.findIndex(row => row.idx === child.id2);
+					if (rowIdx !== -1) {
+						// Remove the row from the 'warehouse_charges' table
+						frm.doc.warehouse_charges.splice(rowIdx, 1);
+						frm.refresh_field('warehouse_charges');
+					}
+				}
+			// Clear the fields associated with additional_service_2
+			child.service2 = "";
+			child.qty2 = "";
+			child.rate2 = "";
+			child.amount2 = "";
+			child.id2 = ""
+			frm.refresh_field("warehouse_stock_items");
+
+		
+		}
+	},
+	add2: function (frm, cdt, cdn) {
+		const child = locals[cdt][cdn];
+		if (child.add2 == 0) {
+				// Remove the corresponding row from 'warehouse_charges' if it exists
+				if (child.id3) {
+					
+						// Find the index of the row in the 'warehouse_charges' table
+						const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id3);
+						if (existing_row) {
+							
+								existing_row.charges = "";
+								existing_row.quantity = 0;
+								existing_row.cost = 0;
+								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+								
+								frm.refresh_field('warehouse_charges');
+							
+							}
+					// Find the index of the row in the 'warehouse_charges' table
+					const rowIdx = frm.doc.warehouse_charges.findIndex(row => row.idx === child.id3);
+					if (rowIdx !== -1) {
+						// Remove the row from the 'warehouse_charges' table
+						frm.doc.warehouse_charges.splice(rowIdx, 1);
+						frm.refresh_field('warehouse_charges');
+					}
+				}
+			// Clear the fields associated with additional_service_2
+			child.service3 = "";
+			child.qty3 = "";
+			child.rate3 = "";
+			child.amount3 = "";
+			child.id3 = ""
+			frm.refresh_field("warehouse_stock_items");
+
+		
+		}
+	},
+	add3: function (frm, cdt, cdn) {
+		const child = locals[cdt][cdn];
+		if (child.add3 == 0) {
+				// Remove the corresponding row from 'transit_charges' if it exists
+				if (child.id4) {
+				
+						// Find the index of the row in the 'transit_charges' table
+						const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id4);
+						if (existing_row) {
+							
+								existing_row.charges = "";
+								existing_row.quantity = 0;
+								existing_row.cost = 0;
+								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+								
+								frm.refresh_field('warehouse_charges');
+							
+							}
+					// Find the index of the row in the 'transit_charges' table
+					const rowIdx = frm.doc.warehouse_charges.findIndex(row => row.idx === child.id4);
+					if (rowIdx !== -1) {
+						// Remove the row from the 'transit_charges' table
+						frm.doc.warehouse_charges.splice(rowIdx, 1);
+						frm.refresh_field('warehouse_charges');
+					}
+				}
+			// Clear the fields associated with additional_service_2
+			child.service4 = "";
+			child.qty4 = "";
+			child.rate4 = "";
+			child.amount4 = "";
+			child.id4 = ""
+			frm.refresh_field("warehouse_stock_items");
+		
+		}
+	},
+	add4: function (frm, cdt, cdn) {
+		const child = locals[cdt][cdn];
+		if (child.add4 == 0) {
+				// Remove the corresponding row from 'transit_charges' if it exists
+				if (child.id5) {
+					
+						// Find the index of the row in the 'transit_charges' table
+						const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id5);
+						if (existing_row) {
+							
+								existing_row.charges = "";
+								existing_row.quantity = 0;
+								existing_row.cost = 0;
+								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+								
+								frm.refresh_field('warehouse_charges');
+							
+							}
+					// Find the index of the row in the 'transit_charges' table
+					const rowIdx = frm.doc.warehouse_charges.findIndex(row => row.idx === child.id5);
+					if (rowIdx !== -1) {
+						// Remove the row from the 'transit_charges' table
+						frm.doc.warehouse_charges.splice(rowIdx, 1);
+						frm.refresh_field('warehouse_charges');
+					}
+				}
+			// Clear the fields associated with additional_service_2
+			child.service5= "";
+			child.qty5= "";
+			child.rate5 = "";
+			child.amount5 = "";
+			child.id5 = ""
+			frm.refresh_field("warehouse_stock_items");
+
+		
+		}
 	},
 
+	// choose_loading_service: function(frm, cdt, cdn) {
+    // 	var child1 = locals[cdt][cdn];
+    // 	var item_selected = child1.choose_loading_service;
 
-	choose_labour_service: function(frm, cdt, cdn) {
-    	var child1 = locals[cdt][cdn];
-    	var item_selected = child1.choose_labour_service;
+    // 	if (!child1.load_id) {
+    //     	// If labour_id is not set, add a new row
+    //     	const target_row = frm.add_child('warehouse_charges');
+    //     	target_row.charges = item_selected;
+    //     	target_row.quantity = 1;
+    //     	child1.load_id = target_row.idx;
+    //     	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+    //     	frm.refresh_field('warehouse_charges');
+    // 	} else {
+    //     	// If labour_id is already set, update the existing row
+    //     	var existing_row = frm.doc.warehouse_charges.find(row => row.idx === child1.load_id);
+    //     	if (existing_row) {
+    //         	existing_row.charges = item_selected;
+    //         	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+    //         	frm.refresh_field('warehouse_charges');
+    //     	} 
+    // 	}
+	// },
 
-    	if (!child1.labour_id) {
-        	// If labour_id is not set, add a new row
-        	const target_row = frm.add_child('warehouse_charges');
-        	target_row.charges = item_selected;
-        	target_row.quantity = 1;
-        	child1.labour_id = target_row.idx;
-        	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
-        	frm.refresh_field('warehouse_charges');
-    	} else {
-        	// If labour_id is already set, update the existing row
-        	var existing_row = frm.doc.warehouse_charges.find(row => row.idx === child1.labour_id);
-        	if (existing_row) {
-            	existing_row.charges = item_selected;
-            	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
-            	frm.refresh_field('warehouse_charges');
-        	} 
-    	}
-	},
-	choose_handling_service: function(frm, cdt, cdn) {
-    	var child1 = locals[cdt][cdn];
-    	var item_selected = child1.choose_handling_service;
 
-    	if (!child1.handle_id) {
-        	// If labour_id is not set, add a new row
-        	const target_row = frm.add_child('warehouse_charges');
-        	target_row.charges = item_selected;
-        	target_row.quantity = 1;
-        	child1.handle_id = target_row.idx;
-        	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
-        	frm.refresh_field('warehouse_charges');
-    	} else {
-        	// If labour_id is already set, update the existing row
-        	var existing_row = frm.doc.warehouse_charges.find(row => row.idx === child1.handle_id);
-        	if (existing_row) {
-            	existing_row.charges = item_selected;
-            	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
-            	frm.refresh_field('warehouse_charges');
-        	} 
-    	}
-	},
+	// choose_labour_service: function(frm, cdt, cdn) {
+    // 	var child1 = locals[cdt][cdn];
+    // 	var item_selected = child1.choose_labour_service;
+
+    // 	if (!child1.labour_id) {
+    //     	// If labour_id is not set, add a new row
+    //     	const target_row = frm.add_child('warehouse_charges');
+    //     	target_row.charges = item_selected;
+    //     	target_row.quantity = 1;
+    //     	child1.labour_id = target_row.idx;
+    //     	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+    //     	frm.refresh_field('warehouse_charges');
+    // 	} else {
+    //     	// If labour_id is already set, update the existing row
+    //     	var existing_row = frm.doc.warehouse_charges.find(row => row.idx === child1.labour_id);
+    //     	if (existing_row) {
+    //         	existing_row.charges = item_selected;
+    //         	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+    //         	frm.refresh_field('warehouse_charges');
+    //     	} 
+    // 	}
+	// },
+	// choose_handling_service: function(frm, cdt, cdn) {
+    // 	var child1 = locals[cdt][cdn];
+    // 	var item_selected = child1.choose_handling_service;
+
+    // 	if (!child1.handle_id) {
+    //     	// If labour_id is not set, add a new row
+    //     	const target_row = frm.add_child('warehouse_charges');
+    //     	target_row.charges = item_selected;
+    //     	target_row.quantity = 1;
+    //     	child1.handle_id = target_row.idx;
+    //     	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);
+    //     	frm.refresh_field('warehouse_charges');
+    // 	} else {
+    //     	// If labour_id is already set, update the existing row
+    //     	var existing_row = frm.doc.warehouse_charges.find(row => row.idx === child1.handle_id);
+    //     	if (existing_row) {
+    //         	existing_row.charges = item_selected;
+    //         	frm.script_manager.trigger('charges', existing_row.doctype, existing_row.name);
+    //         	frm.refresh_field('warehouse_charges');
+    //     	} 
+    // 	}
+	// },
 
     
 	// labour_required: function(frm, cdt, cdn) {
@@ -3460,10 +3916,273 @@ function handleCharges(frm, child, chargeName, action) {
     	}
 	}
 }
+
+function updateWarehouseCharges1(frm, cdt, cdn) {
+	const child = locals[cdt][cdn];
+	const item_selected = child.service1;
+	
+	const quantity = child.qty1;
+	const amount = child.amount;
+
+	if (item_selected && quantity && frm.doc.party_name){
+
+	frappe.call({
+		method: "a3trans.a3trans.events.opportunity.get_rate",
+		args: {
+			"itm": item_selected,
+			"qty": quantity,
+			"customer":frm.doc.party_name
+
+		},
+
+		callback: function(r) {
+			console.log(r.message)
+			child.rate = r.message.rate
+			child.amount = r.message.amount
+			frm.refresh_field("warehouse_stock_items")
+			if (!child.id1) {
+				// If labour_id is not set, add a new row
+				const target_row = frm.add_child('warehouse_charges');
+				target_row.charges = item_selected;
+				target_row.quantity = quantity;
+				target_row.cost = r.message.amount;
+				child.id1 = target_row.idx;
+				frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+				frm.refresh_field('warehouse_charges');
+			} else {
+				// If labour_id is already set, update the existing row
+				const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id1);
+				if (existing_row) {
+					if (item_selected) {
+						existing_row.charges = item_selected;
+						existing_row.quantity = quantity;
+						existing_row.cost = r.message.amount;
+						frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+						frm.refresh_field('warehouse_charges');
+							}
+						}
+					}
+				}
+
+
+			})
+			}
+		}
+
+
+function updateWarehouseCharges2(frm, cdt, cdn) {
+			const child = locals[cdt][cdn];
+			const item_selected = child.service2;
+			
+			const quantity = child.qty2;
+			const amount = child.amount2;
+		
+			if (item_selected && quantity && frm.doc.party_name){
+		
+			frappe.call({
+				method: "a3trans.a3trans.events.opportunity.get_rate",
+				args: {
+					"itm": item_selected,
+					"qty": quantity,
+					"customer":frm.doc.party_name
+		
+				},
+		
+				callback: function(r) {
+					console.log(r.message)
+					child.rate2 = r.message.rate
+					child.amount2 = r.message.amount
+					frm.refresh_field("warehouse_stock_items")
+					if (!child.id2) {
+						// If labour_id is not set, add a new row
+						const target_row = frm.add_child('warehouse_charges');
+						target_row.charges = item_selected;
+						target_row.quantity = quantity;
+						target_row.cost = r.message.amount;
+						child.id2 = target_row.idx;
+						frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+						frm.refresh_field('warehouse_charges');
+					} else {
+						// If labour_id is already set, update the existing row
+						const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id2);
+						if (existing_row) {
+							if (item_selected) {
+								existing_row.charges = item_selected;
+								existing_row.quantity = quantity;
+								existing_row.cost = r.message.amount;
+								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+								frm.refresh_field('warehouse_charges');
+									}
+								}
+							}
+						}
+		
+		
+					})
+					}
+				}
+
+function updateWarehouseCharges3(frm, cdt, cdn) {
+					const child = locals[cdt][cdn];
+					const item_selected = child.service3;
+					
+					const quantity = child.qty3;
+					const amount = child.amount3;
+				
+					if (item_selected && quantity && frm.doc.party_name){
+				
+					frappe.call({
+						method: "a3trans.a3trans.events.opportunity.get_rate",
+						args: {
+							"itm": item_selected,
+							"qty": quantity,
+							"customer":frm.doc.party_name
+				
+						},
+				
+						callback: function(r) {
+							console.log(r.message)
+							child.rate3 = r.message.rate
+							child.amount3 = r.message.amount
+							frm.refresh_field("warehouse_stock_items")
+							if (!child.id3) {
+								// If labour_id is not set, add a new row
+								const target_row = frm.add_child('warehouse_charges');
+								target_row.charges = item_selected;
+								target_row.quantity = quantity;
+								target_row.cost = r.message.amount;
+								child.id3 = target_row.idx;
+								frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+								frm.refresh_field('warehouse_charges');
+							} else {
+								// If labour_id is already set, update the existing row
+								const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id3);
+								if (existing_row) {
+									if (item_selected) {
+										existing_row.charges = item_selected;
+										existing_row.quantity = quantity;
+										existing_row.cost = r.message.amount;
+										frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+										frm.refresh_field('warehouse_charges');
+											}
+										}
+									}
+								}
+				
+				
+							})
+							}
+						}
+function updateWarehouseCharges4(frm, cdt, cdn) {
+							const child = locals[cdt][cdn];
+							const item_selected = child.service4;
+							
+							const quantity = child.qty4;
+							const amount = child.amount4;
+						
+							if (item_selected && quantity && frm.doc.party_name){
+						
+							frappe.call({
+								method: "a3trans.a3trans.events.opportunity.get_rate",
+								args: {
+									"itm": item_selected,
+									"qty": quantity,
+									"customer":frm.doc.party_name
+						
+								},
+						
+								callback: function(r) {
+									console.log(r.message)
+									child.rate4 = r.message.rate
+									child.amount4 = r.message.amount
+									frm.refresh_field("warehouse_stock_items")
+									if (!child.id4) {
+										// If labour_id is not set, add a new row
+										const target_row = frm.add_child('warehouse_charges');
+										target_row.charges = item_selected;
+										target_row.quantity = quantity;
+										target_row.cost = r.message.amount;
+										child.id4 = target_row.idx;
+										frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+										frm.refresh_field('warehouse_charges');
+									} else {
+										// If labour_id is already set, update the existing row
+										const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id4);
+										if (existing_row) {
+											if (item_selected) {
+												existing_row.charges = item_selected;
+												existing_row.quantity = quantity;
+												existing_row.cost = r.message.amount;
+												frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+												frm.refresh_field('warehouse_charges');
+													}
+												}
+											}
+										}
+						
+						
+									})
+									}
+								}
+function updateWarehouseCharges5(frm, cdt, cdn) {
+									const child = locals[cdt][cdn];
+									const item_selected = child.service5;
+									
+									const quantity = child.qty5;
+									const amount = child.amount5;
+								
+									if (item_selected && quantity && frm.doc.party_name){
+								
+									frappe.call({
+										method: "a3trans.a3trans.events.opportunity.get_rate",
+										args: {
+											"itm": item_selected,
+											"qty": quantity,
+											"customer":frm.doc.party_name
+								
+										},
+								
+										callback: function(r) {
+											console.log(r.message)
+											child.rate5 = r.message.rate
+											child.amount5 = r.message.amount
+											frm.refresh_field("warehouse_stock_items")
+											if (!child.id5) {
+												// If labour_id is not set, add a new row
+												const target_row = frm.add_child('warehouse_charges');
+												target_row.charges = item_selected;
+												target_row.quantity = quantity;
+												target_row.cost = r.message.amount;
+												child.id5 = target_row.idx;
+												frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
+												frm.refresh_field('warehouse_charges');
+											} else {
+												// If labour_id is already set, update the existing row
+												const existing_row = frm.doc.warehouse_charges.find(row => row.idx === child.id5);
+												if (existing_row) {
+													if (item_selected) {
+														existing_row.charges = item_selected;
+														existing_row.quantity = quantity;
+														existing_row.cost = r.message.amount;
+														frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
+														frm.refresh_field('warehouse_charges');
+															}
+														}
+													}
+												}
+								
+								
+											})
+											}
+										}
+
+
+
+
+
+
 frappe.ui.form.on('Warehouse Charges', {
 
-
- 
 	cost:function(frm, cdt, cdn) {
     	let aggregated_items = {}; // Object to store aggregated values.
    

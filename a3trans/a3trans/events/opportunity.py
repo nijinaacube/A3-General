@@ -15,7 +15,7 @@ def after_insert(doc, methods):
     if doc.lead_id == "" or doc.lead_id == None:
             
         if doc.party_name:
-                if doc.create_invoices==1:
+                # if doc.create_invoices==1:
                     if doc.opportunity_line_item:
                 
                         #Create sales order
@@ -65,7 +65,7 @@ def after_insert(doc, methods):
                                 #    sales_invoice.submit()
                                 doc.invoice_id = sales_invoice.name
                             doc.status="Converted"
-                            doc.create_invoices=0
+                            # doc.create_invoices=0
                         else:
                             frappe.throw("Please add/update Invoice Items in opportunity line items")
 
@@ -141,6 +141,64 @@ def after_insert(doc, methods):
                     #     customer.save()
 
 def validate(doc, method):
+ if doc._update_tariff_charges_for_additional_services == 1:
+    if doc.transit_charges:
+        for add in doc.transit_charges:
+            if add.charges:
+                if frappe.db.exists("Item", add.charges):
+                    item = frappe.get_doc("Item", add.charges)
+                    if item.item_group == "Additional Services":
+                        if frappe.db.exists("Tariff Details", {"customer": doc.party_name}):
+                            tariff = frappe.get_doc("Tariff Details", {"customer": doc.party_name})
+                            
+                            existing_rows = [charge.additional_service for charge in tariff.additional_services]
+
+                            # Check if the add.charges is already in the existing_rows
+                            if add.charges in existing_rows:
+                                for charge in tariff.additional_services:
+                                    if charge.additional_service == add.charges:
+                                        cst = float(add.cost) / float(add.quantity)
+                                        if cst != charge.rate:
+                                            charge.rate = cst
+                                            charge.amount = cst
+                            else:
+                                cst = float(add.cost) / float(add.quantity)
+                                tariff.append("additional_services", {
+                                    "additional_service": add.charges,
+                                    "quantity": 1,
+                                    "rate": cst,
+                                    "amount": cst
+                                })
+
+                            # Save the changes to the tariff document
+                            tariff.save()
+                        else:
+                            frappe.throw("No Tariff added for this customer to update additional service charges")
+
+
+                                             
+                            #     else:
+                                    
+                                   
+                            #         if add.charges:
+                                            
+                            #                 if add.quantity == 1:
+                                               
+                                              
+                            #                     tariff.append("additional_services",{"additional_service":add.charges,"quantity":1,"rate":add.cost,"amount":add.cost})
+                                                
+                                               
+                                                 
+                            #                 else:
+                                               
+                            #                     cst = float(add.cost)/float(add.quantity)
+                            #                     tariff.append("additional_services",{"additional_service":add.charges,"quantity":1,"rate":cst,"amount":cst})          
+                            #     tariff.save()  
+                            
+                            # else: 
+                            #     frappe.throw("No Tariff added for this customer to update additional service charges")
+         
+         
     if doc.has_return_trip == 1:
         if not doc.return_trips:
             frappe.throw("Please add return trips")
@@ -174,10 +232,8 @@ def validate(doc, method):
     if doc.opportunity_from=="Customer":
         if doc.lead_id:
             if doc.party_name:
-                if doc.create_invoices==1:
+                # if doc.create_invoices==1:
                     if doc.opportunity_line_item:
-                        
-                
                         #Create sales order
                         if not frappe.db.exists("Sales Order",{"booking_id":doc.name}):
                             sales_order=frappe.new_doc("Sales Order")
@@ -229,7 +285,7 @@ def validate(doc, method):
                                 lead= frappe.get_doc ("Lead", doc.lead_id)
                                 lead.status = "Converted"
                                 lead.save()
-                            doc.create_invoices=0
+                            # doc.create_invoices=0
                     else:
                         frappe.throw("Please add/update Invoice Items in opportunity line items")
         
@@ -734,14 +790,11 @@ get_return_order
 
 import json
 @frappe.whitelist()
-def calculate_transportation_cost(customer, zone, vehicle_type, length):
+def calculate_transportation_cost(customer, zone, vehicle_type):
     zone_list = json.loads(zone)
     amount = 0
-
-
     if len(zone_list) != 2:
         return 0  # Return 0 if it's not a pair
-
 
     if frappe.db.exists("Tariff Details", {"customer": customer}):
         tariff = frappe.get_doc("Tariff Details", {"customer": customer})
@@ -751,10 +804,7 @@ def calculate_transportation_cost(customer, zone, vehicle_type, length):
             if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
                 amount = item.amount
             elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
-                amount = item.amount
-
-
-        
+                amount = item.amount    
     else:
         if frappe.db.exists("Tariff Details", {"is_standard": 1}):
             tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
