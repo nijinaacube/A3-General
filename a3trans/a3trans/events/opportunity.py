@@ -790,11 +790,17 @@ get_return_order
 
 import json
 @frappe.whitelist()
-def calculate_transportation_cost(customer, zone, vehicle_type):
+def calculate_transportation_cost(customer, zone, vehicle_type,booking_type):
     zone_list = json.loads(zone)
     amount = 0
-    if len(zone_list) != 2:
-        return 0  # Return 0 if it's not a pair
+    data = {}
+    if booking_type:
+        if frappe.db.exists("Booking Type",booking_type):
+            b_type = frappe.get_doc("Booking Type",booking_type)
+            if b_type.item :
+                data["bill_item"] = b_type.item
+    # if len(zone_list) != 2:
+    #     return 0  # Return 0 if it's not a pair
 
     if frappe.db.exists("Tariff Details", {"customer": customer}):
         tariff = frappe.get_doc("Tariff Details", {"customer": customer})
@@ -802,18 +808,18 @@ def calculate_transportation_cost(customer, zone, vehicle_type):
 
         for item in tariff.tariff_details_item:
             if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
-                amount = item.amount
+                data["amount"] = item.amount
             elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
-                amount = item.amount    
+                data["amount"]= item.amount    
     else:
         if frappe.db.exists("Tariff Details", {"is_standard": 1}):
             tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
             for item in tariff.tariff_details_item:
                 if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
-                    amount = item.amount
+                    data["amount" ]= item.amount
                 elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
-                    amount = item.amount
-    return amount  
+                   data[ "amount" ]= item.amount
+    return data  
     #    customer=frappe.get_doc("Customer",customer)
     #    if customer.tariff:
     #        tariff = frappe.get_doc("Tariff Details", customer.tariff)

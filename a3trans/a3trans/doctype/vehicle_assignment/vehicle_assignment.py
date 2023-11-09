@@ -33,7 +33,7 @@ class VehicleAssignment(Document):
         opportunity.save()
 
         
-            # frappe.throw("uuu") 
+        
 
         # if self.routes:
         #     for orders in self.routes:

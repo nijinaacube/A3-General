@@ -217,6 +217,14 @@ booking_type:function(frm){
                 }
             };
         };
+        frm.fields_dict['shipment_details'].grid.get_field('item').get_query = function(doc, cdt, cdn) {
+          	 
+            return {
+                filters: {
+                    "is_stock_item": 1
+                }
+            };
+        };
 
 
     }
@@ -366,7 +374,8 @@ required_area:function(frm){
                     'booking_date': frm.doc.booking_date,
                     'booked_upto' : frm.doc.booked_upto,
                     'uom' : frm.doc.uom,
-                    "cargo_type":frm.doc.cargo_type
+                    "cargo_type":frm.doc.cargo_type,
+                    "booking_type":frm.doc.booking_type
                 },
                 callback: function(response) {
                     console.log(response.message);
@@ -374,7 +383,7 @@ required_area:function(frm){
                     frm.refresh_field("no_of_days")
                     if (!frm.doc.space_id){
                     const target_row = frm.add_child('warehouse_charges_item');
-                    target_row.charges = "Warehouse Space Rent";
+                    target_row.charges = response.message.bill_item;
                     target_row.quantity = 1
                     frm.doc.space_id = target_row.idx
                     target_row.cost = response.message["total_amount"]
@@ -384,7 +393,7 @@ required_area:function(frm){
                     else{
                         var existing_row = frm.doc.warehouse_charges_item.find(row => row.idx ===  frm.doc.space_id);
                     if (existing_row) {
-                        existing_row.charges = "Warehouse Space Rent";
+                        existing_row.charges = response.message.bill_item;
                         existing_row.quantity = 1
                         existing_row.cost = response.message["total_amount"]
                     
@@ -421,7 +430,7 @@ warehouse:function(frm){
                     frm.refresh_field("no_of_days")
                     if (!frm.doc.space_id){
                     const target_row = frm.add_child('warehouse_charges_item');
-                    target_row.charges = "Warehouse Space Rent";
+                    target_row.charges = response.message.bill_item;
                     target_row.quantity = 1
                     frm.doc.space_id = target_row.idx
                     target_row.cost = response.message["total_amount"]
@@ -431,7 +440,7 @@ warehouse:function(frm){
                     else{
                         var existing_row = frm.doc.warehouse_charges_item.find(row => row.idx ===  frm.doc.space_id);
                     if (existing_row) {
-                        existing_row.charges = "Warehouse Space Rent";
+                        existing_row.charges = response.message.bill_item;
                         existing_row.quantity = 1
                         existing_row.cost = response.message["total_amount"]
                     
@@ -538,10 +547,11 @@ frappe.ui.form.on('Transit Details Item', {
                     args: {
                         'zone': JSON.stringify([from_row.zone, to_row.zone]),
                         'vehicle_type': frm.doc.vehicle_type,
+                        'booking_type':frm.doc.booking_type
                     },
                     callback: function(response) {
                         console.log(response.message);
-                        const cost = response.message;
+                        const cost = response.message.amount;
 
                         // Update or create 'transit_charges_item' child table rows
                         const transit_charges = frm.doc.transit_charges_item || [];
@@ -559,11 +569,12 @@ frappe.ui.form.on('Transit Details Item', {
                                     args: {
                                         'zone': JSON.stringify([fromcity[0], fromcity[1]]),
                                         'vehicle_type': frm.doc.vehicle_type,
+                                        'booking_type':frm.doc.booking_type
                                     },
                                     callback: function(response) {
                                         console.log(response.message,fromcity[0],fromcity[1],"@@@@@@@@@@@@@!!!!!!!!!!!1")
                                          // Update the existing transportation charge row
-                                        charge.cost = response.message;
+                                        charge.cost = response.message.amount;
                                         console.log(charge.cost)
                                         frm.refresh_field('transit_charges_item');
 
@@ -590,11 +601,12 @@ frappe.ui.form.on('Transit Details Item', {
                                     args: {
                                         'zone': JSON.stringify([fromcity[1], fromcity[0]]),
                                         'vehicle_type': frm.doc.vehicle_type,
+                                        'booking_type':frm.doc.booking_type
                                     },
                                     callback: function(response) {
                                         // console.log(response.message,fromcity[1],row.zone,"@@@@@@@@@@@@@")
                                         //  // Update the existing transportation charge row
-                                        charge.cost = response.message;
+                                        charge.cost = response.message.amount;
                                         frm.refresh_field('transit_charges_item');
 
 
@@ -613,7 +625,7 @@ frappe.ui.form.on('Transit Details Item', {
                         if (!updated) {
                             // Create a new 'transit_charges_item' child table row
                             const transit_charges_row = frm.add_child('transit_charges_item');
-                            transit_charges_row.charges = 'Transportation Charges';
+                            transit_charges_row.charges = response.message.bill_item;
                             transit_charges_row.quantity = 1;
                             transit_charges_row.description = from_row.zone + ' to ' + row.zone; // Updated description
                             transit_charges_row.cost = cost;
@@ -749,25 +761,24 @@ if (charges_row.charges) {
 
 
 frappe.ui.form.on('Warehouse Charges', {
-    charges: function(frm, cdt, cdn) {
-        console.log("jjj")
+    charges: function(frm, cdt, cdn) {   
         const charges_row = locals[cdt][cdn];
 
 
-if (charges_row.charges) {
-    frappe.call({
-        method: "a3trans.a3trans.events.opportunity.fetch_charges_price",
-        args: {
-            charges: charges_row.charges
-        },
-        callback: function(response) {
-            console.log("successs price")
-            if (response && response.message) {
-                frappe.model.set_value(cdt, cdn, 'cost', response.message["price_list_rate"]);
-                frappe.model.set_value(cdt, cdn, 'quantity', 1);
-            }
+        if (charges_row.charges) {
+            frappe.call({
+                method: "a3trans.a3trans.events.opportunity.fetch_charges_price",
+                args: {
+                    charges: charges_row.charges
+                },
+                callback: function(response) {
+                    console.log("successs price")
+                    if (response && response.message) {
+                        frappe.model.set_value(cdt, cdn, 'cost', response.message["price_list_rate"]);
+                        frappe.model.set_value(cdt, cdn, 'quantity', 1);
+                    }
+                }
+            });
         }
-    });
-}
-    }
+            }
 })
