@@ -1,6 +1,15 @@
 
 var ind = 1;
 frappe.ui.form.on('Opportunity', {
+	create_invoices:function(frm){
+		
+		if (frm.doc.create_invoices ==1){
+	
+			
+		}
+	},
+		
+
 	
 	after_save: function(frm) {
 			// Create a new Project

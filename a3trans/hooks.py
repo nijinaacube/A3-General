@@ -135,6 +135,7 @@ doctype_js = {
    "Lead":"a3trans/client_scripts/lead.js",
    "Address":"a3trans/client_scripts/address.js",
    "Vehicle":"a3trans/client_scripts/vehicle.js",
+   "Sales Order": "a3trans/client_scripts/sales_order.js",
 
   
 }
@@ -164,9 +165,12 @@ doc_events = {
    "Sales Invoice":{
    "after_insert": "a3trans.a3trans.events.sales_invoice.after_insert",
    "on_submit":"a3trans.a3trans.events.sales_invoice.attach_pdf",
+    "before_submit":"a3trans.a3trans.events.sales_invoice.before_submit",
    
    },
-
+ "Sales Order":{
+   "on_submit":"a3trans.a3trans.events.sale_order.on_submit", 
+   },
 
    "Stock Entry":{
        "on_submit":"a3trans.a3trans.events.stock_entry.on_submit"

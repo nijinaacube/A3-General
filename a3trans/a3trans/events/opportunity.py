@@ -5,6 +5,7 @@ from datetime import datetime
 import calendar
 from functools import reduce
 from frappe.utils import add_to_date
+
 def after_insert(doc, methods):
     if doc.booking_type == "Transport":
         doc.transportation_required =1
@@ -19,55 +20,71 @@ def after_insert(doc, methods):
                     if doc.opportunity_line_item:
                 
                         #Create sales order
-                        if not frappe.db.exists("Sales Order",{"booking_id":doc.name}):
-                            sales_order=frappe.new_doc("Sales Order")
-                            sales_order.customer = doc.party_name
-                            sales_order.customer_name = doc.customer_name  
-                            sales_order.booking_id=doc.name
-                            sales_order.booking_type=doc.booking_type
-                            sales_order.booking_status="New"
-                            sales_order.delivery_date = frappe.utils.nowdate()
-                            if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
-                                if doc.opportunity_line_item:
-                                        for shipment in doc.opportunity_line_item:
-                                            sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
-                                        sales_order.save()
-                                        sales_order.submit()
+                    
+                          
+                        if doc.booking_type == "Transport" or doc.booking_type == "Warehousing":
+                            if doc.opportunity_line_item:
+                                # Collect items with include_in_billing checkbox equal to 1
+                                items_to_include = []
+                                for shipment in doc.opportunity_line_item:
+                                    if shipment.include_in_billing == 1:
+                                        items_to_include.append({
+                                            "item_code": shipment.item,
+                                            "qty": shipment.quantity,
+                                            "rate": shipment.average_rate
+                                        })
+
+                                # Check if Sales Order with the same booking_id already exists
+                                if not frappe.db.exists("Sales Order", {"booking_id": doc.name}):
+                                    # Create a new Sales Order
+                                    sales_order = frappe.new_doc("Sales Order")
+                                    sales_order.customer = doc.party_name
+                                    sales_order.customer_name = doc.customer_name
+                                    sales_order.booking_id = doc.name
+                                    sales_order.booking_type = doc.booking_type
+                                    sales_order.booking_status = "New"
+                                    sales_order.delivery_date = frappe.utils.nowdate()
+
+                                    # Append items to the Sales Order
+                                    for item_data in items_to_include:
+                                        sales_order.append("items", item_data)
+
+                                    sales_order.save()
+                                    sales_order.submit()
+
+
+
+
+
+                   # Create sales invoice
+                    # if doc.payment_amount != 0:
+                    #     if not frappe.db.exists("Sales Invoice", {"order_id": doc.name}):
+
+                    #         if doc.booking_type == "Transport" or doc.booking_type == "Warehousing":
+                    #             for shipment in doc.opportunity_line_item:
+                    #                 if shipment.include_in_billing == 1:
+                    #                     # Create a new Sales Invoice
+                    #                     sales_invoice = frappe.new_doc("Sales Invoice")
+                    #                     sales_invoice.customer = doc.party_name
+                    #                     sales_invoice.customer_name = doc.customer_name
+                    #                     sales_invoice.order_id = doc.name
+                    #                     sales_invoice.booking_type = doc.booking_type
+                    #                     # if doc.job_number:
+                    #                     #     sales_invoice.job_number = doc.job_number
+                    #                     sales_invoice.order_status = "New"
+                    #                     sales_invoice.due_date = frappe.utils.nowdate()
+                    #                     sales_invoice.append("items", {
+                    #                         "item_code": shipment.item,
+                    #                         "qty": shipment.quantity,
+                    #                         "rate": shipment.average_rate
+                    #                     })
+
+                    #                     sales_invoice.insert()
+                    #                     doc.invoice_id = sales_invoice.name
+
+                        doc.status = "Converted"
                 
 
-
-
-
-                        # Create sales invoice
-                        if doc.payment_amount != 0:
-                            if not frappe.db.exists("Sales Invoice",{"order_id":doc.name}):
-                                sales_invoice=frappe.new_doc("Sales Invoice")
-                                sales_invoice.customer = doc.party_name
-                                sales_invoice.customer_name = doc.customer_name
-                                sales_invoice.order_id=doc.name
-                                sales_invoice.booking_type=doc.booking_type
-                                #    if  doc.job_number:
-                                #         sales_invoice.job_number = doc.job_number
-                                sales_invoice.order_status="New"
-                                sales_invoice.due_date=frappe.utils.nowdate()
-                                if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
-                                    for shipment in doc.opportunity_line_item:
-                                        sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
-                                
-                                if doc.booking_type=="Diesel":
-                                    
-                                    sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
-                                if doc.booking_type=="Packing and Moving":
-                                    for packing in doc.packing_items:
-                                        sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
-
-                                sales_invoice.insert()
-                                #    sales_invoice.submit()
-                                doc.invoice_id = sales_invoice.name
-                            doc.status="Converted"
-                            # doc.create_invoices=0
-                        else:
-                            frappe.throw("Please add/update Invoice Items in opportunity line items")
 
      
     if doc.lead_id:
@@ -921,33 +938,44 @@ def get_rate(itm, qty, customer):
 def get_invoice_items(doc):
     oppo = frappe.get_doc("Opportunity", doc)
     data_from_receipt = []
-    
+
+    pending_items_exist = False  # Flag to check if there are pending items
+
     if oppo.opportunity_line_item:
         for line in oppo.opportunity_line_item:
-            data = {}
-            data["b_type"] = oppo.booking_type
-            if oppo.job_number:
-                data["job"]=oppo.job_number
-            else:
-                data["job"]=""
-            data["party"] = oppo.party_name
-            data["item"] = line.item
-            if frappe.db.exists("Item",line.item):
-                it =frappe.get_doc("Item",line.item)
-                if it.stock_uom:
-                    data["uom"] = it.stock_uom
-                if it.description:
-                    data["description"] = it.description
-                if oppo.company:
-                    comp = frappe.get_doc("Company",oppo.company)
-                    if comp.default_income_account:
-                        data["account"] =  comp.default_income_account
-           
-            data["quantity"] = line.quantity
-            data["rate"] = line.average_rate
-            data_from_receipt.append(data)
-        
+            if line.status == "Order":
+                data = {}  # Create a new dictionary for each iteration
+
+                data["b_type"] = oppo.booking_type
+                if oppo.job_number:
+                    data["job"] = oppo.job_number
+                else:
+                    data["job"] = ""
+                data["party"] = oppo.party_name
+                data["item"] = line.item
+
+                if frappe.db.exists("Item", line.item):
+                    it = frappe.get_doc("Item", line.item)
+                    if it.stock_uom:
+                        data["uom"] = it.stock_uom
+                    if it.description:
+                        data["description"] = it.description
+                    if oppo.company:
+                        comp = frappe.get_doc("Company", oppo.company)
+                        if comp.default_income_account:
+                            data["account"] = comp.default_income_account
+
+                data["quantity"] = line.quantity
+                data["rate"] = line.average_rate
+                data_from_receipt.append(data)
+                pending_items_exist = True  # Set the flag to True
+
+    if not pending_items_exist:
+        frappe.msgprint("No pending items found in the opportunity.")  # Display a message or take appropriate action
+        return {"data": []}
+
     return {"data": data_from_receipt}
+
 
 
           

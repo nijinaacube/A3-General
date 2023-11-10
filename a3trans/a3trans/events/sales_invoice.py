@@ -130,9 +130,17 @@ def save_and_attach(content, to_doctype, to_name, folder):
 	return fileName
 
 
-
-
-
+def before_submit(doc, method):
+	if doc.items and doc.order_id:
+		oppo = frappe.get_doc("Opportunity", doc.order_id)
+		if oppo.opportunity_line_item:
+			for itm in doc.items:
+				for line in oppo.opportunity_line_item:
+					if itm.item_code == line.item:
+						line.status = "Invoice"
+						if line.include_in_billing == 0:
+							line.include_in_billing=1
+						oppo.save()
 
 
 
