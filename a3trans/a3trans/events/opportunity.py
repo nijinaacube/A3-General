@@ -19,9 +19,7 @@ def after_insert(doc, methods):
                 # if doc.create_invoices==1:
                     if doc.opportunity_line_item:
                 
-                        #Create sales order
-                    
-                          
+                        #Create sales order   
                         if doc.booking_type == "Transport" or doc.booking_type == "Warehousing":
                             if doc.opportunity_line_item:
                                 # Collect items with include_in_billing checkbox equal to 1
@@ -34,27 +32,21 @@ def after_insert(doc, methods):
                                             "rate": shipment.average_rate
                                         })
 
-                                # Check if Sales Order with the same booking_id already exists
-                                if not frappe.db.exists("Sales Order", {"booking_id": doc.name}):
-                                    # Create a new Sales Order
-                                    sales_order = frappe.new_doc("Sales Order")
-                                    sales_order.customer = doc.party_name
-                                    sales_order.customer_name = doc.customer_name
-                                    sales_order.booking_id = doc.name
-                                    sales_order.booking_type = doc.booking_type
-                                    sales_order.booking_status = "New"
-                                    sales_order.delivery_date = frappe.utils.nowdate()
-
-                                    # Append items to the Sales Order
-                                    for item_data in items_to_include:
-                                        sales_order.append("items", item_data)
-
-                                    sales_order.save()
-                                    sales_order.submit()
-
-
-
-
+                                        # Check if Sales Order with the same booking_id already exists
+                                        if not frappe.db.exists("Sales Order", {"booking_id": doc.name}):
+                                            # Create a new Sales Order
+                                            sales_order = frappe.new_doc("Sales Order")
+                                            sales_order.customer = doc.party_name
+                                            sales_order.customer_name = doc.customer_name
+                                            sales_order.booking_id = doc.name
+                                            sales_order.booking_type = doc.booking_type
+                                            sales_order.booking_status = "New"
+                                            sales_order.delivery_date = frappe.utils.nowdate()
+                                            # Append items to the Sales Order
+                                            for item_data in items_to_include:
+                                                sales_order.append("items", item_data)
+                                            sales_order.save()
+                                            sales_order.submit()
 
                    # Create sales invoice
                     # if doc.payment_amount != 0:
@@ -336,14 +328,6 @@ def validate(doc, method):
                 user.flags.ignore_password_policy = True
                 user.insert()
                 frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
-
-
-
-
-
-
-
-
 
         linked_addresses = frappe.get_all('Dynamic Link', filters={
             'link_doctype': 'Customer',

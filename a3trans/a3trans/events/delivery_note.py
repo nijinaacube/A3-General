@@ -212,7 +212,7 @@ def on_submit(doc,methods):
 								
 		
 	
-# 
+
 @frappe.whitelist()
 def  get_items(doc):
 	print(doc)
@@ -237,6 +237,7 @@ def  get_items(doc):
 			data_from_receipt.append(data)
 			print(data)
 		return {"data": data_from_receipt}
+	
 
 	# if oppo.booking_type=="Vehicle":
 	# 	for itm in oppo.shipment_details:
