@@ -53,8 +53,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Driver ID",
-   "options": "Staff Member",
-   "reqd": 1
+   "options": "Staff Member"
   },
   {
    "depends_on": "eval:!doc.__islocal",
@@ -72,8 +71,7 @@
    "fieldname": "routes",
    "fieldtype": "Table",
    "label": "Routes",
-   "options": "Route Details Item",
-   "reqd": 1
+   "options": "Route Details Item"
   },
   {
    "collapsible": 1,
@@ -209,7 +207,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-11-02 15:57:41.344806",
+ "modified": "2023-11-17 12:05:08.825278",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Vehicle Assignment",

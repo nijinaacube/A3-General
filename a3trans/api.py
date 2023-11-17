@@ -338,3 +338,75 @@ def get_current_user():
 	user = frappe.session.user
 	user_details = frappe.get_doc("User", user)
 	return user_details.as_dict()
+
+# Import necessary modules
+import frappe
+from frappe import _
+
+import frappe
+import json
+
+@frappe.whitelist()
+def get_vehicle_data():
+	try:
+		# Fetch vehicle data from ERPNext using frappe.get_all()
+		vehicles = frappe.get_all("Vehicle", fields=["name", "latitude", "longitude"])
+
+		# Prepare the data in a dictionary format
+		vehicles_data = []
+		for vehicle in vehicles:
+			vehicle_data = {
+				"name": vehicle.name,
+				"latitude": vehicle.latitude,
+				"longitude": vehicle.longitude
+			}
+			vehicles_data.append(vehicle_data)
+
+		# Prepare dictionary to hold the data
+		data_dict = {
+			"vehicles": vehicles_data
+		}
+		print(data_dict)
+
+		return data_dict
+
+	except Exception as e:
+		# Handle exceptions if any
+		print(f"Error fetching vehicle data: {str(e)}")
+		return {"error": f"Error fetching vehicle data: {str(e)}"}
+
+
+# Enable CORS for this specific API endpoint
+def setup_cors():
+    frappe.local.flags.allow_origin = "*"
+
+# Call setup_cors function before handling the request
+setup_cors()
+
+
+import json
+
+@frappe.whitelist()
+def create_vehicle_assignments(vehicles):
+	print(vehicles, "@@@")
+	
+	try:
+		# Convert string representation of list into a Python list
+		vehicles_list = json.loads(vehicles)
+		
+		if vehicles_list:
+			for vehicle_id in vehicles_list:
+				print(vehicle_id)
+				
+				
+				# Create a new Vehicle Assignment document for each selected vehicle
+				vehicle_assignment = frappe.new_doc('Vehicle Assignment')
+				vehicle_assignment.vehicle_id = vehicle_id
+				# Set other fields as necessary
+				vehicle_assignment.insert()
+			
+			return "Vehicle assignments created successfully."
+	   
+	except Exception as e:
+		frappe.log_error(f"Error creating vehicle assignments: {str(e)}")
+		return "Failed to create vehicle assignments. Please try again."

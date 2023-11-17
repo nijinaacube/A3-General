@@ -9,21 +9,36 @@ frappe.ui.form.on('Opportunity', {
 		}
 	},
 		
-
 	
 	after_save: function(frm) {
-			// Create a new Project
-		if (frm.doc.order_status=="New" ){
-		if (frm.doc.booking_type=="Transport"){
-			frappe.new_doc("Vehicle Assignment", {
-				order: frm.doc.name, 
+		// Create a new Project
+		if (frm.doc.order_status == "New" && frm.doc.booking_type == "Transport") {
+			// Get the opportunity ID
+			var opportunityID = frm.doc.name; // Assuming 'name' is the field containing the opportunity ID
 			
-			}).then(doc => {
-				frappe.set_route("Form", "Vehicle Assignment", doc.name);
-			});
+			// Construct the URL with the opportunity ID as a query parameter
+			var redirectURL = 'http://local:8000/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID);
+			
+			// Redirect to the constructed URL
+			window.location.href = redirectURL;
 		}
-		}
-		},
+	},
+	
+	
+	
+	// after_save: function(frm) {
+	// 		// Create a new Project
+	// 	if (frm.doc.order_status=="New" ){
+	// 	if (frm.doc.booking_type=="Transport"){
+	// 		frappe.new_doc("Vehicle Assignment", {
+	// 			order: frm.doc.name, 
+			
+	// 		}).then(doc => {
+	// 			frappe.set_route("Form", "Vehicle Assignment", doc.name);
+	// 		});
+	// 	}
+	// 	}
+	// 	},
 	
 		// order_id: function(frm) {
 		// 	if (frm.doc.is_return == 1 && frm.doc.order_id) {

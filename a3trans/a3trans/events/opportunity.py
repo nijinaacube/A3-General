@@ -890,6 +890,7 @@ def get_rate(itm, qty, customer):
                     data["rate"] = add.rate
                     amount = int(qty) * add.rate
                     data["amount"] = amount
+                
         else:
             if frappe.db.exists("Tariff Details", {"is_standard": 1}):
                 tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
