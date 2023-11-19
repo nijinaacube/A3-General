@@ -8,7 +8,7 @@ frappe.ui.form.on('Opportunity', {
 				var orderStatus = frm.doc.order_status; // Retrieve the order status
 	
 				// Construct the URL with the opportunity ID and order status as query parameters
-				var redirectURL = 'http://local:8000/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus);
+				var redirectURL = 'https://redlinestest.frappe.cloud/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus);
 	
 				// Redirect to the constructed URL
 				window.location.href = redirectURL;
@@ -86,7 +86,7 @@ frappe.ui.form.on('Opportunity', {
 				var orderStatus = frm.doc.order_status; // Retrieve the order status
 	
 				// Construct the URL with the opportunity ID and order status as query parameters
-				var redirectURL = 'http://local:8000/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus);
+				var redirectURL = 'https://redlinestest.frappe.cloud/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus);
 	
 				// Redirect to the constructed URL
 				window.location.href = redirectURL;
