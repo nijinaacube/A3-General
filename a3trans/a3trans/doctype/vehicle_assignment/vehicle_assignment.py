@@ -7,47 +7,33 @@ from frappe.utils import get_datetime, time_diff
 
 
 class VehicleAssignment(Document):
-   def after_insert(self):
-    if self.order and self.type_of_vehicles:
-        type_list = [type.strip() for type in self.type_of_vehicles.split(", ")]
-        print(type_list)
+    def after_insert(self):
+        if self.order and self.type_of_vehicles:
+            type_list = [type.strip() for type in self.type_of_vehicles.split(", ")]
+            print(type_list)
 
-        opportunity = frappe.get_doc("Opportunity", self.order)
+            opportunity = frappe.get_doc("Opportunity", self.order)
 
-        for tp in type_list:
-            if tp:
-                found = False
-                for data in opportunity.vehicle_details_item:
-                    if data.vehicle_type == tp:
-                        data.vehicle_number = self.vehicle_id
-                        data.vehicle_assignment = self.name
-                        found = True
-                        break
-                if not found:
-                    opportunity.append("vehicle_details_item", {
-                        "vehicle_type": tp,
-                        "vehicle_number": self.vehicle_id,
-                        "vehicle_assignment": self.name
-                    })
+            for tp in type_list:
+                if tp:
+                    found = False
+                    for data in opportunity.vehicle_details_item:
+                        if data.vehicle_type == tp:
+                            data.vehicle_number = self.vehicle_id
+                            data.vehicle_assignment = self.name
+                            found = True
+                            break
+                    if not found:
+                        opportunity.append("vehicle_details_item", {
+                            "vehicle_type": tp,
+                            "vehicle_number": self.vehicle_id,
+                            "vehicle_assignment": self.name
+                        })
 
-        opportunity.save()
+            opportunity.save()
 
         
         
-
-        # if self.routes:
-        #     for orders in self.routes:
-        #         if orders.order_id:
-        #             opportunity = frappe.get_doc("Opportunity", orders.order_id)
-                    
-        #             opportunity.append("vehicle_details_item", {
-        #                 "vehicle_type": "1 Ton",
-        #                 "vehicle_number": self.vehicle_id,
-        #                 "vehicle_assignment": self.name
-        #             })
-                    
-        #             opportunity.save()  # Save the opportunity to update it
-        #             print(opportunity.vehicle_details_item)  # Print the updated opportunity
 
 
                   

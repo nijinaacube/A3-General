@@ -1,28 +1,20 @@
 
 var ind = 1;
 frappe.ui.form.on('Opportunity', {
-	create_invoices:function(frm){
-		
-		if (frm.doc.create_invoices ==1){
+
+		after_save: function(frm) {
+			if (frm.doc.order_status == "New" && frm.doc.booking_type == "Transport") {
+				var opportunityID = frm.doc.name;
+				var orderStatus = frm.doc.order_status; // Retrieve the order status
 	
-			
-		}
-	},
-		
+				// Construct the URL with the opportunity ID and order status as query parameters
+				var redirectURL = 'http://local:8000/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus);
 	
-	after_save: function(frm) {
-		// Create a new Project
-		if (frm.doc.order_status == "New" && frm.doc.booking_type == "Transport") {
-			// Get the opportunity ID
-			var opportunityID = frm.doc.name; // Assuming 'name' is the field containing the opportunity ID
-			
-			// Construct the URL with the opportunity ID as a query parameter
-			var redirectURL = 'http://local:8000/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID);
-			
-			// Redirect to the constructed URL
-			window.location.href = redirectURL;
-		}
-	},
+				// Redirect to the constructed URL
+				window.location.href = redirectURL;
+			}
+		},
+
 	
 	
 	
@@ -89,6 +81,18 @@ frappe.ui.form.on('Opportunity', {
 	
 
 	refresh: function(frm) {
+		frm.add_custom_button(__("Vehicle Assignment"), function() {
+			var opportunityID = frm.doc.name;
+				var orderStatus = frm.doc.order_status; // Retrieve the order status
+	
+				// Construct the URL with the opportunity ID and order status as query parameters
+				var redirectURL = 'http://local:8000/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus);
+	
+				// Redirect to the constructed URL
+				window.location.href = redirectURL;
+
+		}).addClass('btn-primary');
+		
 		
     	// if (frm.doc.booking_type!="Warehouse"){
     	// frm.fields_dict['links'].toggle(false);

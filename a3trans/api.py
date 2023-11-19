@@ -362,18 +362,18 @@ def get_vehicle_data():
 			}
 			vehicles_data.append(vehicle_data)
 
-		# Prepare dictionary to hold the data
-		data_dict = {
-			"vehicles": vehicles_data
-		}
-		print(data_dict)
+		# # Prepare dictionary to hold the data
+		# data_dict = {
+		# 	"vehicles": vehicles_data
+		# }
+		print(vehicles_data)
 
-		return data_dict
+		return vehicles_data
 
 	except Exception as e:
 		# Handle exceptions if any
 		print(f"Error fetching vehicle data: {str(e)}")
-		return {"error": f"Error fetching vehicle data: {str(e)}"}
+		return {"error": f"Error : {str(e)}"}
 
 
 # Enable CORS for this specific API endpoint
@@ -387,26 +387,50 @@ setup_cors()
 import json
 
 @frappe.whitelist()
-def create_vehicle_assignments(vehicles):
-	print(vehicles, "@@@")
-	
+def create_vehicle_assignments(vehicles,opportunity_id):
+	print(vehicles, "@@@",opportunity_id)
+	oppo = frappe.get_doc("Opportunity",opportunity_id)
+	data ={}
 	try:
 		# Convert string representation of list into a Python list
 		vehicles_list = json.loads(vehicles)
 		
 		if vehicles_list:
 			for vehicle_id in vehicles_list:
-				print(vehicle_id)
+				print(vehicle_id)	
 				
-				
+				vehicle = frappe.get_doc("Vehicle",vehicle_id)	
 				# Create a new Vehicle Assignment document for each selected vehicle
 				vehicle_assignment = frappe.new_doc('Vehicle Assignment')
+				vehicle_assignment.assignment_date = frappe.utils.today()
+				if vehicle.assigned_driver:
+					vehicle_assignment.driver_id = vehicle.assigned_driver	
+				if vehicle.assigned_helper:
+					vehicle_assignment.helper_id = vehicle.assigned_helper			
 				vehicle_assignment.vehicle_id = vehicle_id
+				if oppo.receiver_information:
+					for itm in oppo.receiver_information:
+						vehicle_assignment.append("routes",{"order_id":opportunity_id,"transit_type":itm.transit_type,"zone":itm.zone})
+				if oppo.vehicle_type:
+					vehicle_assignment.type_of_vehicles = oppo.vehicle_type
+				vehicle_assignment.order = opportunity_id
 				# Set other fields as necessary
 				vehicle_assignment.insert()
-			
-			return "Vehicle assignments created successfully."
+		
+				data["msg"]="Vehicle assignments created successfully."
+		
+			return data
 	   
 	except Exception as e:
 		frappe.log_error(f"Error creating vehicle assignments: {str(e)}")
 		return "Failed to create vehicle assignments. Please try again."
+import frappe
+from frappe import _
+
+@frappe.whitelist()
+def get_order_status(opportunity_id):
+    data = {}
+    oppo = frappe.get_doc("Opportunity", opportunity_id)
+    if oppo.status == "Vehicle Assigned":
+        data["status"] = "Vehicle Assigned"
+    return data
