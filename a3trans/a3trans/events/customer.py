@@ -18,7 +18,7 @@ def after_insert(doc,method):
 # Check if the contact exists, if not create it
    if not frappe.db.exists("Contact", {"first_name":doc.customer_name, "mobile_no":doc.mobile_number}):
        contact = frappe.new_doc("Contact")
-       print("hiii")
+       
        contact.first_name = doc.customer_name
        if doc.email:
            contact.append("email_ids", {
