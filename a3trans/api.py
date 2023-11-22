@@ -275,14 +275,32 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
 
     
     if valid:
-        user = frappe.new_doc("User")
-        user.first_name = rs.get_value("{0}_firstname".format(mobile_no))
-        user.last_name = rs.get_value("{0}_lastname".format(mobile_no))
-        user.email = rs.get_value("{0}_email".format(mobile_no))
-        user.mobile_no = mobile_no
-        user.send_welcome_email = 0
-        user.role_profile_name = "Logistic Customer"
-        user.insert(ignore_permissions=True)
+        # user = frappe.new_doc("User")
+        # user.first_name = rs.get_value("{0}_firstname".format(mobile_no))
+        # user.last_name = rs.get_value("{0}_lastname".format(mobile_no))
+        # user.email = rs.get_value("{0}_email".format(mobile_no))
+        # user.mobile_no = mobile_no
+        # user.send_welcome_email = 0
+        # user.role_profile_name = "Logistic Customer"
+        # user.insert(ignore_permissions=True)
+        
+        user = frappe.get_doc(
+            {
+                "doctype": "User",
+                "mobile_no": mobile_no,
+                "phone" : mobile_no,
+                "first_name":rs.get_value("{0}_firstname".format(mobile_no)), 
+                "last_name":rs.get_value("{0}_lastname".format(mobile_no)), 
+                "email":rs.get_value("{0}_email".format(mobile_no)),
+                "enabled": 1,  
+                "role_profile_name":"Logistic Customer",
+                "user_type": "Website User",
+                "send_welcome_email":0
+            }
+        )
+        user.flags.ignore_permissions = True
+        user.flags.ignore_password_policy = True
+        user.insert()
 
         otoken = create_bearer_token(mobile_no, client_id)
         user_roles = frappe.get_roles(otoken.user)
@@ -294,6 +312,7 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
             "scope": otoken.scopes,
             "user_details": {
                 "user": otoken.user,
+                "full_name": user.full_name,
                 "roles": user_roles,
                 "user_type": frappe.get_value("User", otoken.user, "user_type")
             }
