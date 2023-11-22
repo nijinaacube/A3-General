@@ -191,7 +191,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-10-12 10:58:04.775098",
+ "modified": "2023-11-22 10:53:47.249563",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Logistics",
@@ -206,6 +206,15 @@
    "icon": "lead",
    "label": "New Lead",
    "link_to": "Lead",
+   "type": "DocType"
+  },
+  {
+   "color": "#4463F0",
+   "doc_view": "List",
+   "format": "Available {}",
+   "label": "Lead List",
+   "link_to": "Lead",
+   "stats_filter": "{\n    \"status\": \"Lead\"\n}",
    "type": "DocType"
   },
   {

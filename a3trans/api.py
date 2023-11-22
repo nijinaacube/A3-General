@@ -263,11 +263,11 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
         status_code = 420
         valid = False
 
-    if not otp_not_expired(otp_json):
-        data = "You have entered expired OTP"
-        message = "OTP is expired"
-        status_code = 420
-        valid = False
+    # if not otp_not_expired(otp_json):
+    #     data = "You have entered expired OTP"
+    #     message = "OTP is expired"
+    #     status_code = 420
+    #     valid = False
 
     user = frappe.new_doc("User")
     user.first_name = rs.get_value("{0}_firstname".format(mobile_no))
