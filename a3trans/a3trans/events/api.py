@@ -51,17 +51,18 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
     lead.booking_type = booking_type.name
     # lead.lead_owner = data["email_id"]
     lead.remarks = data["remarks"]
+    for service in data["addition_service"]["services"]:
+        lead.append("additional_services", {
+            "additional_service": service["service"],
+        })
     if booking_type.inventory_required == 1:
         lead.warehouse = data["warehouse"]
         lead.cargo_type = data["cargo_type"]
         lead.required_area = data["required_area"]
         lead.booked_upto = data["booked_upto"]
         lead.uom = data["uom"]
-    for vehicle in data["vehicle_list"]["vehicle"]:
-        lead.append("vehicle_list", {
-            "vehicle_type": vehicle["vehicle_type"],
-            "quantity": vehicle["quantity"],
-        })
+        lead.vehicle_type = data["vehicle_type"]
+    
     if booking_type.location_required == 1:
         lead.append("transit_details_item", {
             "transit_type": data["pick_transit_type"],
@@ -92,6 +93,7 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
     opp.party_name = data["lead_name"]
     opp.order_status = "New"
     opp.mobile_number = data["mobile_number"]
+    opp.vehicle_type = data["vehicle_type"]
     opp.booking_channel = "Mobile App"
     opp.booking_type = booking_type.name
     opp.booking_date = datetime.datetime.today()

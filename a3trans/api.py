@@ -257,7 +257,6 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
 
     rs = frappe.cache()
     otp_json = rs.get_value("{0}_otp".format(mobile_no))
-    print(otp_json)
 
     if int(otp_json['otp']) != int(otp):
         data = "OTP you have entered is not found"
@@ -275,14 +274,6 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
 
     
     if valid:
-        # user = frappe.new_doc("User")
-        # user.first_name = rs.get_value("{0}_firstname".format(mobile_no))
-        # user.last_name = rs.get_value("{0}_lastname".format(mobile_no))
-        # user.email = rs.get_value("{0}_email".format(mobile_no))
-        # user.mobile_no = mobile_no
-        # user.send_welcome_email = 0
-        # user.role_profile_name = "Logistic Customer"
-        # user.insert(ignore_permissions=True)
         
         user = frappe.get_doc(
             {
@@ -321,9 +312,7 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
     else:
         frappe.throw(data, title=message, exe=ValidationError)
 
-    # Delete consumed otp
     rs.delete_key(mobile_no + "_otp")
-
     frappe.local.response = frappe._dict(out)
 
 
@@ -370,10 +359,8 @@ def get_current_user():
 @frappe.whitelist()
 def get_vehicle_data():
     try:
-        # Fetch vehicle data from ERPNext using frappe.get_all()
         vehicles = frappe.get_all("Vehicle", fields=["name", "latitude", "longitude"])
 
-        # Prepare the data in a dictionary format
         vehicles_data = []
         for vehicle in vehicles:
             vehicle_data = {
@@ -383,10 +370,7 @@ def get_vehicle_data():
             }
             vehicles_data.append(vehicle_data)
 
-        # # Prepare dictionary to hold the data
-        # data_dict = {
-        # 	"vehicles": vehicles_data
-        # }
+
         print(vehicles_data)
 
         return vehicles_data
