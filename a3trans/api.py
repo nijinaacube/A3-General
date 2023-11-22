@@ -213,7 +213,9 @@ def authenticate(otp=None, mobile_no=None, client_id=None):
             "scope": otoken.scopes,
             "user_details": {
                 "user": otoken.user,
+                "full_name": frappe.get_value('User', otoken.user, "full_name"),
                 "roles": user_roles,
+                "mobile": mobile_no,
                 "user_type": frappe.get_value("User", otoken.user, "user_type")
             }
         }
