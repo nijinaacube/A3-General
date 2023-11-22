@@ -85,7 +85,8 @@ def get_for_signup(mobile_no=None, first_name=None, last_name=None, email=None):
     status_code = 0
     valid = True
     def generate_otp_for_signup():
-        otp = ''.join(["{}".format(random.randint(0, 9)) for i in range(0, otp_length)])
+        # otp = ''.join(["{}".format(random.randint(0, 9)) for i in range(0, otp_length)])
+        otp = '123456'
         return {"id": key, "otp": otp, "timestamp": str(frappe.utils.get_datetime().utcnow())}
 
     if not mobile_no:
@@ -256,12 +257,15 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
 
     rs = frappe.cache()
     otp_json = rs.get_value("{0}_otp".format(mobile_no))
+    print(otp_json)
 
-    if "123456" != otp:
+    if int(otp_json['otp']) != int(otp):
         data = "OTP you have entered is not found"
         message = "OTP not found"
         status_code = 420
         valid = False
+    else:
+        valid = True
 
     # if not otp_not_expired(otp_json):
     #     data = "You have entered expired OTP"
@@ -278,7 +282,7 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
         user.mobile_no = mobile_no
         user.send_welcome_email = 0
         user.role_profile_name = "Logistic Customer"
-        user.insert()
+        user.insert(ignore_permissions=True)
 
         otoken = create_bearer_token(mobile_no, client_id)
         user_roles = frappe.get_roles(otoken.user)
