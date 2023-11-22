@@ -269,19 +269,19 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
     #     status_code = 420
     #     valid = False
 
-    user = frappe.new_doc("User")
-    user.first_name = rs.get_value("{0}_firstname".format(mobile_no))
-    user.last_name = rs.get_value("{0}_lastname".format(mobile_no))
-    user.email = rs.get_value("{0}_email".format(mobile_no))
-    user.mobile_no = mobile_no
-    user.send_welcome_email = 0
-    user.role_profile_name = "Logistic Customer"
-    user.insert()
-
-    otoken = create_bearer_token(mobile_no, client_id)
-    user_roles = frappe.get_roles(otoken.user)
     
     if valid:
+        user = frappe.new_doc("User")
+        user.first_name = rs.get_value("{0}_firstname".format(mobile_no))
+        user.last_name = rs.get_value("{0}_lastname".format(mobile_no))
+        user.email = rs.get_value("{0}_email".format(mobile_no))
+        user.mobile_no = mobile_no
+        user.send_welcome_email = 0
+        user.role_profile_name = "Logistic Customer"
+        user.insert()
+
+        otoken = create_bearer_token(mobile_no, client_id)
+        user_roles = frappe.get_roles(otoken.user)
 
         out = {
             "access_token": otoken.access_token,
