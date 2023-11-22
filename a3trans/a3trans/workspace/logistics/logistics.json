@@ -191,7 +191,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-11-22 10:53:47.249563",
+ "modified": "2023-11-22 11:10:57.708953",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Logistics",
@@ -209,9 +209,9 @@
    "type": "DocType"
   },
   {
-   "color": "#4463F0",
+   "color": "#CB2929",
    "doc_view": "List",
-   "format": "Available {}",
+   "format": "{} New Leads",
    "label": "Lead List",
    "link_to": "Lead",
    "stats_filter": "{\n    \"status\": \"Lead\"\n}",
@@ -230,15 +230,20 @@
    "type": "DocType"
   },
   {
-   "doc_view": "New",
-   "label": "Create New Invoice",
-   "link_to": "Sales Invoice",
+   "color": "#4F9DD9",
+   "doc_view": "List",
+   "format": "{} New Bookings",
+   "label": "Booking List",
+   "link_to": "Opportunity",
+   "stats_filter": "{\n    \"status\": \"Open\"\n}",
    "type": "DocType"
   },
   {
-   "doc_view": "New",
-   "label": "New Truck Assignment",
+   "doc_view": "List",
+   "format": "{} Assigned Trucks",
+   "label": "Truck Assignment List",
    "link_to": "Vehicle Assignment",
+   "stats_filter": "{\n    \"assignment_status\":\"Vehicle Assigned\"\n}",
    "type": "DocType"
   },
   {
