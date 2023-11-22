@@ -8,28 +8,29 @@ from frappe.utils import add_to_date
 def after_insert(doc,methods):
     lead_doc=doc
     if lead_doc.mobile_number and lead_doc.email_id:
-        if not frappe.db.exists("User", {"first_name":lead_doc.lead_name, "mobile_no":lead_doc.mobile_number,"email":lead_doc.email_id}):
-            user = frappe.get_doc(
-                {
-                    "doctype": "User",
-                    "mobile_no": lead_doc.mobile_number,
-                    "user.phone" : lead_doc.mobile_number,
-                    "first_name":lead_doc.lead_name,
-
-
-                    
-                    
-                    "email":lead_doc.email_id,
-                    "enabled": 1,  
-                    "role_profile_name":"Logistic Customer",
-                    "user_type": "Website User",
-                    "send_welcome_email":0
-                }
-            )
-            user.flags.ignore_permissions = True
-            user.flags.ignore_password_policy = True
-            user.insert()
-            frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
+        if not lead_doc.booking_channel == "Mobile App":
+            if not frappe.db.exists("User", {"first_name":lead_doc.lead_name, "mobile_no":lead_doc.mobile_number,"email":lead_doc.email_id}):
+                user = frappe.get_doc(
+                    {
+                        "doctype": "User",
+                        "mobile_no": lead_doc.mobile_number,
+                        "user.phone" : lead_doc.mobile_number,
+                        "first_name":lead_doc.lead_name,
+    
+    
+                        
+                        
+                        "email":lead_doc.email_id,
+                        "enabled": 1,  
+                        "role_profile_name":"Logistic Customer",
+                        "user_type": "Website User",
+                        "send_welcome_email":0
+                    }
+                )
+                user.flags.ignore_permissions = True
+                user.flags.ignore_password_policy = True
+                user.insert()
+                frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
 
 def validate(doc,methods):
     if doc.booking_type:
