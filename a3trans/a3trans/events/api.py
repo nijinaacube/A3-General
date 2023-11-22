@@ -49,7 +49,7 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
         lead.mobile_number = data["mobile_number"]
     lead.booking_channel = "Mobile App"
     lead.booking_type = booking_type.name
-    # lead.lead_owner = data["email_id"]
+    lead.lead_owner = "Administrator"
     lead.remarks = data["remarks"]
     for service in data["addition_service"]["services"]:
         lead.append("additional_services", {
