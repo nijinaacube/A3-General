@@ -314,6 +314,7 @@ def authenticate_for_signup(otp=None, mobile_no=None, client_id=None):
                 "user": otoken.user,
                 "full_name": user.full_name,
                 "roles": user_roles,
+                "mobile": mobile_no,
                 "user_type": frappe.get_value("User", otoken.user, "user_type")
             }
         }
