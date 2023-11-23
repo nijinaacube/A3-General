@@ -1053,3 +1053,19 @@ def cancel_booking(name):
             return None
 
 
+@frappe.whitelist()
+def get_zones(order_id):
+    data = {}
+    oppo = frappe.get_doc("Opportunity", order_id)
+    
+    if oppo and oppo.receiver_information:
+        data["from"]=(oppo.receiver_information[0].zone)  
+        
+        if len(oppo.receiver_information) > 1:
+            data ["to"] = (oppo.receiver_information[-1].zone) 
+    
+    return data
+
+             
+         
+     
