@@ -44,9 +44,9 @@ def create_booking(**kwargs):
 def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
     lead = frappe.new_doc("Lead")
     lead.lead_name = data["lead_name"]
+    lead.mobile_number = data["mobile_number"]
     if not hasPrev:
         lead.email_id = data["email_id"]
-        lead.mobile_number = data["mobile_number"]
     lead.booking_channel = "Mobile App"
     lead.booking_type = booking_type.name
     lead.lead_owner = "Administrator"
