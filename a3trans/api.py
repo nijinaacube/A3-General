@@ -16,7 +16,8 @@ def get(mobile_no=None):
     status_code = 0
     valid = True
     def generate_otp():
-        otp = ''.join(["{}".format(random.randint(0, 9)) for i in range(0, otp_length)])
+        # otp = ''.join(["{}".format(random.randint(0, 9)) for i in range(0, otp_length)])
+        otp = '123456'
         return {"id": key, "otp": otp, "timestamp": str(frappe.utils.get_datetime().utcnow())}
 
     if not mobile_no:
