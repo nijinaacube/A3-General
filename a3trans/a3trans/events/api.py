@@ -54,6 +54,7 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
     for service in data["addition_service"]["services"]:
         lead.append("additional_services", {
             "additional_service": service["service"],
+            "quantity": 1
         })
     if booking_type.inventory_required == 1:
         lead.warehouse = data["warehouse"]
@@ -61,9 +62,9 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
         lead.required_area = data["required_area"]
         lead.booked_upto = data["booked_upto"]
         lead.uom = data["uom"]
-        lead.vehicle_type = data["vehicle_type"]
     
     if booking_type.location_required == 1:
+        lead.vehicle_type = data["vehicle_type"]
         lead.append("transit_details_item", {
             "transit_type": data["pick_transit_type"],
             "city": data["pick_city"],
