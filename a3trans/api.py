@@ -420,9 +420,10 @@ def create_vehicle_assignments(vehicles,opportunity_id):
                     for itm in oppo.receiver_information:
                         vehicle_assignment.append("routes",{"order_id":opportunity_id,"transit_type":itm.transit_type,"zone":itm.zone})
                 if oppo.vehicle_type:
-                    vehicle_assignment.type_of_vehicles = oppo.vehicle_type
+                    vehicle_assignment.type_of_vehicles = vehicle.vehicle_type
+                # oppo.multiple_vehicles = 1
+                # oppo.insert()
                 vehicle_assignment.order = opportunity_id
-                # Set other fields as necessary
                 vehicle_assignment.insert()
         
                 data["msg"]="Vehicle assignments created successfully."
