@@ -119,8 +119,9 @@ fixtures = [
 			[
 			"role", "in", [
 					"Operator",
-				   
-					"Guest"
+				   "Customer",
+					"Guest",
+               "Driver"
 				   ]
 				]
   ]
