@@ -83,7 +83,7 @@ frappe.ui.form.on('Opportunity', {
 
 	refresh: function(frm) {
 		if(!frm.is_new()){
-		if (frm.doc.booking_type == "Transport"){
+		if (frm.doc.booking_type == "Transport" && frm.doc.status != "Lost"){
 		frm.add_custom_button(__("Vehicle Map"), function() {
 			var opportunityID = frm.doc.name;
 				var orderStatus = frm.doc.order_status; // Retrieve the order status
@@ -104,7 +104,7 @@ frappe.ui.form.on('Opportunity', {
 						var lat = r.message.lat
 						var long = r.message.long
 						// Construct the URL with the opportunity ID and order status as query parameters
-					var redirectURL = 'https://redlinestest.frappe.cloud/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus) + 
+					var redirectURL = 'http://local:8000/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus) + 
 					'&customer='+ encodeURIComponent(Customer)+ '&type=' + encodeURIComponent(vehicle_type) + '&from=' + encodeURIComponent(from)  + '&to=' + encodeURIComponent(to)
 					+ '&lat=' + encodeURIComponent(lat) + '&long=' + encodeURIComponent(long) + '&line1=' + encodeURIComponent(line1) + '&city=' + encodeURIComponent(city)
 					+ '&phone=' + encodeURIComponent(phone)
@@ -154,7 +154,7 @@ frappe.ui.form.on('Opportunity', {
        	 
         	})
     	}
-		if (frm.doc.status === "Converted") { // Check if the document is saved
+		if (frm.doc.status != "Closed" && frm.doc.order_status != "Delivered" && frm.doc.order_status != "Closed" && frm.doc.status != "Lost") { // Check if the document is saved
 			frm.add_custom_button(__('Cancel Booking'), function() {
 			frappe.confirm(
 			__('Are you sure you want to Cancel Booking?'),
@@ -167,7 +167,7 @@ frappe.ui.form.on('Opportunity', {
 				},
 				callback: function(r) {
 				console.log(r.message)
-				console.log("rrrrrrrrrrrr")
+				console.log("rr")
 				if (r.message) {
 				let d = new frappe.ui.Dialog({
 				title: 'Cancellation Charges Details',
@@ -235,7 +235,7 @@ frappe.ui.form.on('Opportunity', {
 			
 		
 		
-		if (frm.doc.order_status !== "Closed"){
+		if (frm.doc.order_status !== "Delivered" || frm.doc.order_status !== "Closed"){
 		frm.add_custom_button(__("Execute"), function() {
 			
 			// Check if the invoice_id is set

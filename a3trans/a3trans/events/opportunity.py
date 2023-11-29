@@ -150,63 +150,63 @@ def after_insert(doc, methods):
                     #     customer.save()
 
 def validate(doc, method):
- if doc._update_tariff_charges_for_additional_services == 1:
-    if doc.transit_charges:
-        for add in doc.transit_charges:
-            if add.charges:
-                if frappe.db.exists("Item", add.charges):
-                    item = frappe.get_doc("Item", add.charges)
-                    if item.item_group == "Additional Services":
-                        if frappe.db.exists("Tariff Details", {"customer": doc.party_name}):
-                            tariff = frappe.get_doc("Tariff Details", {"customer": doc.party_name})
-                            
-                            existing_rows = [charge.additional_service for charge in tariff.additional_services]
+    if doc._update_tariff_charges_for_additional_services == 1:
+        if doc.transit_charges:
+            for add in doc.transit_charges:
+                if add.charges:
+                    if frappe.db.exists("Item", add.charges):
+                        item = frappe.get_doc("Item", add.charges)
+                        if item.item_group == "Additional Services":
+                            if frappe.db.exists("Tariff Details", {"customer": doc.party_name}):
+                                tariff = frappe.get_doc("Tariff Details", {"customer": doc.party_name})
+                                
+                                existing_rows = [charge.additional_service for charge in tariff.additional_services]
 
-                            # Check if the add.charges is already in the existing_rows
-                            if add.charges in existing_rows:
-                                for charge in tariff.additional_services:
-                                    if charge.additional_service == add.charges:
-                                        cst = float(add.cost) / float(add.quantity)
-                                        if cst != charge.rate:
-                                            charge.rate = cst
-                                            charge.amount = cst
+                                # Check if the add.charges is already in the existing_rows
+                                if add.charges in existing_rows:
+                                    for charge in tariff.additional_services:
+                                        if charge.additional_service == add.charges:
+                                            cst = float(add.cost) / float(add.quantity)
+                                            if cst != charge.rate:
+                                                charge.rate = cst
+                                                charge.amount = cst
+                                else:
+                                    cst = float(add.cost) / float(add.quantity)
+                                    tariff.append("additional_services", {
+                                        "additional_service": add.charges,
+                                        "quantity": 1,
+                                        "rate": cst,
+                                        "amount": cst
+                                    })
+
+                                # Save the changes to the tariff document
+                                tariff.save()
                             else:
-                                cst = float(add.cost) / float(add.quantity)
-                                tariff.append("additional_services", {
-                                    "additional_service": add.charges,
-                                    "quantity": 1,
-                                    "rate": cst,
-                                    "amount": cst
-                                })
-
-                            # Save the changes to the tariff document
-                            tariff.save()
-                        else:
-                            frappe.throw("No Tariff added for this customer to update additional service charges")
+                                frappe.throw("No Tariff added for this customer to update additional service charges")
 
 
-                                             
-                            #     else:
-                                    
-                                   
-                            #         if add.charges:
-                                            
-                            #                 if add.quantity == 1:
-                                               
-                                              
-                            #                     tariff.append("additional_services",{"additional_service":add.charges,"quantity":1,"rate":add.cost,"amount":add.cost})
                                                 
-                                               
-                                                 
-                            #                 else:
-                                               
-                            #                     cst = float(add.cost)/float(add.quantity)
-                            #                     tariff.append("additional_services",{"additional_service":add.charges,"quantity":1,"rate":cst,"amount":cst})          
-                            #     tariff.save()  
-                            
-                            # else: 
-                            #     frappe.throw("No Tariff added for this customer to update additional service charges")
-         
+                                #     else:
+                                        
+                                    
+                                #         if add.charges:
+                                                
+                                #                 if add.quantity == 1:
+                                                
+                                                
+                                #                     tariff.append("additional_services",{"additional_service":add.charges,"quantity":1,"rate":add.cost,"amount":add.cost})
+                                                    
+                                                
+                                                    
+                                #                 else:
+                                                
+                                #                     cst = float(add.cost)/float(add.quantity)
+                                #                     tariff.append("additional_services",{"additional_service":add.charges,"quantity":1,"rate":cst,"amount":cst})          
+                                #     tariff.save()  
+                                
+                                # else: 
+                                #     frappe.throw("No Tariff added for this customer to update additional service charges")
+            
          
     if doc.has_return_trip == 1:
         if not doc.return_trips:
@@ -236,7 +236,22 @@ def validate(doc, method):
     #                 frappe.throw("Please add a warehouse for this customer")
     if doc.status == "Lost":
         doc.order_status = "Cancelled"
-        print(doc.order_lost_reason,"*******************************")
+        print(doc.order_lost_reason, "*******************************")
+
+        # Check if Vehicle Assignment exists for the order
+        if frappe.db.exists("Vehicle Assignment", {"order": doc.name}):
+            vehicle_assignment_list = frappe.get_list("Vehicle Assignment", {"order": doc.name})
+            
+            # Loop through each Vehicle Assignment related to the order
+            for vehicle in vehicle_assignment_list:
+                va = frappe.get_doc("Vehicle Assignment", vehicle.name)
+                if va.assignment_status != "Delivered" and va.assignment_status != "Closed":
+                    va.assignment_status = "Cancelled"
+                    va.save()
+                else:
+                    frappe.throw("You will not able to cancel this opportunity, Since the order is already delivered or closed")
+
+
    
     if doc.opportunity_from=="Customer":
         if doc.lead_id:

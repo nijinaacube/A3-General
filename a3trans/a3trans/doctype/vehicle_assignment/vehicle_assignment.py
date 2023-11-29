@@ -98,6 +98,7 @@ class VehicleAssignment(Document):
                     
                     if self.assignment_status == "Vehicle Assigned":
                         opportunity.order_status = "Vehicle Assigned"
+                        opportunity.status = "Converted"
                       
                     elif self.assignment_status == "In-Transit":
                         opportunity.order_status = "In-Transit"
@@ -115,7 +116,7 @@ class VehicleAssignment(Document):
                         opportunity.order_status = "Delivered"
                        
                         
-                    elif self.assignment_status == "Closed":
+                    elif self.assignment_status == "Delivered":
                         if self.driver_id:
                             driver=frappe.get_doc("Staff Member",self.driver_id)
                             driver.status="Available"  
@@ -129,7 +130,7 @@ class VehicleAssignment(Document):
                             vehicle.vehicle_status="Available"
                             vehicle.last_location_of_vehicle_assignment = ""
                             vehicle.save()
-                        opportunity.order_status = "Closed"
+                        opportunity.order_status = "Delivered"
                       
                     opportunity.status="Converted"
                     opportunity.db_update()
