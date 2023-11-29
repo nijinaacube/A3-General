@@ -104,7 +104,7 @@ frappe.ui.form.on('Opportunity', {
 						var lat = r.message.lat
 						var long = r.message.long
 						// Construct the URL with the opportunity ID and order status as query parameters
-					var redirectURL = 'http://local:8000/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus) + 
+					var redirectURL = 'https://redlinestest.frappe.cloud/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus) + 
 					'&customer='+ encodeURIComponent(Customer)+ '&type=' + encodeURIComponent(vehicle_type) + '&from=' + encodeURIComponent(from)  + '&to=' + encodeURIComponent(to)
 					+ '&lat=' + encodeURIComponent(lat) + '&long=' + encodeURIComponent(long) + '&line1=' + encodeURIComponent(line1) + '&city=' + encodeURIComponent(city)
 					+ '&phone=' + encodeURIComponent(phone)
