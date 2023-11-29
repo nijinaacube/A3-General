@@ -83,6 +83,7 @@ frappe.ui.form.on('Opportunity', {
 
 	refresh: function(frm) {
 		if(!frm.is_new()){
+		if (frm.doc.booking_type == "Transport"){
 		frm.add_custom_button(__("Vehicle Map"), function() {
 			var opportunityID = frm.doc.name;
 				var orderStatus = frm.doc.order_status; // Retrieve the order status
@@ -95,11 +96,18 @@ frappe.ui.form.on('Opportunity', {
 					},
 					callback: (r)=>{            	 
                     	console.log(r.message)
+						var line1 = r.message.line1
+						var city = r.message.city
+						var phone = r.message.mobile
 						var from = r.message.from
 						var to = r.message.to
+						var lat = r.message.lat
+						var long = r.message.long
 						// Construct the URL with the opportunity ID and order status as query parameters
-					var redirectURL = 'https://redlinestest.frappe.cloud/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus) + 
-					'&customer='+ encodeURIComponent(Customer)+ '&type=' + encodeURIComponent(vehicle_type) + '&from=' + encodeURIComponent(from)  + '&to=' + encodeURIComponent(to) 
+					var redirectURL = 'http://local:8000/vehicle_assignment?opportunity_id=' + encodeURIComponent(opportunityID) + '&order_status=' + encodeURIComponent(orderStatus) + 
+					'&customer='+ encodeURIComponent(Customer)+ '&type=' + encodeURIComponent(vehicle_type) + '&from=' + encodeURIComponent(from)  + '&to=' + encodeURIComponent(to)
+					+ '&lat=' + encodeURIComponent(lat) + '&long=' + encodeURIComponent(long) + '&line1=' + encodeURIComponent(line1) + '&city=' + encodeURIComponent(city)
+					+ '&phone=' + encodeURIComponent(phone)
 					// Redirect to the constructed URL
 					window.location.href = redirectURL;
 					}
@@ -108,6 +116,7 @@ frappe.ui.form.on('Opportunity', {
 	
 			
 		}).addClass('btn-primary');
+	}
 	}
 		
 		

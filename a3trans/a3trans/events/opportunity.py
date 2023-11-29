@@ -1057,9 +1057,28 @@ def cancel_booking(name):
 def get_zones(order_id):
     data = {}
     oppo = frappe.get_doc("Opportunity", order_id)
+    if oppo.party_name:
+        customer = frappe.get_doc("Customer",oppo.party_name)
+        if customer.address_line1 != "NIL":
+            data["line1"] = customer.address_line1
+        else:
+            data["line1"] = ""
+        if customer.city != "NIL":
+            data["city"] = customer.city
+        else:
+            data["city"] = ""
+        if customer.mobile_number:
+            data["mobile"] = customer.mobile_number
     
     if oppo and oppo.receiver_information:
         data["from"]=(oppo.receiver_information[0].zone)  
+        from_loc = oppo.receiver_information[0].zone
+        location = frappe.get_doc("Location",from_loc)
+        print(location.latitude,location)
+        if location.latitude:
+            data["lat"] = location.latitude
+        if location.longitude:
+            data["long"] = location.longitude
         
         if len(oppo.receiver_information) > 1:
             data ["to"] = (oppo.receiver_information[-1].zone) 

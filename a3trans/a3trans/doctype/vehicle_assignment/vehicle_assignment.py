@@ -22,6 +22,7 @@ class VehicleAssignment(Document):
                     #         found = True
                     #         break
                     # if not found:
+                opportunity.multiple_vehicles = 1
                 opportunity.append("vehicle_details_item", {
                     "vehicle_type": tp,
                     "vehicle_number": self.vehicle_id,
