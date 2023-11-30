@@ -739,7 +739,7 @@ frappe.ui.form.on('Opportunity', {
 			if (charge.to_id === row.index) {
 			// console.log(charge.description.split("to"),"$$$$$$$$$$$$$4")
 			var fromcity = charge.description.split(" to ")
-			console.log(fromcity,"^^^^^^^^^^^^^^^^^^^^")
+			console.log(fromcity,"^^^^^^^^^^^^^^^^^^^^",row.zone)
 			console.log("success",cost);
 			frappe.call({
 				method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
