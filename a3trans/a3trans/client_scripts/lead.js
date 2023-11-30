@@ -2,6 +2,7 @@
 var ind = 1;
 frappe.ui.form.on('Lead', {
     onload :function(frm){
+       
         if  (frm.is_new()){
             ind = 1
             frm.set_value('booking_date', frappe.datetime.get_today());
@@ -115,6 +116,9 @@ if(frm.doc.booking_type==="Warehousing"){
 
  refresh: function(frm) {
     
+    setTimeout(() => {
+        $(".form-links").hide(); // Corrected selector with double quotes
+    }, 10);
     // frm.fields_dict.custom_button.$wrapper.hide();
    
     // frm.set_df_property('opportunity', 'hidden', 1);

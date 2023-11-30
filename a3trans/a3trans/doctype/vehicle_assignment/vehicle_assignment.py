@@ -22,7 +22,7 @@ class VehicleAssignment(Document):
                     #         found = True
                     #         break
                     # if not found:
-                opportunity.multiple_vehicles = 1
+                # opportunity.multiple_vehicles = 1
                 opportunity.append("vehicle_details_item", {
                     "vehicle_type": tp,
                     "vehicle_number": self.vehicle_id,
@@ -38,6 +38,13 @@ class VehicleAssignment(Document):
                   
 
     def validate(self):  
+        if self.order:
+            opportunity = frappe.get_doc("Opportunity", self.order)
+        if self.assignment_status == "Vehicle Assigned":
+            opportunity.order_status = "Vehicle Assigned"
+            
+
+        
 
         if self.driver_id:
             driver=frappe.get_doc("Staff Member",self.driver_id)
@@ -64,7 +71,7 @@ class VehicleAssignment(Document):
                     vehicle.save()
 
                 if order.order_id:
-                    opportunity = frappe.get_doc("Opportunity", order.order_id)
+                    # opportunity = frappe.get_doc("Opportunity", order.order_id)
                     if self.vehicle_id:
                         opportunity.vehicle=self.vehicle_id
                     if self.make:
@@ -96,9 +103,7 @@ class VehicleAssignment(Document):
                     # # if frappe.db.exists("Sales Invoice", {"order_id": opportunity.name}):
                     # sales_invoice = frappe.get_doc("Sales Invoice", {"order_id": opportunity.name})
                     
-                    if self.assignment_status == "Vehicle Assigned":
-                        opportunity.order_status = "Vehicle Assigned"
-                        opportunity.status = "Converted"
+                   
                       
                     elif self.assignment_status == "In-Transit":
                         opportunity.order_status = "In-Transit"
@@ -132,9 +137,7 @@ class VehicleAssignment(Document):
                             vehicle.save()
                         opportunity.order_status = "Delivered"
                       
-                    opportunity.status="Converted"
-                    opportunity.db_update()
-                    frappe.db.commit()
+                
                  
 
 
@@ -190,32 +193,34 @@ class VehicleAssignment(Document):
                             print("minutes",total_minutes)
                             order.time_difference=float(total_minutes)
 
+            opportunity.status="Converted"
+            opportunity.db_update()
+            frappe.db.commit()
 
-
-   # def after_insert(self):
-   #   if self.routes:
-   #       for order in self.routes:
-            #  if order.order_id:
-            #      opportunity = frappe.get_doc("Opportunity", order.order_id)
-   #               if self.vehicle_id:
-   #                   opportunity.vehicle=self.vehicle_id
-   #               if self.make:
-   #                   opportunity.make=self.make
-   #               if self.model:
-   #                   opportunity.model=self.model
-   #               if self.driver_id:
-   #                   opportunity.driver=self.driver_id
-   #               if self.driver_name:
-   #                   opportunity.driver_name=self.driver_name
-   #               if self.mobile_number:
-   #                   opportunity.driver_phone_number=self.mobile_number
-   #               if self.helper_id:
-   #                   opportunity.helper=self.helper_id
-   #               if self.helper_name:
-   #                   opportunity.helper_name=self.helper_name
-   #               if self.phone_number:
-   #                   opportunity.helper_phone_number=self.phone_number
-   #               opportunity.save()
+def after_insert(self):
+     if self.routes:
+         for order in self.routes:
+             if order.order_id:
+                 opportunity = frappe.get_doc("Opportunity", order.order_id)
+                 if self.vehicle_id:
+                     opportunity.vehicle=self.vehicle_id
+                 if self.make:
+                     opportunity.make=self.make
+                 if self.model:
+                     opportunity.model=self.model
+                 if self.driver_id:
+                     opportunity.driver=self.driver_id
+                 if self.driver_name:
+                     opportunity.driver_name=self.driver_name
+                 if self.mobile_number:
+                     opportunity.driver_phone_number=self.mobile_number
+                 if self.helper_id:
+                     opportunity.helper=self.helper_id
+                 if self.helper_name:
+                     opportunity.helper_name=self.helper_name
+                 if self.phone_number:
+                     opportunity.helper_phone_number=self.phone_number
+                 opportunity.save()
 
 
 

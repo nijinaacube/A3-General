@@ -191,7 +191,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-11-22 11:10:57.708953",
+ "modified": "2023-11-30 11:47:27.924514",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Logistics",
@@ -202,7 +202,7 @@
   {
    "color": "#29CD42",
    "doc_view": "New",
-   "format": "New",
+   "format": "",
    "icon": "lead",
    "label": "New Lead",
    "link_to": "Lead",

@@ -439,6 +439,14 @@ def create_vehicle_assignments(vehicles, opportunity_id):
 								vehicle_assignment.helper_id = vehicle.assigned_helper
 								
 							vehicle_assignment.vehicle_id = vehicle_id 
+							if oppo.receiver_information:
+								for itm in oppo.receiver_information:
+									vehicle_assignment.append("routes", {
+										"order_id": opportunity_id,
+										"transit_type": itm.transit_type,
+										"zone": itm.zone
+									})
+							
 							if oppo.vehicle_type:
 								vehicle_assignment.type_of_vehicles = vehicle.vehicle_type
 							

@@ -263,47 +263,47 @@ def validate(doc, method):
                             sales_order=frappe.new_doc("Sales Order")
                             sales_order.customer = doc.party_name
                             sales_order.customer_name = doc.customer_name  
-                            sales_order.booking_id=doc.name
                             sales_order.booking_type=doc.booking_type
                             sales_order.booking_status="New"
                             sales_order.delivery_date = frappe.utils.nowdate()
                             if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
                                 if doc.opportunity_line_item:
                                         for shipment in doc.opportunity_line_item:
-                                            sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
-                                        sales_order.save()
-                                        sales_order.submit()
+                                            if shipment.include_in_billing == 1:
+                                                sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+                                                sales_order.booking_id=doc.name
+                                                sales_order.save()
+                                                sales_order.submit()
                     
 
 
 
 
                         # Create sales invoice
-                        if doc.payment_amount != 0:
-                            if not frappe.db.exists("Sales Invoice",{"order_id":doc.name}):
-                                sales_invoice=frappe.new_doc("Sales Invoice")
-                                sales_invoice.customer = doc.party_name
-                                sales_invoice.customer_name = doc.customer_name
-                                sales_invoice.order_id=doc.name
-                                sales_invoice.booking_type=doc.booking_type
-                                #    if  doc.job_number:
-                                #         sales_invoice.job_number = doc.job_number
-                                sales_invoice.order_status="New"
-                                sales_invoice.due_date=frappe.utils.nowdate()
-                                if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
-                                    for shipment in doc.opportunity_line_item:
-                                        sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+                        # if doc.payment_amount != 0:
+                        #     if not frappe.db.exists("Sales Invoice",{"order_id":doc.name}):
+                        #         sales_invoice=frappe.new_doc("Sales Invoice")
+                        #         sales_invoice.customer = doc.party_name
+                        #         sales_invoice.customer_name = doc.customer_name
+                        #         sales_invoice.order_id=doc.name
+                        #         sales_invoice.booking_type=doc.booking_type
+                        #         #    if  doc.job_number:
+                        #         #         sales_invoice.job_number = doc.job_number
+                        #         sales_invoice.order_status="New"
+                        #         sales_invoice.due_date=frappe.utils.nowdate()
+                        #         if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
+                        #             for shipment in doc.opportunity_line_item:
+                        #                 sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
                                 
-                                if doc.booking_type=="Diesel":
-                                    
-                                    sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
-                                if doc.booking_type=="Packing and Moving":
-                                    for packing in doc.packing_items:
-                                        sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
+                        #         if doc.booking_type=="Diesel":    
+                        #             sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
+                        #         if doc.booking_type=="Packing and Moving":
+                        #             for packing in doc.packing_items:
+                        #                 sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
 
-                                sales_invoice.insert()
-                                #    sales_invoice.submit()
-                                doc.invoice_id = sales_invoice.name
+                        #         sales_invoice.insert()
+                        #         #    sales_invoice.submit()
+                        #         doc.invoice_id = sales_invoice.name
                             doc.status="Converted"
                             if doc.lead_id:
                                 lead= frappe.get_doc ("Lead", doc.lead_id)
