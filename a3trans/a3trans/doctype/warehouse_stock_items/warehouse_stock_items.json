@@ -237,6 +237,7 @@
    "fieldtype": "Section Break"
   },
   {
+   "depends_on": "eval:doc.add2 ==1",
    "fieldname": "section_break_2vnml",
    "fieldtype": "Section Break"
   },
@@ -279,6 +280,7 @@
    "fieldtype": "Check"
   },
   {
+   "depends_on": "eval:doc.add3 ==1",
    "fieldname": "section_break_zm300",
    "fieldtype": "Section Break"
   },
@@ -294,7 +296,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-11-06 11:13:43.028590",
+ "modified": "2023-11-30 12:51:24.733090",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Warehouse Stock Items",

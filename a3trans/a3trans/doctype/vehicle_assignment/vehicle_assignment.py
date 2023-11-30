@@ -65,10 +65,10 @@ class VehicleAssignment(Document):
 
         if self.routes:
             for order in self.routes:
-                if self.vehicle_id:
-                    vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-                    vehicle.last_location_of_vehicle_assignment = order.zone
-                    vehicle.save()
+                # if self.vehicle_id:
+                #     vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                #     vehicle.last_location_of_vehicle_assignment = order.zone
+                #     vehicle.save()
 
                 if order.order_id:
                     # opportunity = frappe.get_doc("Opportunity", order.order_id)
