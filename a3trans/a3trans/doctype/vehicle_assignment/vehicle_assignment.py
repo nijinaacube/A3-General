@@ -40,158 +40,158 @@ class VehicleAssignment(Document):
     def validate(self):  
         if self.order:
             opportunity = frappe.get_doc("Opportunity", self.order)
-        if self.assignment_status == "Vehicle Assigned":
-            opportunity.order_status = "Vehicle Assigned"
+            if self.assignment_status == "Vehicle Assigned":
+                opportunity.order_status = "Vehicle Assigned"
+                
+
             
 
-        
-
-        if self.driver_id:
-            driver=frappe.get_doc("Staff Member",self.driver_id)
-            if driver.status=="Available":
-                driver.status="On Duty"
-                driver.save()
-        if self.helper_id:
-            helper=frappe.get_doc("Staff Member",self.helper_id)
-            if helper.status=="Available":
-                helper.status="On Duty"
-                helper.save()
-        if self.vehicle_id:
-            vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-            if vehicle.vehicle_status=="Available":
-                vehicle.vehicle_status="On Duty"
-                vehicle.save()
+            if self.driver_id:
+                driver=frappe.get_doc("Staff Member",self.driver_id)
+                if driver.status=="Available":
+                    driver.status="On Duty"
+                    driver.save()
+            if self.helper_id:
+                helper=frappe.get_doc("Staff Member",self.helper_id)
+                if helper.status=="Available":
+                    helper.status="On Duty"
+                    helper.save()
+            if self.vehicle_id:
+                vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                if vehicle.vehicle_status=="Available":
+                    vehicle.vehicle_status="On Duty"
+                    vehicle.save()
 
 
-        if self.routes:
-            for order in self.routes:
-                # if self.vehicle_id:
-                #     vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-                #     vehicle.last_location_of_vehicle_assignment = order.zone
-                #     vehicle.save()
-
-                if order.order_id:
-                    # opportunity = frappe.get_doc("Opportunity", order.order_id)
-                    if self.vehicle_id:
-                        opportunity.vehicle=self.vehicle_id
-                    if self.make:
-                        opportunity.make=self.make
-                    if self.model:
-                        opportunity.model=self.model
-                    if self.driver_id:
-                        opportunity.driver=self.driver_id
-                    if self.driver_name:
-                        opportunity.driver_name=self.driver_name
-                    if self.mobile_number:
-                        opportunity.driver_phone_number=self.mobile_number
-                    if self.helper_id:
-                        opportunity.helper=self.helper_id
-                    if self.helper_name:
-                        opportunity.helper_name=self.helper_name
-                    if self.phone_number:
-                        opportunity.helper_phone_number=self.phone_number
-                   
+            if self.routes:
+                for order in self.routes:
                     # if self.vehicle_id:
-                    #   vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-                    #   for type in vehicle.allowed_booking_type:
-                    #       if opportunity.booking_type in  type.booking_type:
-                    #           pass
-                    #       else:
-                    #           frappe.throw("You are not allowed to choose the vehicle for this booking.")
-                    # if frappe.db.exists("Sales Order", {"booking_id": opportunity.name}):
-                    # sales_order = frappe.get_doc("Sales Order", {"booking_id": opportunity.name})
-                    # # if frappe.db.exists("Sales Invoice", {"order_id": opportunity.name}):
-                    # sales_invoice = frappe.get_doc("Sales Invoice", {"order_id": opportunity.name})
-                    
-                   
-                      
-                    elif self.assignment_status == "In-Transit":
-                        opportunity.order_status = "In-Transit"
-                        # vehicle_log = frappe.new_doc ("Vehicle Log")
-                        # vehicle_log.license_plate = self.vehicle_id
-                        # if self.driver_id:
-                        #     staff = frappe.get_doc("Staff Member",self.driver_id)
-                        #     employee =frappe.get_doc("Employee",staff.employee)
-                        #     vehicle_log.employee =employee.name
-                       
-                    elif self.assignment_status == "Arrived":
-                        opportunity.order_status = "Arrived"
-                       
-                    elif self.assignment_status == "Delivered":
-                        opportunity.order_status = "Delivered"
-                       
-                        
-                    elif self.assignment_status == "Delivered":
-                        if self.driver_id:
-                            driver=frappe.get_doc("Staff Member",self.driver_id)
-                            driver.status="Available"  
-                            driver.save()
-                        if self.helper_id:
-                            helper=frappe.get_doc("Staff Member",self.helper_id)
-                            helper.status="Available"
-                            helper.save()
+                    #     vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                    #     vehicle.last_location_of_vehicle_assignment = order.zone
+                    #     vehicle.save()
+
+                    if order.order_id:
+                        # opportunity = frappe.get_doc("Opportunity", order.order_id)
                         if self.vehicle_id:
-                            vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-                            vehicle.vehicle_status="Available"
-                            vehicle.last_location_of_vehicle_assignment = ""
-                            vehicle.save()
-                        opportunity.order_status = "Delivered"
-                      
-                
-                 
+                            opportunity.vehicle=self.vehicle_id
+                        if self.make:
+                            opportunity.make=self.make
+                        if self.model:
+                            opportunity.model=self.model
+                        if self.driver_id:
+                            opportunity.driver=self.driver_id
+                        if self.driver_name:
+                            opportunity.driver_name=self.driver_name
+                        if self.mobile_number:
+                            opportunity.driver_phone_number=self.mobile_number
+                        if self.helper_id:
+                            opportunity.helper=self.helper_id
+                        if self.helper_name:
+                            opportunity.helper_name=self.helper_name
+                        if self.phone_number:
+                            opportunity.helper_phone_number=self.phone_number
+                    
+                        # if self.vehicle_id:
+                        #   vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                        #   for type in vehicle.allowed_booking_type:
+                        #       if opportunity.booking_type in  type.booking_type:
+                        #           pass
+                        #       else:
+                        #           frappe.throw("You are not allowed to choose the vehicle for this booking.")
+                        # if frappe.db.exists("Sales Order", {"booking_id": opportunity.name}):
+                        # sales_order = frappe.get_doc("Sales Order", {"booking_id": opportunity.name})
+                        # # if frappe.db.exists("Sales Invoice", {"order_id": opportunity.name}):
+                        # sales_invoice = frappe.get_doc("Sales Invoice", {"order_id": opportunity.name})
+                        
+                    
+                        
+                        elif self.assignment_status == "In-Transit":
+                            opportunity.order_status = "In-Transit"
+                            # vehicle_log = frappe.new_doc ("Vehicle Log")
+                            # vehicle_log.license_plate = self.vehicle_id
+                            # if self.driver_id:
+                            #     staff = frappe.get_doc("Staff Member",self.driver_id)
+                            #     employee =frappe.get_doc("Employee",staff.employee)
+                            #     vehicle_log.employee =employee.name
+                        
+                        elif self.assignment_status == "Arrived":
+                            opportunity.order_status = "Arrived"
+                        
+                        elif self.assignment_status == "Delivered":
+                            opportunity.order_status = "Delivered"
+                        
+                            
+                        elif self.assignment_status == "Delivered":
+                            if self.driver_id:
+                                driver=frappe.get_doc("Staff Member",self.driver_id)
+                                driver.status="Available"  
+                                driver.save()
+                            if self.helper_id:
+                                helper=frappe.get_doc("Staff Member",self.helper_id)
+                                helper.status="Available"
+                                helper.save()
+                            if self.vehicle_id:
+                                vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                                vehicle.vehicle_status="Available"
+                                vehicle.last_location_of_vehicle_assignment = ""
+                                vehicle.save()
+                            opportunity.order_status = "Delivered"
+                        
+                    
+                    
 
 
-                if order.status=="Arrived":
-                    order.actual_arrival_time=frappe.utils.now()
+                    if order.status=="Arrived":
+                        order.actual_arrival_time=frappe.utils.now()
 
 
 
 
-                if order.status=="Completed":
-                    order.completed_date=frappe.utils.nowdate()
-                    completed_times=frappe.utils.now_datetime()
-                    order.completed_time = completed_times.strftime('%H:%M:%S')
-                    if order.latitude and order.longitude and order.current_latitude and order.current_longitude:
-                        order.latitude=float(order.latitude)
-                        order.longitude=float(order.longitude)
-                        order.current_latitude=float(order.current_latitude)
-                        order.current_longitude=float(order.current_longitude)
-                        lat1 = math.radians(order.latitude)
-                        lon1 = math.radians(order.longitude)
-                        lat2 = math.radians(order.current_latitude)
-                        lon2 = math.radians(order.current_longitude)
+                    if order.status=="Completed":
+                        order.completed_date=frappe.utils.nowdate()
+                        completed_times=frappe.utils.now_datetime()
+                        order.completed_time = completed_times.strftime('%H:%M:%S')
+                        if order.latitude and order.longitude and order.current_latitude and order.current_longitude:
+                            order.latitude=float(order.latitude)
+                            order.longitude=float(order.longitude)
+                            order.current_latitude=float(order.current_latitude)
+                            order.current_longitude=float(order.current_longitude)
+                            lat1 = math.radians(order.latitude)
+                            lon1 = math.radians(order.longitude)
+                            lat2 = math.radians(order.current_latitude)
+                            lon2 = math.radians(order.current_longitude)
 
 
 
-                        # Radius of the Earth in kilometers
-                        earth_radius_km = 6371.0
+                            # Radius of the Earth in kilometers
+                            earth_radius_km = 6371.0
 
-                        # Haversine formula
-                        dlon = lon2 - lon1
-                        dlat = lat2 - lat1
+                            # Haversine formula
+                            dlon = lon2 - lon1
+                            dlat = lat2 - lat1
 
-                        a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
-                        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-                        # Calculate the distance
-                        distance_km =round(earth_radius_km * c,2)
-                        order.distance=distance_km
-                        if order.eta and order.actual_arrival_time:
-                            start_datetime = get_datetime(order.eta)
-                            end_datetime = get_datetime(order.actual_arrival_time)
-
-
-                            # Calculate the time difference
-                            time_difference = time_diff(end_datetime, start_datetime)
+                            a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+                            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+                            # Calculate the distance
+                            distance_km =round(earth_radius_km * c,2)
+                            order.distance=distance_km
+                            if order.eta and order.actual_arrival_time:
+                                start_datetime = get_datetime(order.eta)
+                                end_datetime = get_datetime(order.actual_arrival_time)
 
 
-                            # Calculate the total difference in minutes
-                            total_minutes = (
-                            time_difference.days * 24 * 60 + # Days to minutes
-                            time_difference.seconds // 60 # Seconds to minutes
-                            )
+                                # Calculate the time difference
+                                time_difference = time_diff(end_datetime, start_datetime)
 
-                            print("minutes",total_minutes)
-                            order.time_difference=float(total_minutes)
+
+                                # Calculate the total difference in minutes
+                                total_minutes = (
+                                time_difference.days * 24 * 60 + # Days to minutes
+                                time_difference.seconds // 60 # Seconds to minutes
+                                )
+
+                                print("minutes",total_minutes)
+                                order.time_difference=float(total_minutes)
 
             opportunity.status="Converted"
             opportunity.db_update()
