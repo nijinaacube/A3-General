@@ -4,6 +4,13 @@ import frappe
 def on_submit(doc, method):
     if doc.items and doc.booking_id:
         oppo = frappe.get_doc("Opportunity", doc.booking_id)
+        if oppo.transit_charges:
+            for charge_item in oppo.transit_charges:
+                for itm in doc.items:
+                    if itm.idx == charge_item.idx:
+                        itm.description = charge_item.description
+
+                 
         if oppo.opportunity_line_item:
             for itm in doc.items:
                 for line in oppo.opportunity_line_item:

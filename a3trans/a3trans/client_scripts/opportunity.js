@@ -275,7 +275,54 @@ frappe.ui.form.on('Opportunity', {
 	}
 	}
 
-	 
+
+	frm.fields_dict['warehouse_stock_items'].grid.get_field('service1').get_query = function(doc, cdt, cdn) {
+          	 
+		return {
+			filters: {
+				"item_group": ["in", "Additional Services"]
+			}
+		};
+	};
+		 
+	frm.fields_dict['warehouse_stock_items'].grid.get_field('service2').get_query = function(doc, cdt, cdn) {
+          	 
+		return {
+			filters: {
+				"item_group": ["in", "Additional Services"]
+			}
+		};
+	};
+		 
+	frm.fields_dict['warehouse_stock_items'].grid.get_field('service3').get_query = function(doc, cdt, cdn) {
+          	 
+		return {
+			filters: {
+				"item_group": ["in", "Additional Services"]
+			}
+		};
+	};
+		 
+	frm.fields_dict['warehouse_stock_items'].grid.get_field('service4').get_query = function(doc, cdt, cdn) {
+          	 
+		return {
+			filters: {
+				"item_group": ["in", "Additional Services"]
+			}
+		};
+	};
+		 
+	frm.fields_dict['warehouse_stock_items'].grid.get_field('service5').get_query = function(doc, cdt, cdn) {
+          	 
+		return {
+			filters: {
+				"item_group": ["in", "Additional Services"]
+			}
+		};
+	};
+
+
+
 	frm.fields_dict['receiver_information'].grid.get_field('additional_service_1').get_query = function(doc, cdt, cdn) {
           	 
 		return {
@@ -3034,6 +3081,7 @@ frappe.ui.form.on('Warehouse Space Details', {
                 	// Handle callback response if needed
                 	frappe.model.set_value(cdt, cdn, 'date_to',response.message["end_month"]);
                 	frm.refresh_field('date_to');
+			
                 	if(response.message["difference"]<0){
                     	frappe.model.set_value(cdt, cdn, 'no_of_days',0);
                     	frm.refresh_field('no_of_days');
@@ -3111,12 +3159,12 @@ frappe.ui.form.on('Warehouse Space Details', {
     	frm.clear_table("warehouse_charges")
     	var child = locals[cdt][cdn];
     	if (child.no_of_days){
-    	var no_of_days = child.no_of_days;
+    		var no_of_days = child.no_of_days;
     	}
     	var selected_item=child.rental_charges
     	console.log(child.rental_charges)
     	const target_row=frm.add_child('warehouse_charges')
-   	 target_row.charges=selected_item
+   	 	target_row.charges=selected_item
     	target_row.quantity=1
     	// frm.refresh_field('warehouse_charges');
     	frm.script_manager.trigger('charges', target_row.doctype, target_row.name);

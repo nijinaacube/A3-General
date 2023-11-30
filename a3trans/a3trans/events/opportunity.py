@@ -267,14 +267,20 @@ def validate(doc, method):
                             sales_order.booking_status="New"
                             sales_order.delivery_date = frappe.utils.nowdate()
                             if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
-                                if doc.opportunity_line_item:
-                                        for shipment in doc.opportunity_line_item:
-                                            if shipment.include_in_billing == 1:
-                                                sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
-                                                sales_order.booking_id=doc.name
-                                                sales_order.save()
-                                                sales_order.submit()
-                    
+                                if doc.transit_charges:
+                                    for charge_itm in doc.transit_charges:
+                                        if charge_itm.description:
+                                            des = charge_itm.description
+                                        
+
+                                        if doc.opportunity_line_item:
+                                            for shipment in doc.opportunity_line_item:
+                                                if shipment.include_in_billing == 1:
+                                                    sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+                                                    sales_order.booking_id=doc.name
+                                                    sales_order.save()
+                                                    sales_order.submit()
+                                
 
 
 
@@ -645,88 +651,93 @@ def get_end_of_month(current_date_str,booked_upto):
    return data
 @frappe.whitelist()
 def calculate_charges(selected_item, no_of_days, uom, customer, area, rate_month, rate_day,types):
-	no_of_days = float(no_of_days)
-	data = {}
-	if frappe.db.exists("Tariff Details", {"customer": customer}):
-		
-		tariff = frappe.get_doc("Tariff Details", {"customer": customer})
+	
+    if no_of_days == 0:
+        frappe.throw("Please add required no of days. As the current date is same as month end date")
+    else:
+        no_of_days = float(no_of_days)
+            
+        data = {}
+        if frappe.db.exists("Tariff Details", {"customer": customer}):
+            
+            tariff = frappe.get_doc("Tariff Details", {"customer": customer})
 
 
-		if tariff.warehouse_space_rent_charges:
-		
-			for itm in tariff.warehouse_space_rent_charges:
-				rate=0
-				if types == itm.cargo_type and uom == "Cubic Meter":
-					if rate_month == "1":
-						rate = itm.rate_per_month
-					elif rate_day == "1":
-						if itm.rate_per_day:
-							rate = itm.rate_per_day
-						else:
-							ratemonth= itm.rate_per_month
-							rate=(ratemonth/30)
-							print(rate)
+            if tariff.warehouse_space_rent_charges:
+            
+                for itm in tariff.warehouse_space_rent_charges:
+                    rate=0
+                    if types == itm.cargo_type and uom == "Cubic Meter":
+                        if rate_month == "1":
+                            rate = itm.rate_per_month
+                        elif rate_day == "1":
+                            if itm.rate_per_day:
+                                rate = itm.rate_per_day
+                            else:
+                                ratemonth= itm.rate_per_month
+                                rate=(ratemonth/30)
+                                print(rate)
 
 
-					total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
-					data["total_amount"] = total_amount
+                        total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+                        data["total_amount"] = total_amount
 
 
-				if uom == itm.uom:
-					if rate_month == "1":
-						rate = itm.rate_per_month
-					elif rate_day == "1":
-						if itm.rate_per_day:
-							rate = itm.rate_per_day
-						else:
-							ratemonth= itm.rate_per_month
-							rate=(ratemonth/30)
-						
-					total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
-					data["total_amount"] = total_amount
+                    if uom == itm.uom:
+                        if rate_month == "1":
+                            rate = itm.rate_per_month
+                        elif rate_day == "1":
+                            if itm.rate_per_day:
+                                rate = itm.rate_per_day
+                            else:
+                                ratemonth= itm.rate_per_month
+                                rate=(ratemonth/30)
+                            
+                        total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
+                        data["total_amount"] = total_amount
 
 
-			return data
-		
-	else:
-		if frappe.db.exists("Tariff Details",{"is_standard":1}):
-			tariff=frappe.get_doc("Tariff Details",{"is_standard":1})
-			if tariff.warehouse_space_rent_charges:
-		
-				for itm in tariff.warehouse_space_rent_charges:
-					rate=0
-					if types == itm.cargo_type and uom == "Cubic Meter":
-						if rate_month == "1":
-							rate = itm.rate_per_month
-						elif rate_day == "1":
-							if itm.rate_per_day:
-								rate = itm.rate_per_day
-							else:
-								ratemonth= itm.rate_per_month
-								rate=(ratemonth/30)
-								print(rate)
+                return data
+            
+        else:
+            if frappe.db.exists("Tariff Details",{"is_standard":1}):
+                tariff=frappe.get_doc("Tariff Details",{"is_standard":1})
+                if tariff.warehouse_space_rent_charges:
+            
+                    for itm in tariff.warehouse_space_rent_charges:
+                        rate=0
+                        if types == itm.cargo_type and uom == "Cubic Meter":
+                            if rate_month == "1":
+                                rate = itm.rate_per_month
+                            elif rate_day == "1":
+                                if itm.rate_per_day:
+                                    rate = itm.rate_per_day
+                                else:
+                                    ratemonth= itm.rate_per_month
+                                    rate=(ratemonth/30)
+                                    print(rate)
 
 
-						total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
-						data["total_amount"] = total_amount
+                            total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+                            data["total_amount"] = total_amount
 
 
-					if uom == itm.uom:
-						if rate_month == "1":
-							rate = itm.rate_per_month
-						elif rate_day == "1":
-							if itm.rate_per_day:
-								rate = itm.rate_per_day
-							else:
-								ratemonth= itm.rate_per_month
-								rate=(ratemonth/30)
-							
-						total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
-						data["total_amount"] = total_amount
+                        if uom == itm.uom:
+                            if rate_month == "1":
+                                rate = itm.rate_per_month
+                            elif rate_day == "1":
+                                if itm.rate_per_day:
+                                    rate = itm.rate_per_day
+                                else:
+                                    ratemonth= itm.rate_per_month
+                                    rate=(ratemonth/30)
+                                
+                            total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
+                            data["total_amount"] = total_amount
 
 
-				return data
-      
+                    return data
+        
 
 
   

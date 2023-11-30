@@ -42,9 +42,6 @@ class VehicleAssignment(Document):
             opportunity = frappe.get_doc("Opportunity", self.order)
             if self.assignment_status == "Vehicle Assigned":
                 opportunity.order_status = "Vehicle Assigned"
-                
-
-            
 
             if self.driver_id:
                 driver=frappe.get_doc("Staff Member",self.driver_id)
@@ -62,15 +59,16 @@ class VehicleAssignment(Document):
                     vehicle.vehicle_status="On Duty"
                     vehicle.save()
 
-
             if self.routes:
-                for order in self.routes:
-                    # if self.vehicle_id:
-                    #     vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-                    #     vehicle.last_location_of_vehicle_assignment = order.zone
-                    #     vehicle.save()
+                for order_itm in self.routes:
+                    if self.vehicle_id:
+                        print(order_itm.zone)
+                        vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                        vehicle.last_location_of_vehicle_assignment = order_itm.zone
+                        vehicle.save()
 
-                    if order.order_id:
+                    if order_itm.order_id:
+                        print(order_itm.order_id)
                         # opportunity = frappe.get_doc("Opportunity", order.order_id)
                         if self.vehicle_id:
                             opportunity.vehicle=self.vehicle_id
@@ -141,25 +139,25 @@ class VehicleAssignment(Document):
                     
 
 
-                    if order.status=="Arrived":
-                        order.actual_arrival_time=frappe.utils.now()
+                    if order_itm.status=="Arrived":
+                        order_itm.actual_arrival_time=frappe.utils.now()
 
 
 
 
-                    if order.status=="Completed":
-                        order.completed_date=frappe.utils.nowdate()
+                    if order_itm.status=="Completed":
+                        order_itm.completed_date=frappe.utils.nowdate()
                         completed_times=frappe.utils.now_datetime()
-                        order.completed_time = completed_times.strftime('%H:%M:%S')
-                        if order.latitude and order.longitude and order.current_latitude and order.current_longitude:
-                            order.latitude=float(order.latitude)
-                            order.longitude=float(order.longitude)
-                            order.current_latitude=float(order.current_latitude)
-                            order.current_longitude=float(order.current_longitude)
-                            lat1 = math.radians(order.latitude)
-                            lon1 = math.radians(order.longitude)
-                            lat2 = math.radians(order.current_latitude)
-                            lon2 = math.radians(order.current_longitude)
+                        order_itm.completed_time = completed_times.strftime('%H:%M:%S')
+                        if order_itm.latitude and order_itm.longitude and order_itm.current_latitude and order_itm.current_longitude:
+                            order_itm.latitude=float(order_itm.latitude)
+                            order_itm.longitude=float(order_itm.longitude)
+                            order_itm.current_latitude=float(order_itm.current_latitude)
+                            order_itm.current_longitude=float(order_itm.current_longitude)
+                            lat1 = math.radians(order_itm.latitude)
+                            lon1 = math.radians(order_itm.longitude)
+                            lat2 = math.radians(order_itm.current_latitude)
+                            lon2 = math.radians(order_itm.current_longitude)
 
 
 
@@ -174,10 +172,10 @@ class VehicleAssignment(Document):
                             c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
                             # Calculate the distance
                             distance_km =round(earth_radius_km * c,2)
-                            order.distance=distance_km
-                            if order.eta and order.actual_arrival_time:
-                                start_datetime = get_datetime(order.eta)
-                                end_datetime = get_datetime(order.actual_arrival_time)
+                            order_itm.distance=distance_km
+                            if order_itm.eta and order_itm.actual_arrival_time:
+                                start_datetime = get_datetime(order_itm.eta)
+                                end_datetime = get_datetime(order_itm.actual_arrival_time)
 
 
                                 # Calculate the time difference
@@ -191,7 +189,7 @@ class VehicleAssignment(Document):
                                 )
 
                                 print("minutes",total_minutes)
-                                order.time_difference=float(total_minutes)
+                                order_itm.time_difference=float(total_minutes)
 
             opportunity.status="Converted"
             opportunity.db_update()
