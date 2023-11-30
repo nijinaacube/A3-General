@@ -894,9 +894,9 @@ frappe.ui.form.on('Return Trips', {
 					}
 				}
 	
-				if (zoneCount !== 2) {
-					frappe.throw("Please add exactly two zones (pickup and drop off) in transit details to enable return trips");
-				}
+				// if (zoneCount !== 2) {
+				// 	frappe.throw("Please add exactly two zones (pickup and drop off) in transit details to enable return trips");
+				// }
 			}
 			if (!child.return_id) {
 				const target_row = frm.add_child('transit_charges');

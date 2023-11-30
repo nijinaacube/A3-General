@@ -64,9 +64,7 @@ def validate(doc,methods):
                     if (item.from_city == from_zone and item.to_city == to_zone) or \
                     (item.from_city == to_zone and item.to_city == from_zone) and \
                     item.vehicle_type == doc.vehicle_type:
-                        amount = item.amount
-
-                    
+                        amount = item.amount            
         doc.transit_charges_item.clear()
         doc.append("transit_charges_item",{"charges":bill_item,"description":from_zone + " to " + to_zone,"quantity":1,"cost":amount})
      
