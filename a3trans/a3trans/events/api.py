@@ -122,3 +122,13 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
     })
     opp.save()
     return opp
+
+
+@frappe.whitelist(allow_guest=True)
+def update_vehicle_assignment_status(index, vehicle_assigment_id):
+    vehicle_assigment = frappe.get_doc("Vehicle Assignment", vehicle_assigment_id)
+    for route in vehicle_assigment.routes:
+        if route.idx == int(index):
+            route.status = "Completed"
+    vehicle_assigment.save()
+    return vehicle_assigment.as_dict()
