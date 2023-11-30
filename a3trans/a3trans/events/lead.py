@@ -33,6 +33,9 @@ def after_insert(doc,methods):
                 frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
 
 def validate(doc,methods):
+    
+
+
     if doc.booking_type:
         if frappe.db.exists("Booking Type",doc.booking_type):
             b_type = frappe.get_doc("Booking Type",doc.booking_type)

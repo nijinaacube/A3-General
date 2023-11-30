@@ -327,28 +327,29 @@ def validate(doc, method):
                 todo.save()
         #Create user account for sender
         if doc.mobile_number and doc.email:
-            if not frappe.db.exists("User", {"first_name":doc.customer_name, "mobile_no":doc.mobile_number,"email":doc.email}):
-                user = frappe.get_doc(
-                    {
-                        "doctype": "User",
-                        "mobile_no": doc.mobile_number,
-                        "user.phone" : doc.mobile_number,
-                        "first_name":doc.customer_name,
+            if not doc.booking_channel == "Mobile App":
+                if not frappe.db.exists("User", {"first_name":doc.customer_name, "mobile_no":doc.mobile_number,"email":doc.email}):
+                    user = frappe.get_doc(
+                        {
+                            "doctype": "User",
+                            "mobile_no": doc.mobile_number,
+                            "user.phone" : doc.mobile_number,
+                            "first_name":doc.customer_name,
 
 
-                        
-                        
-                        "email":doc.email,
-                        "enabled": 1,  
-                        "role_profile_name":"Logistic Customer",
-                        "user_type": "Website User",
-                        "send_welcome_email":0
-                    }
-                )
-                user.flags.ignore_permissions = True
-                user.flags.ignore_password_policy = True
-                user.insert()
-                frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
+                            
+                            
+                            "email":doc.email,
+                            "enabled": 1,  
+                            "role_profile_name":"Logistic Customer",
+                            "user_type": "Website User",
+                            "send_welcome_email":0
+                        }
+                    )
+                    user.flags.ignore_permissions = True
+                    user.flags.ignore_password_policy = True
+                    user.insert()
+                    frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
 
         linked_addresses = frappe.get_all('Dynamic Link', filters={
             'link_doctype': 'Customer',
