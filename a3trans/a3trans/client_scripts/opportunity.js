@@ -753,6 +753,7 @@ frappe.ui.form.on('Opportunity', {
 			}
 			frm.refresh_field("receiver_information");
 			const transit_details = frm.doc.receiver_information;
+			if(frm.doc.booking_channel != "Mobile App"){
 			if (frm.doc.vehicle_type) {
 			if (transit_details.length > 1) {
 			const from_row = transit_details[transit_details.length - 2];
@@ -849,6 +850,7 @@ frappe.ui.form.on('Opportunity', {
 			else{
 			frappe.throw("Please choose vehicle Type")
 			}
+		}
 			},
 
 
@@ -1729,6 +1731,7 @@ zone: function(frm, cdt, cdn) {
 		}
 		frm.refresh_field("receiver_information");
 		const transit_details = frm.doc.receiver_information;
+		if(frm.doc.booking_channel != "Mobile App"){
 		if (frm.doc.vehicle_type) {
 		if (transit_details.length > 1) {
 		const from_row = transit_details[transit_details.length - 2];
@@ -1825,6 +1828,7 @@ zone: function(frm, cdt, cdn) {
 		else{
 		frappe.throw("Please choose vehicle Type")
 		}
+	}
 		},
 
 address:function(frm, cdt, cdn) {

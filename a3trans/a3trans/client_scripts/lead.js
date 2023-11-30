@@ -541,7 +541,7 @@ frappe.ui.form.on('Transit Details Item', {
         }
         frm.refresh_field("transit_details_item");
         const transit_details = frm.doc.transit_details_item;
-
+        if (frm.doc.booking_channel != "Mobile App"){
         if (frm.doc.vehicle_type) {
             if (transit_details.length > 1) {
                 const from_row = transit_details[transit_details.length - 2];
@@ -646,6 +646,7 @@ frappe.ui.form.on('Transit Details Item', {
         else{
             frappe.throw("Please choose vehicle Type")
         }
+    }
     },
 
 
