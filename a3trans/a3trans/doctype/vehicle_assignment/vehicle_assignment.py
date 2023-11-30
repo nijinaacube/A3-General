@@ -61,11 +61,11 @@ class VehicleAssignment(Document):
 
             if self.routes:
                 for order_itm in self.routes:
-                    if self.vehicle_id:
-                        print(order_itm.zone)
-                        vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
-                        vehicle.last_location_of_vehicle_assignment = order_itm.zone
-                        vehicle.save()
+                    # if self.vehicle_id:
+                    #     print(order_itm.zone)
+                    #     vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
+                    #     vehicle.last_location_of_vehicle_assignment = order_itm.zone
+                    #     vehicle.save()
 
                     if order_itm.order_id:
                         print(order_itm.order_id)
