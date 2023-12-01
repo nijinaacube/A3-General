@@ -48,7 +48,7 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
     if not hasPrev:
         lead.email_id = data["email_id"]
     lead.booking_channel = "Mobile App"
-    # lead.booking_time = datetime.now().time()
+    lead.booking_date = frappe.utils.nowdate()
     lead.booking_type = booking_type.name
     lead.lead_owner = "Administrator"
     lead.remarks = data["remarks"]
