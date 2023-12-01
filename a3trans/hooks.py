@@ -156,10 +156,10 @@ doc_events = {
        "after_insert":"a3trans.a3trans.events.opportunity.after_insert"
 
     },
-    "Vehicle":{
-      "validate":"a3trans.a3trans.events.vehicle.validate",
+   #  "Vehicle":{
+   #    "validate":"a3trans.a3trans.events.vehicle.validate",
       
-    },
+   #  },
     "Delivery Note":{
        "on_submit":"a3trans.a3trans.events.delivery_note.on_submit",
         "on_submit":"a3trans.a3trans.events.sales_invoice.attach_pdf"
