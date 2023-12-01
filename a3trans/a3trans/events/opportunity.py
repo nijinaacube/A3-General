@@ -32,7 +32,7 @@ def after_insert(doc, methods):
                                             "rate": shipment.average_rate,
                                             "item_name":shipment.item,
                                             "uom": "Nos",
-                                            "description":"",
+                                            "description":shipment.item,
                                             "conversion_factor":1
 
                                         })
@@ -52,6 +52,7 @@ def after_insert(doc, methods):
                                                 sales_order.append("items", item_data)
                                             sales_order.save()
                                             sales_order.submit()
+                                            # frappe.throw("kkk")
 
                    # Create sales invoice
                     # if doc.payment_amount != 0:
@@ -289,33 +290,36 @@ def validate(doc, method):
             if doc.party_name:
                 # if doc.create_invoices==1:
                     if doc.opportunity_line_item:
-                        #Create sales order
-                        if not frappe.db.exists("Sales Order",{"booking_id":doc.name}):
-                            sales_order=frappe.new_doc("Sales Order")
-                            sales_order.customer = doc.party_name
-                            sales_order.customer_name = doc.customer_name  
-                            sales_order.booking_type=doc.booking_type
-                            sales_order.booking_status="New"
-                            sales_order.delivery_date = frappe.utils.nowdate()
-                            if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
-                                if doc.transit_charges:
-                                    for charge_itm in doc.transit_charges:
-                                        if charge_itm.description:
-                                            des = charge_itm.description
-                                        
+                        items_to_include = []
+                        for shipment in doc.opportunity_line_item:
+                                    if shipment.include_in_billing == 1:
+                                        items_to_include.append({
+                                            "item_code": shipment.item,
+                                            "qty": shipment.quantity,
+                                            "rate": shipment.average_rate,
+                                            "item_name":shipment.item,
+                                            "uom": "Nos",
+                                            "description":shipment.item,
+                                            "conversion_factor":1
 
-                                        if doc.opportunity_line_item:
-                                            for shipment in doc.opportunity_line_item:
-                                                if shipment.include_in_billing == 1:
-                                                    sales_order.append("items",
-                                                                       {"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate,
-                                                                        "item_name":shipment.item,
-                                                                            "uom": "Nos",
-                                                                            "description":des,
-                                                                            "conversion_factor":1})
-                                                    sales_order.booking_id=doc.name
-                                                    # sales_order.save()
-                                                    # sales_order.submit()
+                                        })
+
+                                        # Check if Sales Order with the same booking_id already exists
+                                        if not frappe.db.exists("Sales Order", {"booking_id": doc.name}):
+                                            # Create a new Sales Order
+                                            sales_order = frappe.new_doc("Sales Order")
+                                            sales_order.customer = doc.party_name
+                                            sales_order.customer_name = doc.customer_name
+                                            sales_order.booking_id = doc.name
+                                            sales_order.booking_type = doc.booking_type
+                                            sales_order.booking_status = "New"
+                                            sales_order.delivery_date = frappe.utils.nowdate()
+                                            # Append items to the Sales Order
+                                            for item_data in items_to_include:
+                                                sales_order.append("items", item_data)
+                                            sales_order.save()
+                                            sales_order.submit()
+                                            doc.status="Converted"
                                 
 
 
@@ -346,11 +350,11 @@ def validate(doc, method):
                         #         sales_invoice.insert()
                         #         #    sales_invoice.submit()
                         #         doc.invoice_id = sales_invoice.name
-                            doc.status="Converted"
-                            if doc.lead_id:
-                                lead= frappe.get_doc ("Lead", doc.lead_id)
-                                lead.status = "Converted"
-                                lead.save()
+                       
+                        if doc.lead_id:
+                            lead= frappe.get_doc ("Lead", doc.lead_id)
+                            lead.status = "Converted"
+                            lead.save()
                             # doc.create_invoices=0
                     else:
                         frappe.throw("Please add/update Invoice Items in opportunity line items")
