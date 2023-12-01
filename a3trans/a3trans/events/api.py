@@ -68,23 +68,23 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
         lead.vehicle_type = data["vehicle_type"]
         lead.append("transit_details_item", {
             "transit_type": data["pick_transit_type"],
-            "city": data["pick_city"],
+            "zone": data["pick_zone"],
             "quantity": data["pick_quantity"],
             "address_line1": data["pick_address_line1"],
             "address_line2": data["pick_address_line2"],
             "location": data["pick_location"],
-            "city": data["pick_location"],
+            "city": data["pick_city"],
             "latitude": data["pick_latitude"],
             "longitude": data["pick_longitude"],
         })
         lead.append("transit_details_item", {
             "transit_type": data["drop_transit_type"],
-            "city": data["drop_city"],
+            "zone": data["drop_zone"],
             "quantity": data["drop_quantity"],
             "address_line1": data["drop_address_line1"],
             "address_line2": data["drop_address_line2"],
             "location": data["drop_location"],
-            "city": data["pick_location"],
+            "city": data["drop_city"],
             "latitude": data["drop_latitude"],
             "longitude": data["drop_longitude"],
     })
