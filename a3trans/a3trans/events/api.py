@@ -48,6 +48,7 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
     if not hasPrev:
         lead.email_id = data["email_id"]
     lead.booking_channel = "Mobile App"
+    lead.booking_time = datetime.now().time()
     lead.booking_type = booking_type.name
     lead.lead_owner = "Administrator"
     lead.remarks = data["remarks"]
@@ -72,6 +73,7 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
             "address_line1": data["pick_address_line1"],
             "address_line2": data["pick_address_line2"],
             "location": data["pick_location"],
+            "city": data["pick_location"],
             "latitude": data["pick_latitude"],
             "longitude": data["pick_longitude"],
         })
@@ -82,6 +84,7 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
             "address_line1": data["drop_address_line1"],
             "address_line2": data["drop_address_line2"],
             "location": data["drop_location"],
+            "city": data["pick_location"],
             "latitude": data["drop_latitude"],
             "longitude": data["drop_longitude"],
     })
@@ -105,6 +108,7 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
         "address_line1": data["pick_address_line1"],
         "address_line2": data["pick_address_line2"],
         "location": data["pick_location"],
+        "city": data["pick_location"],
         "latitude": data["pick_latitude"],
         "longitude": data["pick_longitude"],
         
@@ -116,6 +120,7 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
         "address_line1": data["drop_address_line1"],
         "address_line2": data["drop_address_line2"],
         "location": data["drop_location"],
+        "city": data["pick_location"],
         "latitude": data["drop_latitude"],
         "longitude": data["drop_longitude"],
         

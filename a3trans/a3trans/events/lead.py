@@ -33,6 +33,7 @@ def after_insert(doc,methods):
                 frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
 
 def validate(doc, methods):
+    print( datetime.now().time(),"@@@")
     if doc.transit_details_item and doc.booking_type and doc.booking_channel == "Mobile App":
         from_zone = doc.transit_details_item[0].zone
         to_zone = doc.transit_details_item[1].zone
