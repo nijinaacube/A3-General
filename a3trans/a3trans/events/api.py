@@ -52,11 +52,16 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
     lead.booking_type = booking_type.name
     lead.lead_owner = "Administrator"
     lead.remarks = data["remarks"]
+   
+    tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
     for service in data["addition_service"]["services"]:
-        lead.append("additional_services", {
-            "additional_service": service["service"],
-            "quantity": 1
-        })
+        for item in tariff.additional_services:
+            if item.additional_service == service["service"]:
+                lead.append("additional_services", {
+                    "additional_service": service["service"],
+                    "quantity": 1,
+                    "rate" :item.amount
+                })
     if booking_type.inventory_required == 1:
         lead.warehouse = data["warehouse"]
         lead.cargo_type = data["cargo_type"]
