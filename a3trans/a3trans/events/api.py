@@ -3,7 +3,15 @@ from json import loads
 import json
 from a3trans.a3trans.doctype.booking_type.booking_type import BookingType
 from frappe.utils import datetime
+import string
+import random
 
+
+def generate_random_email():
+    domains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "example.com"]
+    username = ''.join(random.choices(string.ascii_letters + string.digits, k=random.randint(5, 10)))
+    domain = random.choice(domains)
+    return f"{username}@{domain}"
 
 @frappe.whitelist(allow_guest=True)
 def get_doctype_data(doctype, filters=None):
@@ -45,8 +53,11 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
     lead = frappe.new_doc("Lead")
     lead.lead_name = data["lead_name"]
     lead.mobile_number = data["mobile_number"]
+
     if not hasPrev:
         lead.email_id = data["email_id"]
+    else:
+        lead.email_id = generate_random_email()
     lead.booking_channel = "Mobile App"
     lead.booking_date = frappe.utils.nowdate()
     lead.booking_type = booking_type.name
@@ -60,7 +71,8 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
                 lead.append("additional_services", {
                     "additional_service": service["service"],
                     "quantity": 1,
-                    "rate" :item.amount
+                    "rate" :item.amount,
+                    "amount" :item.amount
                 })
     if booking_type.inventory_required == 1:
         lead.warehouse = data["warehouse"]
