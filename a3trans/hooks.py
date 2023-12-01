@@ -173,6 +173,7 @@ doc_events = {
    },
  "Sales Order":{
    "on_submit":"a3trans.a3trans.events.sale_order.on_submit", 
+   "before_submit":"a3trans.a3trans.events.sale_order.before_submit"
    },
 
    "Stock Entry":{

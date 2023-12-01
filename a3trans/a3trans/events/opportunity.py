@@ -307,10 +307,15 @@ def validate(doc, method):
                                         if doc.opportunity_line_item:
                                             for shipment in doc.opportunity_line_item:
                                                 if shipment.include_in_billing == 1:
-                                                    sales_order.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+                                                    sales_order.append("items",
+                                                                       {"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate,
+                                                                        "item_name":shipment.item,
+                                                                            "uom": "Nos",
+                                                                            "description":des,
+                                                                            "conversion_factor":1})
                                                     sales_order.booking_id=doc.name
                                                     sales_order.save()
-                                                    sales_order.submit()
+                                                    # sales_order.submit()
                                 
 
 
