@@ -417,7 +417,9 @@ def create_vehicle_assignments(vehicles, opportunity_id):
 									vehicle_assignment.append("routes", {
 										"order_id": opportunity_id,
 										"transit_type": itm.transit_type,
-										"zone": itm.zone
+										"zone": itm.zone,
+										"latitude":itm.latitude,
+										"longitude":itm.longitude
 									})
 							
 							if oppo.vehicle_type:
