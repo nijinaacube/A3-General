@@ -29,7 +29,12 @@ def after_insert(doc, methods):
                                         items_to_include.append({
                                             "item_code": shipment.item,
                                             "qty": shipment.quantity,
-                                            "rate": shipment.average_rate
+                                            "rate": shipment.average_rate,
+                                            "item_name":shipment.item,
+                                            "uom": "Nos",
+                                            "description":"",
+                                            "conversion_factor":1
+
                                         })
 
                                         # Check if Sales Order with the same booking_id already exists
