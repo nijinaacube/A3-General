@@ -125,6 +125,7 @@ def validate(doc, methods):
                         opportunity.party_name = customer.customer_name
                         opportunity.booking_type = lead_doc.booking_type
                         current_date = today()
+                        # opportunity.booking_channel = lead_doc.booking_channel
                         opportunity.booking_date = current_date
                         opportunity.lead_id = lead_doc.name
                         if lead_doc.vehicle_type:
