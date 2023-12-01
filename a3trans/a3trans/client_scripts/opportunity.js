@@ -2652,7 +2652,9 @@ from_location:function(frm){
 								target_row.from_zone = from_zone;
 								target_row.to_zone = to_zone;
 								frm.doc.trans_id=target_row.idx
+								if (frm.doc.from_location && frm.doc.to_location){
 								target_row.description=from_zone+" "+"to"+" "+ to_zone;
+								}
 								target_row.cost = response.message.amount;
 								frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
 								frm.refresh_field('transit_charges');
@@ -2662,7 +2664,9 @@ from_location:function(frm){
 								if (existing_row){
 						
 								existing_row.cost = response.message.amount;
+								if (frm.doc.from_location && frm.doc.to_location){
 								existing_row.description=from_zone+" "+"to"+" "+ to_zone;
+								}
 								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
 								frm.refresh_field('transit_charges');
 								}
@@ -2726,7 +2730,9 @@ to_location:function(frm){
 								target_row.to_zone = to_zone;
 								frm.doc.trans_id=target_row.idx
 								target_row.cost = response.message.amount;
+								if (frm.doc.from_location && frm.doc.to_location){
 								target_row.description=from_zone+" "+"to"+" "+ to_zone;
+								}
 								frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
 								frm.refresh_field('transit_charges');
 							}
@@ -2735,7 +2741,10 @@ to_location:function(frm){
 								if (existing_row){
 						
 								existing_row.cost = response.message.amount;
-								existing_row.description=from_zone+" "+"to"+" "+ to_zone;
+								if (frm.doc.from_location && frm.doc.to_location){
+									existing_row.description=from_zone+" "+"to"+" "+ to_zone;
+									}
+							
 								frm.script_manager.trigger('cost', existing_row.doctype, existing_row.name);
 								frm.refresh_field('transit_charges');
 								}

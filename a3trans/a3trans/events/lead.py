@@ -32,12 +32,9 @@ def after_insert(doc,methods):
                 user.insert()
                 frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
 
-def validate(doc,methods):
+def validate(doc, methods):
     if doc.transit_details_item and doc.booking_type and doc.booking_channel == "Mobile App":
-        # for itm in doc.transit_details_item:
-                
         from_zone = doc.transit_details_item[0].zone
-        print(from_zone,"@@@@@@@@@@@222")
         to_zone = doc.transit_details_item[1].zone
         amount = 0
         bill_item = None
@@ -48,26 +45,49 @@ def validate(doc,methods):
             b_type = frappe.get_doc("Booking Type", doc.booking_type)
             if b_type.item:
                 bill_item = b_type.item
+        
+        # Check for conditions to determine amount
         if doc.add_select_tariff:
-            tariff = frappe.get_doc("Tariff Details",doc.add_select_tariff)
+            tariff = frappe.get_doc("Tariff Details", doc.add_select_tariff)
             for item in tariff.tariff_details_item:
-                if (item.from_city == from_zone and item.to_city == to_zone) or \
-                (item.from_city == to_zone and item.to_city == from_zone) and \
-                item.vehicle_type == doc.vehicle_type:
+                if ((item.from_city == from_zone and item.to_city == to_zone) or
+                   (item.from_city == to_zone and item.to_city == from_zone)) and \
+                   item.vehicle_type == doc.vehicle_type:
                     amount = item.amount
+                    
         else:
             # Check if Tariff Details with is_standard=1 exists
             tariff_exists = frappe.db.exists("Tariff Details", {"is_standard": 1})
             if tariff_exists:
                 tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
                 for item in tariff.tariff_details_item:
-                    if (item.from_city == from_zone and item.to_city == to_zone) or \
-                    (item.from_city == to_zone and item.to_city == from_zone) and \
-                    item.vehicle_type == doc.vehicle_type:
-                        amount = item.amount            
-        doc.transit_charges_item.clear()
-        doc.append("transit_charges_item",{"charges":bill_item,"description":from_zone + " to " + to_zone,"quantity":1,"cost":amount})
-     
+                    if ((item.from_city == from_zone and item.to_city == to_zone) or
+                       (item.from_city == to_zone and item.to_city == from_zone)) and \
+                       item.vehicle_type == doc.vehicle_type:
+                        amount = item.amount
+                        
+        
+      
+
+        # Check and append based on cost conditions
+        cost_zero_or_empty = False
+        if len(doc.transit_charges_item) == 0:
+            for item in doc.transit_charges_item:
+                if not item.cost or item.cost == 0:
+                    cost_zero_or_empty = True
+
+                
+
+        if cost_zero_or_empty:
+         
+                # Append values if both cost and amount are zero
+                doc.append("transit_charges_item", {
+                    "charges": bill_item,
+                    "description": from_zone + " to " + to_zone,
+                    "quantity": 1,
+                    "cost": amount
+                })
+      
 
     if doc.booking_type:
         if frappe.db.exists("Booking Type",doc.booking_type):

@@ -150,51 +150,52 @@ def after_insert(doc, methods):
 
 def validate(doc, method):
 
-    if doc.booking_type and doc.booking_channel == "Mobile App":
-        # Iterate through each row in the receiver_information table
-        for i in range(len(doc.receiver_information) - 1):
-            from_zone = doc.receiver_information[i].zone.strip()
-            to_zone = doc.receiver_information[i + 1].zone.strip()
+    # if doc.booking_type and doc.booking_channel == "Mobile App":
+    #     # Iterate through each row in the receiver_information table
+    #     for i in range(len(doc.receiver_information) - 1):
+    #         from_zone = doc.receiver_information[i].zone.strip()
+    #         to_zone = doc.receiver_information[i + 1].zone.strip()
 
-            amount = 0
-            bill_item = None
+    #         amount = 0
+    #         bill_item = None
 
-            # Check if Booking Type exists
-            booking_type_exists = frappe.db.exists("Booking Type", doc.booking_type)
-            if booking_type_exists:
-                b_type = frappe.get_doc("Booking Type", doc.booking_type)
-                if b_type.item:
-                    bill_item = b_type.item
+    #         # Check if Booking Type exists
+    #         booking_type_exists = frappe.db.exists("Booking Type", doc.booking_type)
+    #         if booking_type_exists:
+    #             b_type = frappe.get_doc("Booking Type", doc.booking_type)
+    #             if b_type.item:
+    #                 bill_item = b_type.item
 
-            # Check if Tariff Details exists for the customer
-            tariff = frappe.get_all("Tariff Details", filters={"Customer": doc.party_name})
-            if tariff:
-                for t in tariff:
-                    tariff_doc = frappe.get_doc("Tariff Details", t.name)
-                    for item in tariff_doc.tariff_details_item:
-                        if ((item.from_city == from_zone and item.to_city == to_zone) or
-                                (item.from_city == to_zone and item.to_city == from_zone)) and \
-                                item.vehicle_type == doc.vehicle_type:
-                            amount = item.amount
+    #         # Check if Tariff Details exists for the customer
+    #         tariff = frappe.get_all("Tariff Details", filters={"Customer": doc.party_name})
+    #         if tariff:
+    #             for t in tariff:
+    #                 tariff_doc = frappe.get_doc("Tariff Details", t.name)
+    #                 for item in tariff_doc.tariff_details_item:
+    #                     if ((item.from_city == from_zone and item.to_city == to_zone) or
+    #                             (item.from_city == to_zone and item.to_city == from_zone)) and \
+    #                             item.vehicle_type == doc.vehicle_type:
+    #                         amount = item.amount
                             
 
-            # If amount is still 0, check if there's a standard tariff
-            elif amount == 0:
-                standard_tariff = frappe.get_all("Tariff Details", filters={"is_standard": 1})
-                if standard_tariff:
-                    standard_tariff_doc = frappe.get_doc("Tariff Details", standard_tariff[0].name)
-                    for item in standard_tariff_doc.tariff_details_item:
-                        if ((item.from_city == from_zone and item.to_city == to_zone) or
-                                (item.from_city == to_zone and item.to_city == from_zone)) and \
-                                item.vehicle_type == doc.vehicle_type:
-                            amount = item.amount
+    #         # If amount is still 0, check if there's a standard tariff
+    #         elif amount == 0:
+    #             standard_tariff = frappe.get_all("Tariff Details", filters={"is_standard": 1})
+    #             if standard_tariff:
+    #                 standard_tariff_doc = frappe.get_doc("Tariff Details", standard_tariff[0].name)
+    #                 for item in standard_tariff_doc.tariff_details_item:
+    #                     if ((item.from_city == from_zone and item.to_city == to_zone) or
+    #                             (item.from_city == to_zone and item.to_city == from_zone)) and \
+    #                             item.vehicle_type == doc.vehicle_type:
+    #                         amount = item.amount
                             
 
-            # Append charges for this zone pair to the transit charges table in the document
-            doc.append("transit_charges", {"charges": bill_item,
-                                                "description": f"{from_zone} to {to_zone}",
-                                                "quantity": 1,
-                                                "cost": amount})
+    #         # Append charges for this zone pair to the transit charges table in the document
+    #         doc.append("transit_charges", {"charges": bill_item,
+    #                                             "description": f"{from_zone} to {to_zone}",
+    #                                             "quantity": 1,
+    #                                             "cost": amount})
+            
 
 
     if doc._update_tariff_charges_for_additional_services == 1:
