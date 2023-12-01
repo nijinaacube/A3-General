@@ -73,14 +73,12 @@ def validate(doc, methods):
         # Check and append based on cost conditions
         cost_zero_or_empty = False
         if len(doc.transit_charges_item) == 0:
-            for item in doc.transit_charges_item:
-                if not item.cost or item.cost == 0:
-                    cost_zero_or_empty = True
-
+            cost_zero_or_empty = True
+     
                 
 
         if cost_zero_or_empty:
-         
+
                 # Append values if both cost and amount are zero
                 doc.append("transit_charges_item", {
                     "charges": bill_item,
@@ -136,7 +134,9 @@ def validate(doc, methods):
                         if doc.transit_details_item:
                             for transit in doc.transit_details_item:
                                 receiver_info_data.append(
-                                    {"transit_type": transit.transit_type, "zone": transit.zone}
+                                    {"transit_type": transit.transit_type, "zone": transit.zone,"latitude":transit.latitude,
+                                     "longitude":transit.longitude,"city":transit.city,"location":transit.location,
+                                     "address_line1":transit.address_line1,"address_line2":transit.address_line2}
                                 )
                                 # You can add more data as needed for each transit item
 
@@ -339,7 +339,9 @@ def validate(doc, methods):
                         if doc.transit_details_item:
                             for transit in doc.transit_details_item:
                                 receiver_info_data.append(
-                                    {"transit_type": transit.transit_type, "zone": transit.zone}
+                                    {"transit_type": transit.transit_type, "zone": transit.zone,"latitude":transit.latitude,
+                                     "longitude":transit.longitude,"city":transit.city,"location":transit.location,
+                                     "address_line1":transit.address_line1,"address_line2":transit.address_line2}
                                 )
                                 # You can add more data as needed for each transit item
 
