@@ -314,7 +314,7 @@ def validate(doc, method):
                                                                             "description":des,
                                                                             "conversion_factor":1})
                                                     sales_order.booking_id=doc.name
-                                                    sales_order.save()
+                                                    # sales_order.save()
                                                     # sales_order.submit()
                                 
 
