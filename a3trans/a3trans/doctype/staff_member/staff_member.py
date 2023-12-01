@@ -8,11 +8,11 @@ class StaffMember(Document):
 	def validate(self):
 		if self.employee:
 			employee=frappe.get_doc("Employee",self.employee)
-			staff_list = frappe.get_all("Staff Member")
-			for staff in staff_list:
-				staff_member = frappe.get_doc("Staff Member",staff.name)
-				if self.employee == staff_member.employee:
-					frappe.throw("The empoyee you have selected already added as a staff member")
+		# 	staff_list = frappe.get_all("Staff Member")
+		# 	for staff in staff_list:
+		# 		staff_member = frappe.get_doc("Staff Member",staff.name)
+		# 		if self.employee == staff_member.employee:
+		# 			frappe.throw("The empoyee you have selected already added as a staff member")
 			# if employee.staff==0:
 			# 	employee.staff=1
 			# 	employee.save()
