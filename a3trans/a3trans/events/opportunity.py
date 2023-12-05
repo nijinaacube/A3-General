@@ -953,7 +953,7 @@ def get_invoice_items(doc):
 
         if oppo.opportunity_line_item:
             for line in oppo.opportunity_line_item:
-                if line.status == "Order":
+                if line.status == "Order" or line.include_in_billing == 1:
                     data = {}  # Create a new dictionary for each iteration
 
                     data["b_type"] = oppo.booking_type

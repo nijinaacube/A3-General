@@ -8,7 +8,7 @@ from frappe.utils import add_to_date
 def after_insert(doc,methods):
     lead_doc=doc
     if lead_doc.mobile_number and lead_doc.email_id:
-        if not lead_doc.booking_channel == "Mobile App":
+        if not lead_doc.booking_channel == "Mobile App" or  lead_doc.booking_channel != "Mobile App":
             if not frappe.db.exists("User", {"first_name":lead_doc.lead_name, "mobile_no":lead_doc.mobile_number,"email":lead_doc.email_id}):
                 user = frappe.get_doc(
                     {

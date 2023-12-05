@@ -29,7 +29,7 @@ def on_submit(doc, method):
                         line.status = "Order"
                         if not line.include_in_billing:
                             line.include_in_billing = 1
-                        line.save(ignore_permissions=True)
+                      
             oppo.save(ignore_permissions=True)
             frappe.db.commit()
 
@@ -45,7 +45,7 @@ def get_order_items(doc):
             pending_items_exist = False  # Flag to check if there are pending items
 
             for line in oppo.opportunity_line_item:
-                if line.status == "Pending":
+                if line.status == "Pending" and line.include_in_billing == 0:
                     pending_items_exist = True  # Set the flag to True
                     data = {}
                     data["b_type"] = oppo.booking_type
