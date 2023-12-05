@@ -215,15 +215,18 @@ frappe.ui.form.on('Opportunity', {
 					"zero_cost":values.zero_cost
 					},
 					callback: function(r) {
+					
 						console.log(r.message,"cancellation charges")
-						frappe.show_alert("Invoice for Cancellation Charges Created.")
+						frm.set_value("status","Lost")
+						// frappe.show_alert("Invoice for Cancellation Charges Created.")
 
 					}
 				})
 			}
+			
 				frm.set_value("status","Lost")
 				
-				// frm.refresh_field("status")
+				frm.refresh_field("status")
 				
 
 			console.log(values);
@@ -234,6 +237,7 @@ frappe.ui.form.on('Opportunity', {
 			}
 			if (!r.message) {
 			
+				
 				frm.set_value("status","Lost")
 				
 				frm.refresh_field("status")

@@ -27,7 +27,7 @@ def after_insert(doc,methods):
 			
 			oppo.invoice_id = doc.name
 
-			oppo.save()
+			oppo.db_update()
 			frappe.db.commit()	
 
 def attach_pdf(doc, event=None):
@@ -133,19 +133,20 @@ def save_and_attach(content, to_doctype, to_name, folder):
 def before_submit(doc, method):
 	if doc.items and doc.order_id:
 		oppo = frappe.get_doc("Opportunity", doc.order_id)
-		if oppo.transit_charges:
-			for charge_item in oppo.transit_charges:
+		if oppo.status != "Lost":
+			if oppo.transit_charges:
+				for charge_item in oppo.transit_charges:
+					for itm in doc.items:
+						if itm.idx == charge_item.idx:
+							itm.description = charge_item.description
+			if oppo.opportunity_line_item:
 				for itm in doc.items:
-					if itm.idx == charge_item.idx:
-						itm.description = charge_item.description
-		if oppo.opportunity_line_item:
-			for itm in doc.items:
-				for line in oppo.opportunity_line_item:
-					if itm.item_code == line.item:
-						line.status = "Invoice"
-						if line.include_in_billing == 0:
-							line.include_in_billing=1
-						oppo.save()
+					for line in oppo.opportunity_line_item:
+						if itm.item_code == line.item:
+							line.status = "Invoice"
+							if line.include_in_billing == 0:
+								line.include_in_billing=1
+							oppo.save()
 
 
 

@@ -3,6 +3,9 @@ var ind = 1;
 
 frappe.ui.form.on('Lead', {
     onload :function(frm){
+
+
+        
        
         if  (frm.is_new()){
             ind = 1
@@ -22,6 +25,14 @@ frappe.ui.form.on('Lead', {
 
     }
         if(frm.doc.booking_type==="Transport"){ 
+            frm.fields_dict['shipment_details'].grid.get_field('item').get_query = function(doc, cdt, cdn) {
+          	 
+                return {
+                    filters: {
+                        "is_stock_item": 1
+                    }
+                };
+            };
       
         if (frm.doc.transit_details_item){
             console.log(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1])
@@ -63,6 +74,8 @@ frappe.ui.form.on('Lead', {
     };
 
 }
+
+
 
 if(frm.doc.booking_type==="Warehousing"){
 
@@ -116,6 +129,17 @@ if(frm.doc.booking_type==="Warehousing"){
 
 
  refresh: function(frm) {
+
+
+            frm.fields_dict['contact_by'].get_query = function(doc){
+                return {
+                    filters: {
+                        'role_profile_name': ["not in",["Logistic Customer","Driver"]]
+                    }
+                };
+
+
+            }
     
     setTimeout(() => {
         $(".form-links").hide(); // Corrected selector with double quotes
@@ -237,6 +261,14 @@ booking_type:function(frm){
 
         if(frm.doc.booking_type==="Warehousing"){
            
+            frm.fields_dict['shipment_details'].grid.get_field('item').get_query = function(doc, cdt, cdn) {
+          	 
+                return {
+                    filters: {
+                        "is_stock_item": 1
+                    }
+                };
+            };
        
             frm.fields_dict['warehouse'].get_query = function(doc){
                     return {
@@ -428,7 +460,8 @@ warehouse:function(frm){
                     'booking_date': frm.doc.booking_date,
                     'booked_upto' : frm.doc.booked_upto,
                     'uom' : frm.doc.uom,
-                    "cargo_type":frm.doc.cargo_type
+                    "cargo_type":frm.doc.cargo_type,
+                    "booking_type":frm.doc.booking_type
                 },
                 callback: function(response) {
                     console.log(response.message);
@@ -789,3 +822,42 @@ frappe.ui.form.on('Warehouse Charges', {
         }
             }
 })
+
+
+
+frappe.ui.form.on('Shipment Details', {
+    height: function (frm, cdt, cdn) {
+        calculateVolume(frm, cdt, cdn);
+    },
+
+    length: function (frm, cdt, cdn) {
+        calculateVolume(frm, cdt, cdn);
+    },
+
+    width: function (frm, cdt, cdn) {
+        calculateVolume(frm, cdt, cdn);
+    },
+
+    type_uom: function (frm, cdt, cdn) {
+        calculateVolume(frm, cdt, cdn);
+    }
+});
+
+function calculateVolume(frm, cdt, cdn) {
+    var child = locals[cdt][cdn];
+    var length = child.length || 0;
+    var height = child.height || 0;
+    var width = child.width || 0;
+    var unit = child.type_uom // Default unit is centimeters
+
+    // Convert length, height, and width to meters if the unit is in centimeters
+    if (unit === 'Centimeter') {
+        length = length / 100; // Convert centimeters to meters
+        height = height / 100;
+        width = width / 100;
+    }
+
+    var volume = length * height * width;
+    child.volume = volume;
+    frm.refresh_field('shipment_details');
+}

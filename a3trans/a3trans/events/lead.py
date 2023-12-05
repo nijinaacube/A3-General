@@ -16,10 +16,6 @@ def after_insert(doc,methods):
                         "mobile_no": lead_doc.mobile_number,
                         "user.phone" : lead_doc.mobile_number,
                         "first_name":lead_doc.lead_name,
-    
-    
-                        
-                        
                         "email":lead_doc.email_id,
                         "enabled": 1,  
                         "role_profile_name":"Logistic Customer",

@@ -155,120 +155,26 @@ def after_insert(doc, methods):
                     #     customer.save()
 
 def validate(doc, method):
-
-    # if doc.booking_type and doc.booking_channel == "Mobile App":
-    #     # Iterate through each row in the receiver_information table
-    #     for i in range(len(doc.receiver_information) - 1):
-    #         from_zone = doc.receiver_information[i].zone.strip()
-    #         to_zone = doc.receiver_information[i + 1].zone.strip()
-
-    #         amount = 0
-    #         bill_item = None
-
-    #         # Check if Booking Type exists
-    #         booking_type_exists = frappe.db.exists("Booking Type", doc.booking_type)
-    #         if booking_type_exists:
-    #             b_type = frappe.get_doc("Booking Type", doc.booking_type)
-    #             if b_type.item:
-    #                 bill_item = b_type.item
-
-    #         # Check if Tariff Details exists for the customer
-    #         tariff = frappe.get_all("Tariff Details", filters={"Customer": doc.party_name})
-    #         if tariff:
-    #             for t in tariff:
-    #                 tariff_doc = frappe.get_doc("Tariff Details", t.name)
-    #                 for item in tariff_doc.tariff_details_item:
-    #                     if ((item.from_city == from_zone and item.to_city == to_zone) or
-    #                             (item.from_city == to_zone and item.to_city == from_zone)) and \
-    #                             item.vehicle_type == doc.vehicle_type:
-    #                         amount = item.amount
-                            
-
-    #         # If amount is still 0, check if there's a standard tariff
-    #         elif amount == 0:
-    #             standard_tariff = frappe.get_all("Tariff Details", filters={"is_standard": 1})
-    #             if standard_tariff:
-    #                 standard_tariff_doc = frappe.get_doc("Tariff Details", standard_tariff[0].name)
-    #                 for item in standard_tariff_doc.tariff_details_item:
-    #                     if ((item.from_city == from_zone and item.to_city == to_zone) or
-    #                             (item.from_city == to_zone and item.to_city == from_zone)) and \
-    #                             item.vehicle_type == doc.vehicle_type:
-    #                         amount = item.amount
-                            
-
-    #         # Append charges for this zone pair to the transit charges table in the document
-    #         doc.append("transit_charges", {"charges": bill_item,
-    #                                             "description": f"{from_zone} to {to_zone}",
-    #                                             "quantity": 1,
-    #                                             "cost": amount})
-            
-
-
-    if doc._update_tariff_charges_for_additional_services == 1:
-        if doc.transit_charges:
-            for add in doc.transit_charges:
-                if add.charges:
-                    if frappe.db.exists("Item", add.charges):
-                        item = frappe.get_doc("Item", add.charges)
-                        if item.item_group == "Additional Services":
-                            if frappe.db.exists("Tariff Details", {"customer": doc.party_name}):
-                                tariff = frappe.get_doc("Tariff Details", {"customer": doc.party_name})
-                                
-                                existing_rows = [charge.additional_service for charge in tariff.additional_services]
-
-                                # Check if the add.charges is already in the existing_rows
-                                if add.charges in existing_rows:
-                                    for charge in tariff.additional_services:
-                                        if charge.additional_service == add.charges:
-                                            cst = float(add.cost) / float(add.quantity)
-                                            if cst != charge.rate:
-                                                charge.rate = cst
-                                                charge.amount = cst
-                                else:
-                                    cst = float(add.cost) / float(add.quantity)
-                                    tariff.append("additional_services", {
-                                        "additional_service": add.charges,
-                                        "quantity": 1,
-                                        "rate": cst,
-                                        "amount": cst
-                                    })
-
-                                # Save the changes to the tariff document
-                                tariff.save()
-                            else:
-                                frappe.throw("No Tariff added for this customer to update additional service charges")
-
-            
-         
-    if doc.has_return_trip == 1:
-        if not doc.return_trips:
-            frappe.throw("Please add return trips")
-
-        if len(doc.receiver_information) < 2:
-            frappe.throw("Please add at least one pickup and dropoff in transit details to enable return trips")
-
-        # Check if 'zones' have values in receiver_information
-        zones_missing = True
-        for entry in doc.receiver_information:
-            if entry.zone:
-                zones_missing = False
-                break
-        
-        if zones_missing:
-            frappe.throw("Please add values in the 'zones' field of transit details")
-
-            
-    # if doc.lead_id:
-        
-    #     if doc.booking_type == "Warehousing":
-            
-    #         for datas in doc.warehouse_space_details:
-              
-    #             if datas.warehouse == "" or datas.warehouse == None:
-    #                 frappe.throw("Please add a warehouse for this customer")
     if doc.status == "Lost":
         doc.order_status = "Cancelled"
         print(doc.order_lost_reason, "*******************************")
+        if frappe.db.exists("Sales Invoice",{"order_id":doc.name}):
+            invoice_list = frappe.get_list("Sales Invoice", {"order_id": doc.name})
+            for inv in invoice_list:
+                invoice = frappe.get_doc("Sales Invoice", inv.name)
+                if invoice.status != "Cancelled" and invoice.docstatus ==1:
+                    invoice.order_status = "Cancelled"
+                    invoice.cancel()
+        if frappe.db.exists("Sales Order",{"booking_id":doc.name}):
+            order_list = frappe.get_list("Sales Order", {"booking_id": doc.name})
+            for ord in order_list:
+                sale_order = frappe.get_doc("Sales Order", ord.name)
+                if sale_order.status != "Cancelled" and sale_order.docstatus ==1:
+                    sale_order.booking_status = "Cancelled"
+                    sale_order.cancel()
+                
+                
+
 
         # Check if Vehicle Assignment exists for the order
         if frappe.db.exists("Vehicle Assignment", {"order": doc.name}):
@@ -283,231 +189,298 @@ def validate(doc, method):
                 else:
                     frappe.throw("You will not able to cancel this opportunity, Since the order is already delivered or closed")
 
+            
+    if doc.status != "Lost":
 
-   
-    if doc.opportunity_from=="Customer":
-        if doc.lead_id:
-            if doc.party_name:
-                # if doc.create_invoices==1:
-                    if doc.opportunity_line_item:
-                        items_to_include = []
-                        for shipment in doc.opportunity_line_item:
-                                    if shipment.include_in_billing == 1:
-                                        items_to_include.append({
-                                            "item_code": shipment.item,
-                                            "qty": shipment.quantity,
-                                            "rate": shipment.average_rate,
-                                            "item_name":shipment.item,
-                                            "uom": "Nos",
-                                            "description":shipment.item,
-                                            "conversion_factor":1
+        if doc._update_tariff_charges_for_additional_services == 1:
+            if doc.transit_charges:
+                for add in doc.transit_charges:
+                    if add.charges:
+                        if frappe.db.exists("Item", add.charges):
+                            item = frappe.get_doc("Item", add.charges)
+                            if item.item_group == "Additional Services":
+                                if frappe.db.exists("Tariff Details", {"customer": doc.party_name}):
+                                    tariff = frappe.get_doc("Tariff Details", {"customer": doc.party_name})
+                                    
+                                    existing_rows = [charge.additional_service for charge in tariff.additional_services]
 
+                                    # Check if the add.charges is already in the existing_rows
+                                    if add.charges in existing_rows:
+                                        for charge in tariff.additional_services:
+                                            if charge.additional_service == add.charges:
+                                                cst = float(add.cost) / float(add.quantity)
+                                                if cst != charge.rate:
+                                                    charge.rate = cst
+                                                    charge.amount = cst
+                                    else:
+                                        cst = float(add.cost) / float(add.quantity)
+                                        tariff.append("additional_services", {
+                                            "additional_service": add.charges,
+                                            "quantity": 1,
+                                            "rate": cst,
+                                            "amount": cst
                                         })
 
-                                        # Check if Sales Order with the same booking_id already exists
-                                        if not frappe.db.exists("Sales Order", {"booking_id": doc.name}):
-                                            # Create a new Sales Order
-                                            sales_order = frappe.new_doc("Sales Order")
-                                            sales_order.customer = doc.party_name
-                                            sales_order.customer_name = doc.customer_name
-                                            sales_order.booking_id = doc.name
-                                            sales_order.booking_type = doc.booking_type
-                                            sales_order.booking_status = "New"
-                                            sales_order.delivery_date = frappe.utils.nowdate()
-                                            # Append items to the Sales Order
-                                            for item_data in items_to_include:
-                                                sales_order.append("items", item_data)
-                                            sales_order.save()
-                                            sales_order.submit()
-                                            doc.status="Converted"
+                                    # Save the changes to the tariff document
+                                    tariff.save()
+                                else:
+                                    frappe.throw("No Tariff added for this customer to update additional service charges")
+
+                
+            
+        if doc.has_return_trip == 1:
+            if not doc.return_trips:
+                frappe.throw("Please add return trips")
+
+            if len(doc.receiver_information) < 2:
+                frappe.throw("Please add at least one pickup and dropoff in transit details to enable return trips")
+
+            # Check if 'zones' have values in receiver_information
+            zones_missing = True
+            for entry in doc.receiver_information:
+                if entry.zone:
+                    zones_missing = False
+                    break
+            
+            if zones_missing:
+                frappe.throw("Please add values in the 'zones' field of transit details")
+
+                
+        # if doc.lead_id:
+            
+        #     if doc.booking_type == "Warehousing":
+                
+        #         for datas in doc.warehouse_space_details:
+                
+        #             if datas.warehouse == "" or datas.warehouse == None:
+        #                 frappe.throw("Please add a warehouse for this customer")
+ 
+
+    
+        if doc.opportunity_from=="Customer":
+            
+            if doc.lead_id:
+                if doc.party_name:
+                    # if doc.create_invoices==1:
+                        if doc.opportunity_line_item:
+                            items_to_include = []
+                            for shipment in doc.opportunity_line_item:
+                                        if shipment.include_in_billing == 1:
+                                            items_to_include.append({
+                                                "item_code": shipment.item,
+                                                "qty": shipment.quantity,
+                                                "rate": shipment.average_rate,
+                                                "item_name":shipment.item,
+                                                "uom": "Nos",
+                                                "description":shipment.item,
+                                                "conversion_factor":1
+
+                                            })
+
+                                            # Check if Sales Order with the same booking_id already exists
+                                            if not frappe.db.exists("Sales Order", {"booking_id": doc.name}):
+                                                # Create a new Sales Order
+                                                sales_order = frappe.new_doc("Sales Order")
+                                                sales_order.customer = doc.party_name
+                                                sales_order.customer_name = doc.customer_name
+                                                sales_order.booking_id = doc.name
+                                                sales_order.booking_type = doc.booking_type
+                                                sales_order.booking_status = "New"
+                                                sales_order.delivery_date = frappe.utils.nowdate()
+                                                # Append items to the Sales Order
+                                                for item_data in items_to_include:
+                                                    sales_order.append("items", item_data)
+                                                sales_order.save()
+                                                sales_order.submit()
+                                                doc.status="Converted"
+                                                
+                                    
+
+
+
+
+                            # Create sales invoice
+                            # if doc.payment_amount != 0:
+                            #     if not frappe.db.exists("Sales Invoice",{"order_id":doc.name}):
+                            #         sales_invoice=frappe.new_doc("Sales Invoice")
+                            #         sales_invoice.customer = doc.party_name
+                            #         sales_invoice.customer_name = doc.customer_name
+                            #         sales_invoice.order_id=doc.name
+                            #         sales_invoice.booking_type=doc.booking_type
+                            #         #    if  doc.job_number:
+                            #         #         sales_invoice.job_number = doc.job_number
+                            #         sales_invoice.order_status="New"
+                            #         sales_invoice.due_date=frappe.utils.nowdate()
+                            #         if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
+                            #             for shipment in doc.opportunity_line_item:
+                            #                 sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
+                                    
+                            #         if doc.booking_type=="Diesel":    
+                            #             sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
+                            #         if doc.booking_type=="Packing and Moving":
+                            #             for packing in doc.packing_items:
+                            #                 sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
+
+                            #         sales_invoice.insert()
+                            #         #    sales_invoice.submit()
+                            #         doc.invoice_id = sales_invoice.name
+                        
+                            if doc.lead_id:
+                                lead= frappe.get_doc ("Lead", doc.lead_id)
+                                lead.status = "Converted"
+                                lead.save()
+                                # doc.create_invoices=0
+                        else:
+                            frappe.throw("Please add/update Invoice Items in opportunity line items")
+            
+
+            if frappe.db.exists("ToDo",{"reference_type":"Opportunity","reference_name":doc.name}):
+                todo=frappe.get_doc("ToDo",{"reference_type":"Opportunity","reference_name":doc.name})
+                if doc.status=="Converted":
+                    todo.status="Closed"
+                    todo.save()
+            #Create user account for sender
+            if doc.mobile_number and doc.email:
+                if not doc.booking_channel == "Mobile App":
+                    if not frappe.db.exists("User", {"first_name":doc.customer_name, "mobile_no":doc.mobile_number,"email":doc.email}):
+                        user = frappe.get_doc(
+                            {
+                                "doctype": "User",
+                                "mobile_no": doc.mobile_number,
+                                "user.phone" : doc.mobile_number,
+                                "first_name":doc.customer_name,
+
+
                                 
-
-
-
-
-                        # Create sales invoice
-                        # if doc.payment_amount != 0:
-                        #     if not frappe.db.exists("Sales Invoice",{"order_id":doc.name}):
-                        #         sales_invoice=frappe.new_doc("Sales Invoice")
-                        #         sales_invoice.customer = doc.party_name
-                        #         sales_invoice.customer_name = doc.customer_name
-                        #         sales_invoice.order_id=doc.name
-                        #         sales_invoice.booking_type=doc.booking_type
-                        #         #    if  doc.job_number:
-                        #         #         sales_invoice.job_number = doc.job_number
-                        #         sales_invoice.order_status="New"
-                        #         sales_invoice.due_date=frappe.utils.nowdate()
-                        #         if doc.booking_type=="Transport" or doc.booking_type=="Warehousing" :
-                        #             for shipment in doc.opportunity_line_item:
-                        #                 sales_invoice.append("items",{"item_code":shipment.item,"qty":shipment.quantity,"rate":shipment.average_rate})
                                 
-                        #         if doc.booking_type=="Diesel":    
-                        #             sales_invoice.append("items",{"item_code":"Diesel","qty":1,"rate":doc.payment_amount})
-                        #         if doc.booking_type=="Packing and Moving":
-                        #             for packing in doc.packing_items:
-                        #                 sales_invoice.append("items",{"item_code":packing.item_name,"qty":1,"rate":doc.payment_amount})
+                                "email":doc.email,
+                                "enabled": 1,  
+                                "role_profile_name":"Logistic Customer",
+                                "user_type": "Website User",
+                                "send_welcome_email":0
+                            }
+                        )
+                        user.flags.ignore_permissions = True
+                        user.flags.ignore_password_policy = True
+                        user.insert()
+                        frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
 
-                        #         sales_invoice.insert()
-                        #         #    sales_invoice.submit()
-                        #         doc.invoice_id = sales_invoice.name
-                       
-                        if doc.lead_id:
-                            lead= frappe.get_doc ("Lead", doc.lead_id)
-                            lead.status = "Converted"
-                            lead.save()
-                            # doc.create_invoices=0
-                    else:
-                        frappe.throw("Please add/update Invoice Items in opportunity line items")
-        
-
-        if frappe.db.exists("ToDo",{"reference_type":"Opportunity","reference_name":doc.name}):
-            todo=frappe.get_doc("ToDo",{"reference_type":"Opportunity","reference_name":doc.name})
-            if doc.status=="Converted":
-                todo.status="Closed"
-                todo.save()
-        #Create user account for sender
-        if doc.mobile_number and doc.email:
-            if not doc.booking_channel == "Mobile App":
-                if not frappe.db.exists("User", {"first_name":doc.customer_name, "mobile_no":doc.mobile_number,"email":doc.email}):
-                    user = frappe.get_doc(
-                        {
-                            "doctype": "User",
-                            "mobile_no": doc.mobile_number,
-                            "user.phone" : doc.mobile_number,
-                            "first_name":doc.customer_name,
+            linked_addresses = frappe.get_all('Dynamic Link', filters={
+                'link_doctype': 'Customer',
+                'link_name': doc.party_name,
+                'parenttype': 'Address'
+            }, fields=['parent'])
 
 
-                            
-                            
-                            "email":doc.email,
-                            "enabled": 1,  
-                            "role_profile_name":"Logistic Customer",
-                            "user_type": "Website User",
-                            "send_welcome_email":0
-                        }
-                    )
-                    user.flags.ignore_permissions = True
-                    user.flags.ignore_password_policy = True
-                    user.insert()
-                    frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
-
-        linked_addresses = frappe.get_all('Dynamic Link', filters={
-            'link_doctype': 'Customer',
-            'link_name': doc.party_name,
-            'parenttype': 'Address'
-        }, fields=['parent'])
+            # Getting the Address docs and storing them with phone as the key.
+            # I'm assuming 'phone' (from info.contact) is the field in the Address DocType that is supposed to be unique.
+            existing_addresses = {address_doc.phone: address_doc for address_doc in [frappe.get_doc('Address', address.parent) for address in linked_addresses]}
 
 
-        # Getting the Address docs and storing them with phone as the key.
-        # I'm assuming 'phone' (from info.contact) is the field in the Address DocType that is supposed to be unique.
-        existing_addresses = {address_doc.phone: address_doc for address_doc in [frappe.get_doc('Address', address.parent) for address in linked_addresses]}
+            for info in doc.receiver_information:
+                # Checking if the current info.contact exists as a phone in the existing_addresses
+                if info.contact not in existing_addresses:
+                
+                    if info.address_line1 and info.city:
+                        address = frappe.new_doc("Address")
+                        if info.name1:
+                            address.address_title = info.name1
+                        else:
+                            address.address_title = "Home"
+                        if info.address_line1:
+                            address.address_line1 = info.address_line1
+                        else:
+                            address.address_line1 ="NIL"
+                        if info.address_line2:
+                            address.address_line2 = info.address_line2
+                        else:
+                            address.address_line2 = "NIL"
+                        if info.city:
+                            address.city = info.city
+                        else:
+                            address.city="NIL"
+                        if info.latitude:
+                            address.latitude = info.latitude
+                        if info.longitude:
+                            address.longitude = info.longitude
+                        if info.contact:
+                            address.phone = info.contact
+                        if info.email:
+                            address.email_id = info.email
+                        if info.make_default ==1:
+                            address.is_default=1
+                        address.address_type = "Shipping"
+                        address.append("links", {
+                            "link_doctype": "Customer",
+                            "link_name": doc.party_name
+                        })
+                        address.address_type = "Shipping"
+                        
+                    
+                        address.insert()
+                    
 
 
-        for info in doc.receiver_information:
-            # Checking if the current info.contact exists as a phone in the existing_addresses
-            if info.contact not in existing_addresses:
-               
-                if info.address_line1 and info.city:
-                    address = frappe.new_doc("Address")
-                    if info.name1:
-                        address.address_title = info.name1
-                    else:
-                        address.address_title = "Home"
-                    if info.address_line1:
-                        address.address_line1 = info.address_line1
-                    else:
-                        address.address_line1 ="NIL"
-                    if info.address_line2:
-                        address.address_line2 = info.address_line2
-                    else:
-                        address.address_line2 = "NIL"
-                    if info.city:
-                        address.city = info.city
-                    else:
-                        address.city="NIL"
-                    if info.latitude:
-                        address.latitude = info.latitude
-                    if info.longitude:
-                        address.longitude = info.longitude
-                    if info.contact:
-                        address.phone = info.contact
-                    if info.email:
-                        address.email_id = info.email
-                    if info.make_default ==1:
-                        address.is_default=1
-                    address.address_type = "Shipping"
-                    address.append("links", {
+
+
+                elif info.address and info.make_default == 1:
+                    # Fetch the existing default address
+                    default_address = frappe.get_all('Address', filters={'is_default': 1, 'phone': info.contact}, fields=['name', 'is_default'])
+                    print(default_address)
+
+
+
+
+                    # If there's an existing default address, unset its default status
+                    if default_address:
+                        address_to_unset = frappe.get_doc('Address', default_address[0].name)
+                        address_to_unset.is_default = 0
+                        address_to_unset.save()
+                    add=frappe.get_doc("Address",info.address)
+                    add.address_type = "Shipping"
+                    
+                    add.append("links", {
                         "link_doctype": "Customer",
                         "link_name": doc.party_name
                     })
-                    address.address_type = "Shipping"
-                    
-                
-                    address.insert()
-                
+                    add.is_default=1
+                    add.insert()
 
 
+            # if doc.booking_type == "Warehousing":
+            #     if doc.warehouse_space_details:
+
+            #         for war in doc.warehouse_space_details:
+            #             for itm in doc.warehouse_stock_items:
+            #                 if war.warehouse:
+            #                     warehouses = frappe.get_doc("Warehouse", war.warehouse)
+            #                     warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"zone":war.zone,"status":"Pending"})       
+            #                     warehouses.save()
 
 
-            elif info.address and info.make_default == 1:
-                # Fetch the existing default address
-                default_address = frappe.get_all('Address', filters={'is_default': 1, 'phone': info.contact}, fields=['name', 'is_default'])
-                print(default_address)
-
-
-
-
-                # If there's an existing default address, unset its default status
-                if default_address:
-                    address_to_unset = frappe.get_doc('Address', default_address[0].name)
-                    address_to_unset.is_default = 0
-                    address_to_unset.save()
-                add=frappe.get_doc("Address",info.address)
-                add.address_type = "Shipping"
-                
-                add.append("links", {
-                    "link_doctype": "Customer",
-                    "link_name": doc.party_name
-                })
-                add.is_default=1
-                add.insert()
-
-
-        # if doc.booking_type == "Warehousing":
-        #     if doc.warehouse_space_details:
-
-        #         for war in doc.warehouse_space_details:
-        #             for itm in doc.warehouse_stock_items:
-        #                 if war.warehouse:
-        #                     warehouses = frappe.get_doc("Warehouse", war.warehouse)
-        #                     warehouses.append("warehouse_item",{"booking_id":doc.name,"item":itm.item,"quantity":itm.quantity,"floor_id":war.floor_id,"shelf_id":war.shelf_id,"rack_id":war.rack_id,"zone":war.zone,"status":"Pending"})       
-        #                     warehouses.save()
-
-
-        #                 if doc.party_name:
-        #                     customer=frappe.get_doc("Customer",doc.party_name)
-        #                     print(customer)
-        #                     fromdate=frappe.utils.nowdate()
-        #                     dur=int(war.no_of_days)
-        #                     todate=add_to_date(fromdate,days=dur,as_string=True)   
-        #                     table_len=len(customer.customer_warehouse_details)                           
-        #                     if table_len ==0:                               
-        #                         customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
-        #                     else:                               
-        #                         for warehouses_det in customer.customer_warehouse_details:                                   
-        #                             if  war.warehouse not in warehouses_det.warehouse:                                       
-        #                                 customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
-        #                     customer.save()
+            #                 if doc.party_name:
+            #                     customer=frappe.get_doc("Customer",doc.party_name)
+            #                     print(customer)
+            #                     fromdate=frappe.utils.nowdate()
+            #                     dur=int(war.no_of_days)
+            #                     todate=add_to_date(fromdate,days=dur,as_string=True)   
+            #                     table_len=len(customer.customer_warehouse_details)                           
+            #                     if table_len ==0:                               
+            #                         customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+            #                     else:                               
+            #                         for warehouses_det in customer.customer_warehouse_details:                                   
+            #                             if  war.warehouse not in warehouses_det.warehouse:                                       
+            #                                 customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
+            #                     customer.save()
+                            
                         
-                    
 
 
 
 
+ #API
 
-        #API
-
-     
+        
 @frappe.whitelist()
 def fetch_address(address):
    print(address)
@@ -686,10 +659,11 @@ def get_end_of_month(current_date_str,booked_upto):
        days_difference = (booked_upto_date - current_date).days
        data["difference"]=days_difference
        print(days_difference)
-      
-
+    
 
    return data
+
+
 @frappe.whitelist()
 def calculate_charges(selected_item, no_of_days, uom, customer, area, rate_month, rate_day,types):
 	
@@ -817,7 +791,7 @@ def get_warehouse_data(doc):
 
 @frappe.whitelist()
 def fetch_charges_price(charges):
-   print(charges,"2@@@@@@@@@@@@@@@@@@@")
+   print(charges,"@@@@@@@@@@@@@@@@@@@")
    if frappe.db.exists("Item Price",{"item_code":charges}):
        itm=frappe.get_doc("Item Price",{"item_code":charges})
        print(itm)
@@ -888,23 +862,6 @@ def calculate_transportation_cost(customer, zone, vehicle_type,booking_type):
                 elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
                    data[ "amount" ]= item.amount
     return data  
-    #    customer=frappe.get_doc("Customer",customer)
-    #    if customer.tariff:
-    #        tariff = frappe.get_doc("Tariff Details", customer.tariff)
-    #        for item in tariff.tariff_details_item:
-    #             if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
-    #                amount = item.amount
-    #             elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
-    #                 amount = item.amount
-
-
-   
-
-
-
-
-      
-
 
 
 
@@ -990,44 +947,46 @@ def get_rate(itm, qty, customer):
 def get_invoice_items(doc):
     oppo = frappe.get_doc("Opportunity", doc)
     data_from_receipt = []
+    if oppo.order_status != "Cancelled":
 
-    pending_items_exist = False  # Flag to check if there are pending items
+        pending_items_exist = False  # Flag to check if there are pending items
 
-    if oppo.opportunity_line_item:
-        for line in oppo.opportunity_line_item:
-            if line.status == "Order":
-                data = {}  # Create a new dictionary for each iteration
+        if oppo.opportunity_line_item:
+            for line in oppo.opportunity_line_item:
+                if line.status == "Order":
+                    data = {}  # Create a new dictionary for each iteration
 
-                data["b_type"] = oppo.booking_type
-                if oppo.job_number:
-                    data["job"] = oppo.job_number
-                else:
-                    data["job"] = ""
-                data["party"] = oppo.party_name
-                data["item"] = line.item
+                    data["b_type"] = oppo.booking_type
+                    if oppo.job_number:
+                        data["job"] = oppo.job_number
+                    else:
+                        data["job"] = ""
+                    data["party"] = oppo.party_name
+                    data["item"] = line.item
 
-                if frappe.db.exists("Item", line.item):
-                    it = frappe.get_doc("Item", line.item)
-                    if it.stock_uom:
-                        data["uom"] = it.stock_uom
-                    if it.description:
-                        data["description"] = it.description
-                    if oppo.company:
-                        comp = frappe.get_doc("Company", oppo.company)
-                        if comp.default_income_account:
-                            data["account"] = comp.default_income_account
+                    if frappe.db.exists("Item", line.item):
+                        it = frappe.get_doc("Item", line.item)
+                        if it.stock_uom:
+                            data["uom"] = it.stock_uom
+                        if it.description:
+                            data["description"] = it.description
+                        if oppo.company:
+                            comp = frappe.get_doc("Company", oppo.company)
+                            if comp.default_income_account:
+                                data["account"] = comp.default_income_account
 
-                data["quantity"] = line.quantity
-                data["rate"] = line.average_rate
-                data_from_receipt.append(data)
-                pending_items_exist = True  # Set the flag to True
+                    data["quantity"] = line.quantity
+                    data["rate"] = line.average_rate
+                    data_from_receipt.append(data)
+                    pending_items_exist = True  # Set the flag to True
 
-    if not pending_items_exist:
-        frappe.msgprint("No pending items found in the opportunity.")  # Display a message or take appropriate action
-        return {"data": []}
+        if not pending_items_exist:
+            frappe.msgprint("No pending items found in the opportunity.")  # Display a message or take appropriate action
+            return {"data": []}
 
-    return {"data": data_from_receipt}
-
+        return {"data": data_from_receipt}
+    else:
+        frappe.throw("The order is already cancelled. You will not able to create a sales invoice against a cancelled order")
 
 
           
@@ -1062,7 +1021,9 @@ def  get_payment_items(doc):
 
 @frappe.whitelist()
 def cancellation_charges(name,cost,zero_cost):
+    
     print(name,cost,zero_cost)
+   
     if cost and zero_cost == "0":
         doc=frappe.get_doc("Opportunity",name)
         sales_invoice=frappe.new_doc("Sales Invoice")
@@ -1079,6 +1040,7 @@ def cancellation_charges(name,cost,zero_cost):
         sales_invoice.save()
         sales_invoice.submit()
         print(sales_invoice)
+       
         return sales_invoice.name
         
 
@@ -1093,6 +1055,7 @@ def cancel_booking(name):
 # frappe.throw("hi")
     if frappe.db.exists("Opportunity", name):
         opportunity = frappe.get_doc("Opportunity", name)
+        print(opportunity,"@@@")
 
 
         # Find the Route Details Items with the specified opportunity ID
@@ -1113,10 +1076,12 @@ def cancel_booking(name):
         # for i in vehicle_assignment_names:
         # if frappe.db.exists("Vehicle Assignment",i.name):
         # veh_ass=frappe.get_doc("Vehicle Assignment",i.name)
+            print(vehicle_assignment_names,"333")
             return vehicle_assignment_names
 
 
         else:
+            print("kk")
             return None
 
 

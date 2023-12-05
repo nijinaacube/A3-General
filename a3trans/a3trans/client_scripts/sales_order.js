@@ -1,6 +1,8 @@
 frappe.ui.form.on('Sales Order', {
     booking_id: function(frm) {
         if (frm.doc.booking_id) {
+
+            
             frm.clear_table('items');
             console.log("hiii");
             frappe.call({

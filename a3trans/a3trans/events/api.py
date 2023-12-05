@@ -83,6 +83,13 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
     
     if booking_type.location_required == 1:
         lead.vehicle_type = data["vehicle_type"]
+        lead.append("shipment_details", {
+            "item"      : data["commodity"],
+            "weight"    : data["prod_weight"],
+            "uom"       : data["prod_uom"],
+            "quantity"  : data["no_of_pack"],
+            "packaging_type":   data["package_type"]
+            })
         lead.append("transit_details_item", {
             "transit_type": data["pick_transit_type"],
             "zone": data["pick_zone"],
@@ -104,7 +111,8 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
             "city": data["drop_city"],
             "latitude": data["drop_latitude"],
             "longitude": data["drop_longitude"],
-    })
+        })
+    
     lead.save()
     return lead
 
@@ -118,6 +126,13 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
     opp.booking_channel = "Mobile App"
     opp.booking_type = booking_type.name
     opp.booking_date = datetime.datetime.today()
+    opp.append("shipment_details", {
+        "item"      : data["commodity"],
+        "weight"    : data["prod_weight"],
+        "uom"       : data["prod_uom"],
+        "quantity"  : data["no_of_pack"],
+        "packaging_type":   data["package_type"]
+        })
     opp.append("receiver_information",{
         "transit_type": data["pick_transit_type"],
         "zone": data["pick_zone"],
@@ -142,6 +157,7 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
         "longitude": data["drop_longitude"],
         
     })
+    
     opp.save()
     return opp
 
