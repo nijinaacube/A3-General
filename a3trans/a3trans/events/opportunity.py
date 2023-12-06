@@ -513,7 +513,7 @@ def check_status():
             end_date = datetime.combine(opportunity.end_date, datetime.min.time())
 
             if end_date < utils.now_datetime():
-                opportunity.order_status = "Overdue"
+                opportunity.status = "Overdue"
                 opportunity.save()
 
 

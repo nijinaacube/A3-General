@@ -196,24 +196,24 @@ scheduler_events = {
 # #	"all": [
 # #		"a3trans.tasks.all"
 # #	],
-"cron":{
-		"*/1 * * * *":[
-			# "a3trans.a3trans.events.monthly_invoice.create_invoices",
-         "a3trans.a3trans.events.opportunity.check_status" 
-		]
-	},
+# "cron":{
+# 		"*/1 * * * *":[
+# 			# "a3trans.a3trans.events.monthly_invoice.create_invoices",
+#          "a3trans.a3trans.events.opportunity.check_status" 
+# 		]
+# 	},
 #	"daily": [
 #		"a3trans.tasks.daily"
 #	],
-#	"hourly": [
-#		"a3trans.tasks.hourly"
-#	],
+	"hourly": [
+		 "a3trans.a3trans.events.opportunity.check_status" 
+	],
 #	"weekly": [
 #		"a3trans.tasks.weekly"
 #	]
-	# "monthly": [
-	# "a3trans.a3trans.events.monthly_invoice.create_invoices"
-	# ]
+	"monthly": [
+	"a3trans.a3trans.events.monthly_invoice.create_invoices"
+	]
 }
 
 # Testing
