@@ -2810,6 +2810,7 @@ from_location:function(frm){
 								target_row.from = from_zone
 								target_row.to = to_zone
 								target_row.to_zone = to_zone;
+								target_row.vehicle_type = frm.doc.vehicle_type
 								frm.doc.trans_id=target_row.idx
 								if (frm.doc.from_location && frm.doc.to_location){
 								target_row.description=from_zone+" "+"to"+" "+ to_zone;
@@ -2824,6 +2825,7 @@ from_location:function(frm){
 						
 								existing_row.cost = response.message.amount;
 								existing_row.from = from_zone
+								existing_row.vehicle_type = frm.doc.vehicle_type
 								existing_row.to = to_zone
 								if (frm.doc.from_location && frm.doc.to_location){
 								existing_row.description=from_zone+" "+"to"+" "+ to_zone;
@@ -2962,8 +2964,9 @@ to_location:function(frm){
 								target_row.to_zone = to_zone;
 								target_row.from = from_zone;
 								target_row.to = to_zone;
+								target_row.vehicle_type = frm.doc.vehicle_type
 								frm.doc.trans_id=target_row.idx
-								target_row.cost = 0;
+								target_row.cost = response.message.amount;
 								if (frm.doc.from_location && frm.doc.to_location){
 								target_row.description=from_zone+" "+"to"+" "+ to_zone;
 								}
@@ -2977,6 +2980,7 @@ to_location:function(frm){
 								existing_row.cost = 0;
 								existing_row.from = from_zone;
 								existing_row.to = to_zone;
+								existing_row.vehicle_type = frm.doc.vehicle_type
 								if (frm.doc.from_location && frm.doc.to_location){
 									existing_row.description=from_zone+" "+"to"+" "+ to_zone;
 									}
@@ -2990,6 +2994,7 @@ to_location:function(frm){
 										const target_row = frm.add_child('transit_charges');
 										
 										target_row.cost = 0;
+										target_row.vehicle_type = frm.doc.vehicle_type
 										target_row.from = from_zone;
 										target_row.to = to_zone;
 										frm.script_manager.trigger('cost', target_row.doctype, target_row.name);
