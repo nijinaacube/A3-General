@@ -883,6 +883,7 @@ import json
 @frappe.whitelist()
 def calculate_transportation_cost(customer, zone, vehicle_type,booking_type):
     zone_list = json.loads(zone)
+    print(zone_list,"/////")
     amount = 0
     data = {}
     if booking_type:
@@ -1167,5 +1168,17 @@ def get_zones(order_id):
     return data
 
              
-         
-     
+import frappe
+
+import frappe
+
+@frappe.whitelist()
+def fetch_vehicle_types(vehicle_types):
+    print(vehicle_types," kkkkkkk")
+
+  
+ 
+
+
+
+  

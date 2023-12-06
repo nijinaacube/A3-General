@@ -263,6 +263,7 @@ def validate(doc, methods):
                     else: 
                     
                         customer=frappe.new_doc("Customer")
+                        
                         customer.customer_name=lead_doc.lead_name
                         customer.mobile_number=lead_doc.mobile_number
                         if lead_doc.email_id:
