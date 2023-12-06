@@ -74,6 +74,15 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
                     "rate" :item.amount,
                     "amount" :item.amount
                 })
+    
+    for vehicle_type in data["vehicle_type"]["vehicle_selected"]:
+        for qty in range(int(vehicle_type['quantity'])):
+            lead.append("vehicle_list", {
+                    "vehicle_type": vehicle_type["vehicle"],
+                    "quantity": 1,
+            })
+            
+                
     if booking_type.inventory_required == 1:
         lead.warehouse = data["warehouse"]
         lead.cargo_type = data["cargo_type"]
@@ -82,14 +91,14 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
         lead.uom = data["uom"]
     
     if booking_type.location_required == 1:
-        lead.vehicle_type = data["vehicle_type"]
+        # lead.vehicle_type = data["vehicle_type"]
         lead.append("shipment_details", {
             "item"      : data["commodity"],
             "weight"    : data["prod_weight"],
             "uom"       : data["prod_uom"],
             "quantity"  : data["no_of_pack"],
             "packaging_type":   data["package_type"]
-            })
+        })
         lead.append("transit_details_item", {
             "transit_type": data["pick_transit_type"],
             "zone": data["pick_zone"],
@@ -101,6 +110,18 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
             "latitude": data["pick_latitude"],
             "longitude": data["pick_longitude"],
         })
+        for stop in data["stop_address"]["stops"]:
+            lead.append("transit_details_item", {
+                "transit_type": stop["type"],
+                "zone": stop["zone"],
+                "quantity": 1,
+                "address_line1": stop["address_line1"],
+                "address_line2": stop["address_line2"],
+                "location": stop["location"],
+                "city": stop["city"],
+                "latitude": stop["latitude"],
+                "longitude": stop["longitude"],
+            })
         lead.append("transit_details_item", {
             "transit_type": data["drop_transit_type"],
             "zone": data["drop_zone"],
@@ -122,16 +143,22 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
     opp.party_name = data["lead_name"]
     opp.order_status = "New"
     opp.mobile_number = data["mobile_number"]
-    opp.vehicle_type = data["vehicle_type"]
+    # opp.vehicle_type = data["vehicle_type"]
     opp.booking_channel = "Mobile App"
     opp.booking_type = booking_type.name
     opp.booking_date = datetime.datetime.today()
+    opp.multiple_vehicles = 1
     opp.append("shipment_details", {
         "item"      : data["commodity"],
         "weight"    : data["prod_weight"],
         "uom"       : data["prod_uom"],
         "quantity"  : data["no_of_pack"],
         "packaging_type":   data["package_type"]
+    })
+    for vehicle_type in data["vehicle_type"]["vehicle_selected"]:
+        opp.append("vehicle_details_item", {
+            "vehicle_type"      : vehicle_type["vehicle"],
+            
         })
     opp.append("receiver_information",{
         "transit_type": data["pick_transit_type"],
@@ -145,6 +172,19 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
         "longitude": data["pick_longitude"],
         
     })
+    for stop in data["stop_address"]["stops"]:
+        opp.append("receiver_information",{
+            "transit_type": stop["type"],
+            "zone": stop["zone"],
+            "quantity": 1,
+            "address_line1": stop["address_line1"],
+            "address_line2": stop["address_line2"],
+            "location": stop["location"],
+            "city": stop["city"],
+            "latitude": stop["latitude"],
+            "longitude": stop["longitude"],
+
+        })
     opp.append("receiver_information",{
         "transit_type": data["drop_transit_type"],
         "zone": data["drop_zone"],
@@ -156,8 +196,7 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
         "latitude": data["drop_latitude"],
         "longitude": data["drop_longitude"],
         
-    })
-    
+    }) 
     opp.save()
     return opp
 
