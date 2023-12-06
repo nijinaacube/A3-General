@@ -191,16 +191,17 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
+scheduler_events = {
 	
 # #	"all": [
 # #		"a3trans.tasks.all"
 # #	],
-# "cron":{
-# 		"*/1 * * * *":[
-# 			"a3trans.a3trans.events.monthly_invoice.create_invoices"
-# 		]
-# 	},
+"cron":{
+		"*/1 * * * *":[
+			# "a3trans.a3trans.events.monthly_invoice.create_invoices",
+         "a3trans.a3trans.events.opportunity.check_status" 
+		]
+	},
 #	"daily": [
 #		"a3trans.tasks.daily"
 #	],
@@ -213,7 +214,7 @@ doc_events = {
 	# "monthly": [
 	# "a3trans.a3trans.events.monthly_invoice.create_invoices"
 	# ]
-#  }
+}
 
 # Testing
 # -------

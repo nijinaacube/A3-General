@@ -191,7 +191,7 @@
    "type": "Link"
   }
  ],
- "modified": "2023-11-30 11:47:27.924514",
+ "modified": "2023-12-05 16:56:07.989653",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Logistics",
@@ -199,6 +199,14 @@
  "pin_to_bottom": 0,
  "pin_to_top": 1,
  "shortcuts": [
+  {
+   "doc_view": "List",
+   "format": "{} Open ",
+   "label": "ToDo List",
+   "link_to": "ToDo",
+   "stats_filter": "{\n    \"status\": \"Open\"\n}",
+   "type": "DocType"
+  },
   {
    "color": "#29CD42",
    "doc_view": "New",

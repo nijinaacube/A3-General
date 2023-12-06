@@ -1,4 +1,5 @@
 import frappe
+from datetime import timedelta
 from datetime import date
 from datetime import date
 from datetime import datetime
@@ -190,7 +191,22 @@ def validate(doc, method):
                     frappe.throw("You will not able to cancel this opportunity, Since the order is already delivered or closed")
 
             
+   
     if doc.status != "Lost":
+        if doc.booking_date and (doc.end_date == "" or doc.end_date is None):
+            # Convert booking_date string to a datetime object
+            booking_date = datetime.strptime(doc.booking_date, "%Y-%m-%d")
+
+            # Calculate end date as 24 hours plus booking date
+            end_date = booking_date + timedelta(hours=24)
+
+            # Convert end_date back to the required string format
+            formatted_end_date = end_date.strftime("%Y-%m-%d %H:%M:%S")
+
+            # Set the calculated end date to the document
+            doc.end_date = formatted_end_date
+            
+
 
         if doc._update_tariff_charges_for_additional_services == 1:
             if doc.transit_charges:
@@ -473,7 +489,40 @@ def validate(doc, method):
             #                                 customer.append("customer_warehouse_details",{"warehouse":war.warehouse,"from":fromdate,"to":todate})                           
             #                     customer.save()
                             
-                        
+
+
+
+
+
+
+# 
+
+
+
+
+
+from frappe import get_all, get_doc, utils
+from datetime import datetime
+
+def check_status(): 
+    opportunity_list = get_all("Opportunity")
+    for oppo in opportunity_list:
+        opportunity = get_doc("Opportunity", oppo.name)
+        if opportunity.end_date:
+            # Convert opportunity.end_date to a datetime object
+            end_date = datetime.combine(opportunity.end_date, datetime.min.time())
+
+            if end_date < utils.now_datetime():
+                opportunity.order_status = "Overdue"
+                opportunity.save()
+
+
+
+
+
+
+
+
 
 
 
