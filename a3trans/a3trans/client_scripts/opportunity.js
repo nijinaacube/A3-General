@@ -1805,7 +1805,7 @@ zone: function(frm, cdt, cdn) {
 			charge.from =fromcity[0]
 			charge.to = fromcity[1]
 			console.log(charge.cost)
-			frm.script_manager.trigger('charges', charge.doctype, charge.name);
+			// frm.script_manager.trigger('charges', charge.doctype, charge.name);
 			frm.script_manager.trigger('cost', charge.doctype, charge.name);
 			frm.refresh_field('transit_charges');
 			}
@@ -1842,7 +1842,7 @@ zone: function(frm, cdt, cdn) {
 			charge.from =fromcity[0]
 			charge.to = fromcity[1]
 			charge.vehicle_type = frm.doc.vehicle_type
-			frm.script_manager.trigger('charges', charge.doctype, charge.name);
+			// frm.script_manager.trigger('charges', charge.doctype, charge.name);
 			frm.script_manager.trigger('cost', charge.doctype, charge.name);
 			frm.refresh_field('transit_charges');
 			}
@@ -1865,7 +1865,7 @@ zone: function(frm, cdt, cdn) {
 		transit_charges_row.to = row.zone;
 		transit_charges_row.from_id = from_row.index;
 		transit_charges_row.to_id = row.index;
-		frm.script_manager.trigger('charges', transit_charges_row.doctype, transit_charges_row.name);
+		// frm.script_manager.trigger('charges', transit_charges_row.doctype, transit_charges_row.name);
 		frm.script_manager.trigger('cost', transit_charges_row.doctype, transit_charges_row.name);
 		frm.refresh_field('transit_charges');
 		}
@@ -3720,7 +3720,7 @@ required_area: function(frm, cdt, cdn) {
 					
 				}
 				frm.script_manager.trigger('cost', child.doctype, child.name)
-				frm.script_manager.trigger('charges', child.doctype, child.name);
+				// frm.script_manager.trigger('charges', child.doctype, child.name);
 				frm.refresh_field("transit_charges")
 				}
 			})
