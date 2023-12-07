@@ -701,7 +701,7 @@ frappe.ui.form.on('Transit Details Item', {
         }
     }
     else{
-        if (transit_details_item.length > 1) {
+        if (transit_details.length > 1) {
             const from_row = transit_details[transit_details.length - 2];
             const to_row = transit_details[transit_details.length - 1];
 
@@ -736,7 +736,7 @@ frappe.ui.form.on('Transit Details Item', {
                                     'booking_type':frm.doc.booking_type
                                 },
                                 callback: function(response) {
-                                    console.log(response.message,fromcity[0],fromcity[1],"@@@@@@@@@@@@@!!!!!!!!!!!1")
+                                    console.log(response.message,fromcity[0],fromcity[1], response.message.amount,"@@@@@@@@@@@@@!!!!!!!!!!!1")
                                      // Update the existing transportation charge row
                                     charge.cost = response.message.amount;
                                     console.log(charge.cost)
@@ -770,7 +770,7 @@ frappe.ui.form.on('Transit Details Item', {
                                     'booking_type':frm.doc.booking_type
                                 },
                                 callback: function(response) {
-                                    // console.log(response.message,fromcity[1],row.zone,"@@@@@@@@@@@@@")
+                                    console.log(response.message,fromcity[1],row.zone, response.message.amount,"@@@@@@@@@@@@@")
                                     //  // Update the existing transportation charge row
                                     charge.cost = response.message.amount;
                                     frm.refresh_field('transit_charges_item');
