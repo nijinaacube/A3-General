@@ -9,11 +9,12 @@ from frappe.utils import get_datetime, time_diff
 class VehicleAssignment(Document):
     def after_insert(self):
         if self.order and self.type_of_vehicles:
-            tp = self.type_of_vehicles
+            
 
             opportunity = frappe.get_doc("Opportunity", self.order)
+            # opportunity.vehicle_details_item.clear()
 
-            if tp:
+            
                     # found = False
                     # for data in opportunity.vehicle_details_item:
                     #     if data.vehicle_type == tp:
@@ -23,11 +24,12 @@ class VehicleAssignment(Document):
                     #         break
                     # if not found:
                 # opportunity.multiple_vehicles = 1
-                opportunity.append("vehicle_details_item", {
-                    "vehicle_type": tp,
-                    "vehicle_number": self.vehicle_id,
-                    "vehicle_assignment": self.name
-                })
+
+            opportunity.append("vehicle_details_item", {
+                "vehicle_type": self.type_of_vehicles,
+                "vehicle_number": self.vehicle_id,
+                "vehicle_assignment": self.name
+            })
 
             opportunity.save()
 
@@ -61,6 +63,7 @@ class VehicleAssignment(Document):
                         vehicle.save()
 
                 if self.routes:
+                   
                     for order_itm in self.routes:
                         # if self.vehicle_id:
                         #     print(order_itm.zone)
@@ -69,26 +72,27 @@ class VehicleAssignment(Document):
                         #     vehicle.save()
 
                         if order_itm.order_id:
-                            print(order_itm.order_id)
-                            # opportunity = frappe.get_doc("Opportunity", order.order_id)
-                            if self.vehicle_id:
-                                opportunity.vehicle=self.vehicle_id
-                            if self.make:
-                                opportunity.make=self.make
-                            if self.model:
-                                opportunity.model=self.model
-                            if self.driver_id:
-                                opportunity.driver=self.driver_id
-                            if self.driver_name:
-                                opportunity.driver_name=self.driver_name
-                            if self.mobile_number:
-                                opportunity.driver_phone_number=self.mobile_number
-                            if self.helper_id:
-                                opportunity.helper=self.helper_id
-                            if self.helper_name:
-                                opportunity.helper_name=self.helper_name
-                            if self.phone_number:
-                                opportunity.helper_phone_number=self.phone_number
+                            if opportunity.multiple_vehicles == 0:
+                                print(order_itm.order_id)
+                                # opportunity = frappe.get_doc("Opportunity", order.order_id)
+                                if self.vehicle_id:
+                                    opportunity.vehicle=self.vehicle_id
+                                if self.make:
+                                    opportunity.make=self.make
+                                if self.model:
+                                    opportunity.model=self.model
+                                if self.driver_id:
+                                    opportunity.driver=self.driver_id
+                                if self.driver_name:
+                                    opportunity.driver_name=self.driver_name
+                                if self.mobile_number:
+                                    opportunity.driver_phone_number=self.mobile_number
+                                if self.helper_id:
+                                    opportunity.helper=self.helper_id
+                                if self.helper_name:
+                                    opportunity.helper_name=self.helper_name
+                                if self.phone_number:
+                                    opportunity.helper_phone_number=self.phone_number
                         
                             # if self.vehicle_id:
                             #   vehicle=frappe.get_doc("Vehicle",self.vehicle_id)
@@ -104,7 +108,7 @@ class VehicleAssignment(Document):
                             
                         
                             
-                            elif self.assignment_status == "In-Transit":
+                            if self.assignment_status == "In-Transit":
                                 opportunity.order_status = "In-Transit"
                                 # vehicle_log = frappe.new_doc ("Vehicle Log")
                                 # vehicle_log.license_plate = self.vehicle_id

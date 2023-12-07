@@ -433,6 +433,7 @@ def create_vehicle_assignments(vehicles, opportunity_id):
                         for vehicle_id in vehicles_list:
                             vehicle = frappe.get_doc("Vehicle", vehicle_id) 
                             vehicle_assignment = frappe.new_doc('Vehicle Assignment')
+                        
                             vehicle_assignment.assignment_date = frappe.utils.today()       
                             if vehicle.assigned_driver:
                                 vehicle_assignment.driver_id = vehicle.assigned_driver	
@@ -450,7 +451,7 @@ def create_vehicle_assignments(vehicles, opportunity_id):
                                         "longitude":itm.longitude
                                     })
                             
-                            if oppo.vehicle_type:
+                            if vehicle.vehicle_type:
                                 vehicle_assignment.type_of_vehicles = vehicle.vehicle_type
                             
                             vehicle_assignment.order = opportunity_id
@@ -477,7 +478,7 @@ def create_vehicle_assignments(vehicles, opportunity_id):
                                         "zone": itm.zone
                                     })
                             
-                            if oppo.vehicle_type:
+                            if vehicle.vehicle_type:
                                 vehicle_assignment.type_of_vehicles = vehicle.vehicle_type
                             
                             vehicle_assignment.order = opportunity_id
@@ -491,7 +492,7 @@ def create_vehicle_assignments(vehicles, opportunity_id):
             else:
                 return {"msg1": "No vehicles selected."}
         else:
-            return{"msg1": "Please check the opportunity"}
+            return{"msg1": "Please check the opportunity."}
 
 
 
