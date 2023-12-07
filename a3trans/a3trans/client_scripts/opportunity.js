@@ -3712,10 +3712,12 @@ required_area: function(frm, cdt, cdn) {
 				console.log(response.message,"!!!!!!!!!!!!!!!!!!!!1");
 				if (response.message.amount){
 				child.cost = response.message.amount
+				child.description = child.from + " " +"to" + " " +child.to
 				frm.script_manager.trigger('cost', child.doctype, child.name);
 				}
 				else{
 					child.cost = 0
+					child.description = child.from + " " +"to" + " " +child.to
 					frm.script_manager.trigger('cost', child.doctype, child.name)
 					
 				}
