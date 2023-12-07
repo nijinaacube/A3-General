@@ -701,7 +701,7 @@ frappe.ui.form.on('Transit Details Item', {
         }
     }
     else{
-        if (transit_details.length > 1) {
+        if (transit_details_item.length > 1) {
             const from_row = transit_details[transit_details.length - 2];
             const to_row = transit_details[transit_details.length - 1];
 
@@ -926,6 +926,7 @@ frappe.ui.form.on('Transit Charges Item', {
 				if (response.message.amount)
                 {
 				child.cost = response.message.amount
+                frm.refresh_field("transit_charges_item")
                 }
 				else
                 {
@@ -934,7 +935,7 @@ frappe.ui.form.on('Transit Charges Item', {
 					
 				}
 				frm.script_manager.trigger('cost', child.doctype, child.name)
-				frm.script_manager.trigger('charges', child.doctype, child.name);
+			
 				frm.refresh_field("transit_charges_item")
 				}
 			})
