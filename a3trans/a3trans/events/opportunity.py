@@ -261,18 +261,18 @@ def validate(doc, method):
             
    
     if doc.status != "Lost":
-        if doc.booking_date and (doc.end_date == "" or doc.end_date is None):
-            # Convert booking_date string to a datetime object
-            booking_date = datetime.strptime(doc.booking_date, "%Y-%m-%d")
+        # if doc.booking_date and (doc.end_date == "" or doc.end_date is None):
+        #     # Convert booking_date string to a datetime object
+        #     booking_date = datetime.strptime(doc.booking_date, "%Y-%m-%d")
 
-            # Calculate end date as 24 hours plus booking date
-            end_date = booking_date + timedelta(hours=24)
+        #     # Calculate end date as 24 hours plus booking date
+        #     end_date = booking_date + timedelta(hours=24)
 
-            # Convert end_date back to the required string format
-            formatted_end_date = end_date.strftime("%Y-%m-%d %H:%M:%S")
+        #     # Convert end_date back to the required string format
+        #     formatted_end_date = end_date.strftime("%Y-%m-%d %H:%M:%S")
 
-            # Set the calculated end date to the document
-            doc.end_date = formatted_end_date
+        #     # Set the calculated end date to the document
+        #     doc.end_date = formatted_end_date
             
 
 

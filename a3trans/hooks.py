@@ -191,7 +191,7 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-scheduler_events = {
+# scheduler_events = {
 	
 # #	"all": [
 # #		"a3trans.tasks.all"
@@ -205,16 +205,16 @@ scheduler_events = {
 #	"daily": [
 #		"a3trans.tasks.daily"
 #	],
-	"hourly": [
-		 "a3trans.a3trans.events.opportunity.check_status" 
-	],
+	# "hourly": [
+	# 	 "a3trans.a3trans.events.opportunity.check_status" 
+	# ],
 #	"weekly": [
 #		"a3trans.tasks.weekly"
 #	]
-	"monthly": [
-	"a3trans.a3trans.events.monthly_invoice.create_invoices"
-	]
-}
+# 	"monthly": [
+# 	"a3trans.a3trans.events.monthly_invoice.create_invoices"
+# 	]
+# }
 
 # Testing
 # -------
