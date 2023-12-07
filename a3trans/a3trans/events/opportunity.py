@@ -156,6 +156,74 @@ def after_insert(doc, methods):
                     #     customer.save()
 
 def validate(doc, method):
+    if doc.lead_id == "" or doc.lead_id == None:
+        if doc.receiver_information and doc.booking_type and doc.booking_channel == "Mobile App":
+            if not doc.transit_charges:
+                zones = [zone.zone for zone in doc.receiver_information]  # Extracting zones
+                print(zones, "???")
+                doc.transit_charges.clear()
+                # Iterating over consecutive pairs of zones
+                for i in range(len(zones) - 1):
+                    from_zone = zones[i]
+                    to_zone = zones[i + 1]
+                    amount = 0
+                    bill_item = None
+
+                    # Check if Booking Type exists
+                    booking_type_exists = frappe.db.exists("Booking Type", doc.booking_type)
+                    if booking_type_exists:
+                        b_type = frappe.get_doc("Booking Type", doc.booking_type)
+                        if b_type.item:
+                            bill_item = b_type.item
+
+                    # Check for conditions to determine amount
+                    if frappe.db.exists("Tariff Details",{"customer":doc.party_name}):
+                        tariff = frappe.get_doc("Tariff Details", {"customer":doc.party_name})
+                        for item in tariff.tariff_details_item:
+                            if ((item.from_city == from_zone and item.to_city == to_zone) or
+                                    (item.from_city == to_zone and item.to_city == from_zone)) and \
+                                    item.vehicle_type == doc.vehicle_type:
+                                amount = item.amount
+                            
+                                print(f"Matched! Amount: {amount}")  # Debug line
+                    else:
+                        # Check if Tariff Details with is_standard=1 exists
+                        tariff_exists = frappe.db.exists("Tariff Details", {"is_standard": 1})
+                        if tariff_exists:
+                            tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+                            for item in tariff.tariff_details_item:
+                                
+                                if ((item.from_city == from_zone and item.to_city == to_zone) or
+                                        (item.from_city == to_zone and item.to_city == from_zone)) and \
+                                        item.vehicle_type == doc.vehicle_type:
+                                    amount = item.amount
+                                    print(amount,"}}}}}}}}}}}")
+                                    print(f"Matched! Amount: {amount}")  # Debug line
+
+                    print(amount, "::::")
+                    # Append values if both cost and amount are zero
+                    doc.append("transit_charges", {
+                        "charges": bill_item,
+                        "description": from_zone + " to " + to_zone,
+                        "from" : from_zone,
+                        "to"    :to_zone,
+                        "quantity": 1,
+                        "cost": amount
+                    })
+        
+
+
+
+
+    if doc.opportunity_line_item:
+        total_amt = 0
+        for cst in doc.opportunity_line_item:
+            total_amt += cst.amount
+        doc.payment_amount = total_amt
+
+
+
+
     if doc.status == "Lost":
         doc.order_status = "Cancelled"
         print(doc.order_lost_reason, "*******************************")

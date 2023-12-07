@@ -915,27 +915,27 @@ frappe.ui.form.on('Transit Charges Item', {
 		if (child.vehicle_type && child.from_location && child.to){
 
 			frappe.call({
-				method: 'a3trans.a3trans.events.opportunity.calculate_transportation_cost',
+				method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
 				args: {
-				'zone': JSON.stringify([child.from, child.to]),
+				'zone': JSON.stringify([child.from_location, child.to]),
 				'vehicle_type': child.vehicle_type,
-				'customer':frm.doc.party_name,
 				'booking_type':frm.doc.booking_type
 				},
 				callback: function(response) {
-				console.log(response.message,"!!!!!!!!!!!!!!!!!!!!1");
-				if (response.message.amount){
+				console.log(response.message.amount,"@@@@@@@@@@@@@2");
+				if (response.message.amount)
+                {
 				child.cost = response.message.amount
-				frm.script_manager.trigger('cost', child.doctype, child.name);
-				}
-				else{
+                }
+				else
+                {
 					child.cost = 0
 					frm.script_manager.trigger('cost', child.doctype, child.name)
 					
 				}
 				frm.script_manager.trigger('cost', child.doctype, child.name)
 				frm.script_manager.trigger('charges', child.doctype, child.name);
-				frm.refresh_field("transit_charges")
+				frm.refresh_field("transit_charges_item")
 				}
 			})
 

@@ -30,76 +30,63 @@ def after_insert(doc,methods):
 
 def validate(doc, methods):
     print(datetime.now().time(), "@@@")
+   
     if doc.transit_details_item and doc.booking_type and doc.booking_channel == "Mobile App":
-        zones = [zone.zone for zone in doc.transit_details_item]  # Extracting zones
-        print(zones, "???")
-        doc.transit_charges_item.clear()
-        # Iterating over consecutive pairs of zones
-        for i in range(len(zones) - 1):
-            from_zone = zones[i]
-            to_zone = zones[i + 1]
-            amount = 0
-            bill_item = None
+        if not doc.transit_charges_item:
+            zones = [zone.zone for zone in doc.transit_details_item]  # Extracting zones
+            print(zones, "???")
+            doc.transit_charges_item.clear()
+            # Iterating over consecutive pairs of zones
+            for i in range(len(zones) - 1):
+                from_zone = zones[i]
+                to_zone = zones[i + 1]
+                amount = 0
+                bill_item = None
 
-            # Check if Booking Type exists
-            booking_type_exists = frappe.db.exists("Booking Type", doc.booking_type)
-            if booking_type_exists:
-                b_type = frappe.get_doc("Booking Type", doc.booking_type)
-                if b_type.item:
-                    bill_item = b_type.item
+                # Check if Booking Type exists
+                booking_type_exists = frappe.db.exists("Booking Type", doc.booking_type)
+                if booking_type_exists:
+                    b_type = frappe.get_doc("Booking Type", doc.booking_type)
+                    if b_type.item:
+                        bill_item = b_type.item
 
-            # Check for conditions to determine amount
-            if doc.add_select_tariff:
-                tariff = frappe.get_doc("Tariff Details", doc.add_select_tariff)
-                for item in tariff.tariff_details_item:
-                    if ((item.from_city == from_zone and item.to_city == to_zone) or
-                            (item.from_city == to_zone and item.to_city == from_zone)) and \
-                            item.vehicle_type == doc.vehicle_type:
-                        amount = item.amount
-                       
-                        print(f"Matched! Amount: {amount}")  # Debug line
-            else:
-                # Check if Tariff Details with is_standard=1 exists
-                tariff_exists = frappe.db.exists("Tariff Details", {"is_standard": 1})
-                if tariff_exists:
-                    tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+                # Check for conditions to determine amount
+                if doc.add_select_tariff:
+                    tariff = frappe.get_doc("Tariff Details", doc.add_select_tariff)
                     for item in tariff.tariff_details_item:
-                        
                         if ((item.from_city == from_zone and item.to_city == to_zone) or
                                 (item.from_city == to_zone and item.to_city == from_zone)) and \
                                 item.vehicle_type == doc.vehicle_type:
                             amount = item.amount
-                            print(amount,"}}}}}}}}}}}")
+                        
                             print(f"Matched! Amount: {amount}")  # Debug line
+                else:
+                    # Check if Tariff Details with is_standard=1 exists
+                    tariff_exists = frappe.db.exists("Tariff Details", {"is_standard": 1})
+                    if tariff_exists:
+                        tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+                        for item in tariff.tariff_details_item:
+                            
+                            if ((item.from_city == from_zone and item.to_city == to_zone) or
+                                    (item.from_city == to_zone and item.to_city == from_zone)) and \
+                                    item.vehicle_type == doc.vehicle_type:
+                                amount = item.amount
+                                print(amount,"}}}}}}}}}}}")
+                                print(f"Matched! Amount: {amount}")  # Debug line
 
-            print(amount, "::::")
-            # Append values if both cost and amount are zero
-            doc.append("transit_charges_item", {
-                "charges": bill_item,
-                "description": from_zone + " to " + to_zone,
-                "from_location" : from_zone,
-                "to"    :to_zone,
-                "quantity": 1,
-                "cost": amount
-            })
-
-        # # Check and append based on cost conditions
-        # cost_zero_or_empty = False
-        # if len(doc.transit_charges_item) == 0:
-        #     cost_zero_or_empty = True
-     
+                print(amount, "::::")
+                # Append values if both cost and amount are zero
+                doc.append("transit_charges_item", {
+                    "charges": bill_item,
+                    "description": from_zone + " to " + to_zone,
+                    "from_location" : from_zone,
+                    "to"    :to_zone,
+                    "quantity": 1,
+                    "cost": amount
+                })
+       
                 
-
-        # if cost_zero_or_empty:
-
-        #         # Append values if both cost and amount are zero
-        #         doc.append("transit_charges_item", {
-        #             "charges": bill_item,
-        #             "description": from_zone + " to " + to_zone,
-        #             "quantity": 1,
-        #             "cost": amount
-        #         })
-      
+        
 
     if doc.booking_type:
         if frappe.db.exists("Booking Type",doc.booking_type):
@@ -125,6 +112,7 @@ def validate(doc, methods):
                             total_wr += pr.cost
                 
                 doc.total_amount = total_tr + total_ad + total_wr
+
                 if lead_doc.status=="Opportunity":
                     # if lead_doc.contact_by == "" or lead_doc.contact_by == None:
                     #     frappe.throw("Please Assign this lead to a Staff for further follow-up")
@@ -135,6 +123,7 @@ def validate(doc, methods):
                         customer=frappe.get_doc("Customer",{"mobile_number":lead_doc.mobile_number})
                         opportunity = frappe.new_doc("Opportunity")
                         opportunity.party_name = customer.customer_name
+                        opportunity.booking_channel = lead_doc.booking_channel
                         opportunity.booking_type = lead_doc.booking_type
                         current_date = today()
                         # opportunity.booking_channel = lead_doc.booking_channel
@@ -161,7 +150,8 @@ def validate(doc, methods):
                             for charge in doc.transit_charges_item:
                                 
                                 charge_info_data.append(
-                                    {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost,"to":charge.to,"from":charge.from_location}
+                                    {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost,"to":charge.to,
+                                     "from":charge.from_location,"vehicle_type":charge.vehicle_type}
                                 )
                             # Loop through the data and append it to the "transit_charges" list
                             for info in charge_info_data:
@@ -185,7 +175,20 @@ def validate(doc, methods):
                             for ship in shipment_item:
                                 opportunity.append("shipment_details", ship)
 
+                        if doc.multiple_vehicles ==1:
+                            opportunity.multiple_vehicles = 1
+                            vehicle_data = []  # Define a list to hold transit charges data
+                            if doc.vehicle_list:
+                                for veh in doc.vehicle_list:
+                                    vehicle_data.append(
+                                    {"vehicle_type": veh.vehicle_type}
+                                    )
 
+                                # Loop through the data and append it to the "transit_charges" list
+                                for vhcle in vehicle_data:
+                                    opportunity.append("vehicle_details_item", vhcle)
+                            
+                            
                         line_itms = []
                         # Initialize the opportunity_line_items list to store the aggregated data
                         opportunity_line_items = []
@@ -263,8 +266,8 @@ def validate(doc, methods):
                                 "choose_handling_service": doc.required_handling_services if doc.required_handling_services else None,
                                 "choose_labour_service": doc.required_labour_service if doc.required_labour_service else None
                             })
-                        if doc.total_amount:
-                            opportunity.payment_amount = doc.total_amount
+                        # if doc.total_amount:
+                        #     opportunity.payment_amount = doc.total_amount
 
                         # Append the opportunity_line_items list to the "opportunity" document
                         opportunity.extend("opportunity_line_item", opportunity_line_items)
@@ -338,6 +341,7 @@ def validate(doc, methods):
                         opportunity = frappe.new_doc("Opportunity")
                         opportunity.party_name = customer.customer_name
                         opportunity.booking_type = lead_doc.booking_type
+                        opportunity.booking_channel = lead_doc.booking_channel
                         current_date = today()
                         opportunity.booking_date = current_date
                         opportunity.lead_id = lead_doc.name
@@ -362,7 +366,7 @@ def validate(doc, methods):
                         if doc.transit_charges_item:
                             for charge in doc.transit_charges_item:
                                 charge_info_data.append(
-                                   {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost,"to":charge.to,"from":charge.from_location}
+                                   {"charges": charge.charges, "description": charge.description, "quantity": 1, "cost": charge.cost,"to":charge.to,"from":charge.from_location,"vehicle_type":charge.vehicle_type}
                                 )
 
                             # Loop through the data and append it to the "transit_charges" list
@@ -386,7 +390,22 @@ def validate(doc, methods):
                                 )
                             for ship in shipment_item:
                                 opportunity.append("shipment_details", ship)
+                        if doc.multiple_vehicles ==1:
+                            opportunity.multiple_vehicles = 1
+                            vehicle_data = []  # Define a list to hold transit charges data
+                            if doc.vehicle_list:
+                                for veh in doc.vehicle_list:
+                                    vehicle_data.append(
+                                    {"vehicle_type": veh.vehicle_type}
+                                    )
 
+                                # Loop through the data and append it to the "transit_charges" list
+                                for vhcle in vehicle_data:
+                                    opportunity.append("vehicle_details_item", vhcle)
+                            
+                            
+                        
+                        
                         line_itms = []
 
                         # Initialize the opportunity_line_items list to store the aggregated data
@@ -462,8 +481,8 @@ def validate(doc, methods):
                             })
 
                                 
-                        if doc.total_amount:
-                            opportunity.payment_amount = doc.total_amount
+                        # if doc.total_amount:
+                        #     opportunity.payment_amount = doc.total_amount
 
                         # Append the opportunity_line_items list to the "opportunity" document
                         opportunity.extend("opportunity_line_item", opportunity_line_items)
