@@ -528,21 +528,42 @@ def get_zone_details(opportunity_id):
 
 @frappe.whitelist()
 def get_vehicles(vehicle_type):
-    vehicles = frappe.get_all(
-        "Vehicle",
-        filters={"vehicle_status": "Available", "vehicle_type": vehicle_type},
-        fields=["name", "vehicle_type"]
-    )
-    return vehicles
+    # Split the incoming vehicle_type string into a list
+    vehicle_types_list = vehicle_type.split(",") if vehicle_type else []
+    print(vehicle_types_list,"///")
+    
+    # Perform filtering based on multiple vehicle types if available
+    if vehicle_types_list:
+        vehicles = frappe.get_all(
+            "Vehicle",
+            filters={"vehicle_status": "Available", "vehicle_type": ["in", vehicle_types_list]},
+            fields=["name", "vehicle_type"]
+        )
+        print(vehicles,">>>>>")
+        return vehicles
+    else:
+        # If no vehicle types are provided, return an empty list or handle the case as needed
+        return []
+
 
 @frappe.whitelist()
 def get_all_vehicles(zone, vehicle_type):
     print(zone, "**")
-    vehicles = frappe.get_all(
-        "Vehicle",
-        filters={"vehicle_status": "Available", "vehicle_type": ["!=", vehicle_type]},
-        fields=["name", "vehicle_type"]
-    )
+    vehicle_types_list = vehicle_type.split(",") if vehicle_type else []
+    print(vehicle_types_list,"///")
+    
+    # Perform filtering based on multiple vehicle types if available
+    if vehicle_types_list:
+        vehicles = frappe.get_all(
+            "Vehicle",
+            filters={"vehicle_status": "Available", "vehicle_type": ["not in", vehicle_types_list]},
+            fields=["name", "vehicle_type"]
+        )
+    # vehicles = frappe.get_all(
+    #     "Vehicle",
+    #     filters={"vehicle_status": "Available", "vehicle_type": ["!=", vehicle_type]},
+    #     fields=["name", "vehicle_type"]
+    # )
     if vehicles:
         return vehicles
 
@@ -584,10 +605,10 @@ def get_arriving_vehicles(zone):
                     remaining_time_str = f"{hours:02d}:{minutes:02d}"  # Format hours and minutes as 'hh:mm'
                     data["time"] = remaining_time_str
                     print(remaining_time_str)
-                if remaining_time_str:
-                    return data		
-                else:
-                    data["msg"] = "No Vehicles Found"
-                    return data
+                    if remaining_time_str:
+                        return data		
+                    else:
+                        data["msg"] = "No Vehicles Found"
+                        return data
             
 

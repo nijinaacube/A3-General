@@ -1232,6 +1232,15 @@ def get_zones(order_id):
         
         if len(oppo.receiver_information) > 1:
             data ["to"] = (oppo.receiver_information[-1].zone) 
+    if oppo.multiple_vehicles == 1:
+        vehicle_data = []  
+        if oppo.vehicle_details_item:
+            for veh in oppo.vehicle_details_item:
+                vehicle_data.append({"vehicle_type": veh.vehicle_type})
+        data["vehicles"] = vehicle_data
+
+      
+
     
     return data
 
