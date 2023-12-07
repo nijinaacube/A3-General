@@ -425,6 +425,7 @@ def create_vehicle_assignments(vehicles, opportunity_id):
     
         oppo = frappe.get_doc("Opportunity", opportunity_id)
         vehicles_list = json.loads(vehicles)
+        
         if oppo.order_status == "New":
             if vehicles_list:
                 no_of_vehicles = len(vehicles_list)

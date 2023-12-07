@@ -12,26 +12,24 @@ class VehicleAssignment(Document):
             
 
             opportunity = frappe.get_doc("Opportunity", self.order)
-            # opportunity.vehicle_details_item.clear()
+            if opportunity.multiple_vehicles == 1:
+                # opportunity.vehicle_details_item.clear()
+                found = False
+                for data in opportunity.vehicle_details_item:
+                    if data.vehicle_type == self.type_of_vehicles:
+                        data.vehicle_number = self.vehicle_id
+                        data.vehicle_assignment = self.name
+                        found = True
+                        break
+                if not found:
+                    
+                    opportunity.append("vehicle_details_item", {
+                        "vehicle_type": self.type_of_vehicles,
+                        "vehicle_number": self.vehicle_id,
+                        "vehicle_assignment": self.name
+                    })
 
-            
-                    # found = False
-                    # for data in opportunity.vehicle_details_item:
-                    #     if data.vehicle_type == tp:
-                    #         data.vehicle_number = self.vehicle_id
-                    #         data.vehicle_assignment = self.name
-                    #         found = True
-                    #         break
-                    # if not found:
-                # opportunity.multiple_vehicles = 1
-
-            opportunity.append("vehicle_details_item", {
-                "vehicle_type": self.type_of_vehicles,
-                "vehicle_number": self.vehicle_id,
-                "vehicle_assignment": self.name
-            })
-
-            opportunity.save()
+                opportunity.save()
 
         
         
