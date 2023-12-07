@@ -2966,7 +2966,7 @@ to_location:function(frm){
 								target_row.to = to_zone;
 								target_row.vehicle_type = frm.doc.vehicle_type
 								frm.doc.trans_id=target_row.idx
-								target_row.cost = response.message.amount;
+								target_row.cost = 0;
 								if (frm.doc.from_location && frm.doc.to_location){
 								target_row.description=from_zone+" "+"to"+" "+ to_zone;
 								}
@@ -3144,13 +3144,13 @@ onload: function(frm) {
             ind = parseInt(frm.doc.transit_details_item[frm.doc.transit_details_item.length - 1].index ) + 1
         }
 		frm.fields_dict['order_id'].get_query = function(doc, cdt, cdn) {
-			return {
-				filters: [
-					['order_status', 'in', ['New', 'Vehicle Assigned']]
-				]
-			};
-		};
-
+            return {
+                filters: [
+                    ['order_status', 'in', ['New', 'Vehicle Assigned']],
+                    ['status', '!=', 'Lost']
+                ]
+            };
+        };
 
    	 
     	if (frm.doc.customer_name && frm.doc.party_name==""){

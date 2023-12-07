@@ -75,7 +75,16 @@ frappe.ui.form.on('Lead', {
 
 }
 
-
+frm.fields_dict['transit_charges_item'].grid.get_field('vehicle_type').get_query = function(doc, cdt, cdn) {
+    var child = locals[cdt][cdn];
+    var filters = {
+    
+        'name': ['in', frm.doc.vehicle_list.map(row => row.vehicle_type)]
+    };
+    return {
+        filters: filters
+    };
+};
 
 if(frm.doc.booking_type==="Warehousing"){
 
@@ -575,6 +584,7 @@ frappe.ui.form.on('Transit Details Item', {
         frm.refresh_field("transit_details_item");
         const transit_details = frm.doc.transit_details_item;
         if (frm.doc.booking_channel != "Mobile App"){
+        if (frm.doc.multiple_vehicles == 0){
         if (frm.doc.vehicle_type) {
             if (transit_details.length > 1) {
                 const from_row = transit_details[transit_details.length - 2];
@@ -614,6 +624,7 @@ frappe.ui.form.on('Transit Details Item', {
                                         console.log(response.message,fromcity[0],fromcity[1],"@@@@@@@@@@@@@!!!!!!!!!!!1")
                                          // Update the existing transportation charge row
                                         charge.cost = response.message.amount;
+                                        charge.vehicle_type = frm.doc.vehicle_type
                                         console.log(charge.cost)
                                         frm.refresh_field('transit_charges_item');
 
@@ -624,6 +635,9 @@ frappe.ui.form.on('Transit Details Item', {
                                 // charge.cost = 0;
                                
                                 var fromcity = charge.description.split(" to ")
+                                charge.from_location = row.zone
+                                charge.to = fromcity[1]
+                                charge.vehicle_type = frm.doc.vehicle_type
                                 charge.description = row.zone + ' to ' + fromcity[1]; // Updated description
                                 frm.refresh_field('transit_charges_item');
                             
@@ -655,6 +669,9 @@ frappe.ui.form.on('Transit Details Item', {
                                
                                
                                 charge.description = fromcity[0] + ' to ' + row.zone 
+                                charge.from_location = fromcity[0]
+                                charge.to = row.zone
+                                charge.vehicle_type = frm.doc.vehicle_type
                                 frm.refresh_field('transit_charges_item');
                                 updated = true;
                                 
@@ -668,6 +685,9 @@ frappe.ui.form.on('Transit Details Item', {
                             transit_charges_row.quantity = 1;
                             transit_charges_row.description = from_row.zone + ' to ' + row.zone; // Updated description
                             transit_charges_row.cost = cost;
+                            transit_charges_row.vehicle_type = frm.doc.vehicle_type
+                            transit_charges_row.from_location = from_row.zone
+                            transit_charges_row.to = row.zone
                             transit_charges_row.from_id = from_row.index;
                             transit_charges_row.to_id = row.index;
                             frm.refresh_field('transit_charges_item');
@@ -679,6 +699,115 @@ frappe.ui.form.on('Transit Details Item', {
         else{
             frappe.throw("Please choose vehicle Type")
         }
+    }
+    else{
+        if (transit_details.length > 1) {
+            const from_row = transit_details[transit_details.length - 2];
+            const to_row = transit_details[transit_details.length - 1];
+
+            // Calculate transportation cost between the current and previous zones
+            frappe.call({
+                method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
+                args: {
+                    'zone': JSON.stringify([from_row.zone, to_row.zone]),
+                    'vehicle_type': "1 Ton",
+                    'booking_type':frm.doc.booking_type
+                },
+                callback: function(response) {
+                    console.log(response.message);
+                    const cost = 0;
+
+                    // Update or create 'transit_charges_item' child table rows
+                    const transit_charges = frm.doc.transit_charges_item || [];
+                    let updated = false;
+
+                    for (let i = 0; i < transit_charges.length; i++) {
+                        const charge = transit_charges[i];
+                        if (charge.from_id === row.index) {
+                            console.log("success",cost);
+                            var fromcity = charge.description.split(" to ")
+                            
+                            console.log(fromcity,"&&&&&&&&&")
+                            frappe.call({
+                                method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
+                                args: {
+                                    'zone': JSON.stringify([fromcity[0], fromcity[1]]),
+                                    'vehicle_type': charge.vehicle_type,
+                                    'booking_type':frm.doc.booking_type
+                                },
+                                callback: function(response) {
+                                    console.log(response.message,fromcity[0],fromcity[1],"@@@@@@@@@@@@@!!!!!!!!!!!1")
+                                     // Update the existing transportation charge row
+                                    charge.cost = response.message.amount;
+                                    console.log(charge.cost)
+                                    frm.refresh_field('transit_charges_item');
+
+                                }
+
+                            })
+                            // Update the existing transportation charge row
+                            // charge.cost = 0;
+                           
+                            var fromcity = charge.description.split(" to ")
+                            charge.from_location = row.zone
+                            charge.to = fromcity[1]
+                            charge.description = row.zone + ' to ' + fromcity[1]; // Updated description
+                            frm.refresh_field('transit_charges_item');
+                        
+                            updated = true;
+                         
+                        }
+                        if (charge.to_id === row.index) {
+                            // console.log(charge.description.split("to"),"$$$$$$$$$$$$$4")
+                            var fromcity = charge.description.split(" to ")
+                            console.log(fromcity,"^^^^^^^^^^^^^^^^^^^^")
+                            console.log("success",cost);
+                            frappe.call({
+                                method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
+                                args: {
+                                    'zone': JSON.stringify([fromcity[1], fromcity[0]]),
+                                    'vehicle_type': charge.vehicle_type,
+                                    'booking_type':frm.doc.booking_type
+                                },
+                                callback: function(response) {
+                                    // console.log(response.message,fromcity[1],row.zone,"@@@@@@@@@@@@@")
+                                    //  // Update the existing transportation charge row
+                                    charge.cost = response.message.amount;
+                                    frm.refresh_field('transit_charges_item');
+
+
+                                }
+
+                            })
+                           
+                           
+                            charge.description = fromcity[0] + ' to ' + row.zone 
+                            charge.from_location = fromcity[0]
+                            charge.to = row.zone
+                            frm.refresh_field('transit_charges_item');
+                            updated = true;
+                            
+                        }
+                    }
+
+                    if (!updated) {
+                        // Create a new 'transit_charges_item' child table row
+                        const transit_charges_row = frm.add_child('transit_charges_item');
+                        transit_charges_row.charges = response.message.bill_item;
+                        transit_charges_row.quantity = 1;
+                        transit_charges_row.description = from_row.zone + ' to ' + row.zone; // Updated description
+                        transit_charges_row.cost = cost;
+                        transit_charges_row.from_location = from_row.zone
+                        transit_charges_row.to = row.zone
+                        transit_charges_row.from_id = from_row.index;
+                        transit_charges_row.to_id = row.index;
+                        frm.refresh_field('transit_charges_item');
+                    }
+                }
+            });
+        }
+
+    }
     }
     },
 
@@ -776,7 +905,44 @@ choose_required_handling_service: function(frm, cdt, cdn) {
 });
 
 
-frappe.ui.form.on('Transit Charges', {
+frappe.ui.form.on('Transit Charges Item', {
+
+
+	vehicle_type: function(frm, cdt, cdn){
+		var child = locals[cdt][cdn];
+		
+
+		if (child.vehicle_type && child.from_location && child.to){
+
+			frappe.call({
+				method: 'a3trans.a3trans.events.opportunity.calculate_transportation_cost',
+				args: {
+				'zone': JSON.stringify([child.from, child.to]),
+				'vehicle_type': child.vehicle_type,
+				'customer':frm.doc.party_name,
+				'booking_type':frm.doc.booking_type
+				},
+				callback: function(response) {
+				console.log(response.message,"!!!!!!!!!!!!!!!!!!!!1");
+				if (response.message.amount){
+				child.cost = response.message.amount
+				frm.script_manager.trigger('cost', child.doctype, child.name);
+				}
+				else{
+					child.cost = 0
+					frm.script_manager.trigger('cost', child.doctype, child.name)
+					
+				}
+				frm.script_manager.trigger('cost', child.doctype, child.name)
+				frm.script_manager.trigger('charges', child.doctype, child.name);
+				frm.refresh_field("transit_charges")
+				}
+			})
+
+		}
+
+	},
+
     charges: function(frm, cdt, cdn) {
         const charges_row = locals[cdt][cdn];
 
