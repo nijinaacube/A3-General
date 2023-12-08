@@ -1814,7 +1814,7 @@ zone: function(frm, cdt, cdn) {
 			// charge.cost = 0;
 			var fromcity = charge.description.split(" to ")
 			console.log(fromcity[0],"@@@@@@@@@@@@@@",fromcity[1])
-			charge.from =fromcity[0]
+			charge.from = row.zone
 			charge.to = fromcity[1]
 			frm.script_manager.trigger('charges', charge.doctype, charge.name);
 			charge.vehicle_type = frm.doc.vehicle_type
@@ -1840,7 +1840,7 @@ zone: function(frm, cdt, cdn) {
 			// // Update the existing transportation charge row
 			charge.cost = response.message.amount;
 			charge.from =fromcity[0]
-			charge.to = fromcity[1]
+			charge.to = row.zone
 			charge.vehicle_type = frm.doc.vehicle_type
 			// frm.script_manager.trigger('charges', charge.doctype, charge.name);
 			frm.script_manager.trigger('cost', charge.doctype, charge.name);
@@ -1906,6 +1906,7 @@ zone: function(frm, cdt, cdn) {
 				var fromcity = charge.description.split(" to ")
 				console.log(fromcity,"&&&&&&&&&")
 	if (charge.vehicle_type){
+		var fromcity = charge.description.split(" to ")
 			frappe.call({
 				method: 'a3trans.a3trans.events.lead.calculate_transportation_cost',
 				args: {
