@@ -7,18 +7,14 @@ from frappe.model.document import Document
 
 
 class TariffDetails(Document):
-   def after_insert(self):
-    
-    if self.is_standard == 1:
-        if frappe.db.exists("Tariff Details",{"is_standard":1}):
-            frappe.throw("You have already set one standard tariff. You can't create another standard tariff")
-   
-      
-   # def after_insert(self):
-   #   if self.customer and self.is_standard==0:
-   #       customer=frappe.get_doc("Customer",self.customer)
-   #       customer.tariff=self.name
-   #       customer.save()
+    pass
+
+    # def after_insert(self):
+    #     if self.customer and self.is_standard==0:
+    #         customer=frappe.get_doc("Customer",self.customer)
+    #         customer.tariff=self.name
+    #         customer.save()
+            
 
 
 
@@ -37,10 +33,10 @@ def get_contact(doc):
    return contact_names
 
 
-@frappe.whitelist()
-def get_standard(std):
-    if std == "1":
-        if frappe.db.exists("Tariff Details",{"is_standard":1}):
-            frappe.throw("You have already set one standard tariff. You can't create another standard tariff")
+# @frappe.whitelist()
+# def get_standard(std):
+#     if std == "1":
+#         if frappe.db.exists("Tariff Details",{"is_standard":1}):
+#             frappe.throw("You have already set one standard tariff. You can't create another standard tariff")
         
         

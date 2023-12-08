@@ -68,7 +68,8 @@ frappe.ui.form.on('Lead', {
            
         return {
             filters: {
-                "is_stock_item": 0
+                "is_stock_item": 0,
+                "item_group":"Services"
             }
         };
     };
@@ -171,7 +172,8 @@ if(frm.doc.booking_type==="Warehousing"){
     frm.fields_dict['add_select_tariff'].get_query = function(doc){
         return {
             filters: {
-                'is_standard': 1
+                'is_standard': 1,
+               
             }
         };
     
@@ -252,7 +254,8 @@ booking_type:function(frm){
           	 
             return {
                 filters: {
-                    "is_stock_item": 0
+                    "is_stock_item": 0,
+                    "item_group":"Services"
                 }
             };
         };
@@ -508,8 +511,16 @@ warehouse:function(frm){
 });
 frappe.ui.form.on('Additional Services',{
     additional_service:function(frm,cdt,cdn){
+        
 
         const row = locals[cdt][cdn];
+        let tariff = ""
+        if (frm.doc.add_select_tariff){
+            tariff = frm.doc.add_select_tariff
+        }
+        else{
+            tariff = "NIL"
+        }
         if (row.additional_service){
             if(row.quantity){
             frappe.call({
@@ -518,6 +529,7 @@ frappe.ui.form.on('Additional Services',{
 
                     "service" : row.additional_service,
                     "qty"   : row.quantity,
+                    "tariff_doc":tariff
                    
 
                 },
@@ -541,6 +553,13 @@ quantity : function(frm,cdt,cdn){
    
 
         const row = locals[cdt][cdn];
+        let tariff = ""
+        if (frm.doc.add_select_tariff){
+            tariff = frm.doc.add_select_tariff
+        }
+        else{
+            tariff = "NIL"
+        }
         if (row.additional_service){
             if(row.quantity){
             frappe.call({
@@ -549,6 +568,7 @@ quantity : function(frm,cdt,cdn){
 
                     "service" : row.additional_service,
                     "qty"   : row.quantity,
+                    "tariff_doc":tariff
                    
 
                 },
@@ -570,6 +590,22 @@ quantity : function(frm,cdt,cdn){
     }
        
     },
+    rate: function(frm, cdt, cdn) {
+        const row = locals[cdt][cdn];
+        
+        if (row.additional_service && row.quantity) {
+            if (row.rate) {
+                row.amount = flt(row.quantity) * flt(row.rate);
+                frm.refresh_field("additional_services");
+            } else {
+                frappe.throw("Please enter a rate for the service.");
+            }
+        } else if (!row.quantity) {
+            frappe.throw("Please enter the quantity.");
+        } else {
+            frappe.throw("Please select the required service.");
+        }
+    }
 
 })
 
@@ -583,6 +619,20 @@ frappe.ui.form.on('Transit Details Item', {
         }
         frm.refresh_field("transit_details_item");
         const transit_details = frm.doc.transit_details_item;
+        let tariff = ""
+        if (frm.doc.add_select_tariff){
+            tariff = frm.doc.add_select_tariff
+        }
+        else{
+            tariff ="NIL"
+        }
+        console.log("Arguments for API call:", {
+            
+            'booking_type': frm.doc.booking_type,
+            'tariff_doc': tariff
+        });
+        
+     
         if (frm.doc.booking_channel != "Mobile App"){
         if (frm.doc.multiple_vehicles == 0){
         if (frm.doc.vehicle_type) {
@@ -596,7 +646,8 @@ frappe.ui.form.on('Transit Details Item', {
                     args: {
                         'zone': JSON.stringify([from_row.zone, to_row.zone]),
                         'vehicle_type': frm.doc.vehicle_type,
-                        'booking_type':frm.doc.booking_type
+                        'booking_type':frm.doc.booking_type,
+                        "tariff_doc" : tariff
                     },
                     callback: function(response) {
                         console.log(response.message);
@@ -618,7 +669,8 @@ frappe.ui.form.on('Transit Details Item', {
                                     args: {
                                         'zone': JSON.stringify([fromcity[0], fromcity[1]]),
                                         'vehicle_type': frm.doc.vehicle_type,
-                                        'booking_type':frm.doc.booking_type
+                                        'booking_type':frm.doc.booking_type,
+                                        "tariff_doc" : tariff
                                     },
                                     callback: function(response) {
                                         console.log(response.message,fromcity[0],fromcity[1],"@@@@@@@@@@@@@!!!!!!!!!!!1")
@@ -654,7 +706,8 @@ frappe.ui.form.on('Transit Details Item', {
                                     args: {
                                         'zone': JSON.stringify([fromcity[1], fromcity[0]]),
                                         'vehicle_type': frm.doc.vehicle_type,
-                                        'booking_type':frm.doc.booking_type
+                                        'booking_type':frm.doc.booking_type,
+                                        "tariff_doc" : tariff
                                     },
                                     callback: function(response) {
                                         // console.log(response.message,fromcity[1],row.zone,"@@@@@@@@@@@@@")
@@ -711,7 +764,8 @@ frappe.ui.form.on('Transit Details Item', {
                 args: {
                     'zone': JSON.stringify([from_row.zone, to_row.zone]),
                     'vehicle_type': "1 Ton",
-                    'booking_type':frm.doc.booking_type
+                    'booking_type':frm.doc.booking_type,
+                    "tariff_doc" : tariff
                 },
                 callback: function(response) {
                     console.log(response.message);
@@ -733,7 +787,8 @@ frappe.ui.form.on('Transit Details Item', {
                                 args: {
                                     'zone': JSON.stringify([fromcity[0], fromcity[1]]),
                                     'vehicle_type': charge.vehicle_type,
-                                    'booking_type':frm.doc.booking_type
+                                    'booking_type':frm.doc.booking_type,
+                                    "tariff_doc" : tariff
                                 },
                                 callback: function(response) {
                                     console.log(response.message,fromcity[0],fromcity[1], response.message.amount,"@@@@@@@@@@@@@!!!!!!!!!!!1")
@@ -767,7 +822,8 @@ frappe.ui.form.on('Transit Details Item', {
                                 args: {
                                     'zone': JSON.stringify([fromcity[1], fromcity[0]]),
                                     'vehicle_type': charge.vehicle_type,
-                                    'booking_type':frm.doc.booking_type
+                                    'booking_type':frm.doc.booking_type,
+                                    "tariff_doc" : tariff
                                 },
                                 callback: function(response) {
                                     console.log(response.message,fromcity[1],row.zone, response.message.amount,"@@@@@@@@@@@@@")
@@ -910,8 +966,20 @@ frappe.ui.form.on('Transit Charges Item', {
 
 	vehicle_type: function(frm, cdt, cdn){
 		var child = locals[cdt][cdn];
-		
-
+		let tariff = ""
+        if (frm.doc.add_select_tariff){
+            tariff = frm.doc.add_select_tariff
+        }
+        else{
+            tariff ="NIL"
+        }
+        console.log("Arguments for API call:", {
+            'zone': JSON.stringify([child.from_location, child.to]),
+            'vehicle_type': child.vehicle_type,
+            'booking_type': frm.doc.booking_type,
+            'tariff_doc': tariff
+        });
+        
 		if (child.vehicle_type && child.from_location && child.to){
 
 			frappe.call({
@@ -919,7 +987,8 @@ frappe.ui.form.on('Transit Charges Item', {
 				args: {
 				'zone': JSON.stringify([child.from_location, child.to]),
 				'vehicle_type': child.vehicle_type,
-				'booking_type':frm.doc.booking_type
+				'booking_type':frm.doc.booking_type,
+                'tariff_doc':tariff
 				},
 				callback: function(response) {
 				console.log(response.message.amount,"@@@@@@@@@@@@@2");

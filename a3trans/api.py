@@ -434,13 +434,12 @@ def create_vehicle_assignments(vehicles, opportunity_id):
                         for vehicle_id in vehicles_list:
                             vehicle = frappe.get_doc("Vehicle", vehicle_id) 
                             vehicle_assignment = frappe.new_doc('Vehicle Assignment')
-                        
+                            
                             vehicle_assignment.assignment_date = frappe.utils.today()       
                             if vehicle.assigned_driver:
                                 vehicle_assignment.driver_id = vehicle.assigned_driver	
                             if vehicle.assigned_helper:
                                 vehicle_assignment.helper_id = vehicle.assigned_helper
-                                
                             vehicle_assignment.vehicle_id = vehicle_id   
                             if oppo.receiver_information:
                                 for itm in oppo.receiver_information:
@@ -453,7 +452,8 @@ def create_vehicle_assignments(vehicles, opportunity_id):
                                     })
                             
                             if vehicle.vehicle_type:
-                                vehicle_assignment.type_of_vehicles = vehicle.vehicle_type
+                                vehicle_assignment.assigned_vehicle = vehicle.vehicle_type
+                                
                             
                             vehicle_assignment.order = opportunity_id
                             vehicle_assignment.insert()
@@ -464,7 +464,6 @@ def create_vehicle_assignments(vehicles, opportunity_id):
                             vehicle = frappe.get_doc("Vehicle", vehicle_id) 
                             vehicle_assignment = frappe.new_doc('Vehicle Assignment')
                             vehicle_assignment.assignment_date = frappe.utils.today()
-                            
                             if vehicle.assigned_driver:
                                 vehicle_assignment.driver_id = vehicle.assigned_driver	
                             if vehicle.assigned_helper:
@@ -479,8 +478,9 @@ def create_vehicle_assignments(vehicles, opportunity_id):
                                         "zone": itm.zone
                                     })
                             
-                            if vehicle.vehicle_type:
-                                vehicle_assignment.type_of_vehicles = vehicle.vehicle_type
+                            if oppo.vehicle_type:
+                                vehicle_assignment.assigned_vehicle = vehicle.vehicle_type
+                                vehicle_assignment.type_of_vehicles = oppo.vehicle_type
                             
                             vehicle_assignment.order = opportunity_id
                             vehicle_assignment.insert()

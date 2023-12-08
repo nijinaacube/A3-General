@@ -8,26 +8,26 @@ from frappe.utils import get_datetime, time_diff
 
 class VehicleAssignment(Document):
     def after_insert(self):
-        if self.order and self.type_of_vehicles:
+        if self.order and self.assigned_vehicle:
             
 
             opportunity = frappe.get_doc("Opportunity", self.order)
             if opportunity.multiple_vehicles == 1:
-                # opportunity.vehicle_details_item.clear()
-                found = False
-                for data in opportunity.vehicle_details_item:
-                    if data.vehicle_type == self.type_of_vehicles:
-                        data.vehicle_number = self.vehicle_id
-                        data.vehicle_assignment = self.name
-                        found = True
-                        break
-                if not found:
+                # # opportunity.vehicle_details_item.clear()
+                # found = False
+                # for data in opportunity.vehicle_details_item:
+                #     if data.vehicle_type == self.assigned_vehicle:
+                #         data.vehicle_number = self.vehicle_id
+                #         data.vehicle_assignment = self.name
+                #         found = True
+                #         break
+                # if not found:
                     
-                    opportunity.append("vehicle_details_item", {
-                        "vehicle_type": self.type_of_vehicles,
-                        "vehicle_number": self.vehicle_id,
-                        "vehicle_assignment": self.name
-                    })
+                opportunity.append("vehicle_details_item", {
+                    "vehicle_type": self.assigned_vehicle,
+                    "vehicle_number": self.vehicle_id,
+                    "vehicle_assignment": self.name
+                })
 
                 opportunity.save()
 
@@ -38,8 +38,10 @@ class VehicleAssignment(Document):
                   
 
     def validate(self):  
+
         if self.order:
             opportunity = frappe.get_doc("Opportunity", self.order)
+            opportunity.vehicle_details_item.clear()
             if opportunity.status != "Lost":
                 if self.assignment_status == "Vehicle Assigned":
                     opportunity.order_status = "Vehicle Assigned"
@@ -198,7 +200,7 @@ class VehicleAssignment(Document):
                 opportunity.db_update()
                 frappe.db.commit()
 
-def after_insert(self):
+def before_insert(self):
      if self.routes:
          for order in self.routes:
              if order.order_id:

@@ -88,14 +88,15 @@ def after_insert(doc, methods):
      
     if doc.lead_id:
         lead_doc = frappe.get_doc("Lead", doc.lead_id)
-        print(lead_doc.status, doc.status, lead_doc.contact_by)
-
+        print(lead_doc.status, doc.status, doc.contact_by)
+        
         # Check if 'contact_by' is available and valid
-        if lead_doc.contact_by:
+        if doc.contact_by:
+            
             sharedoc = frappe.new_doc("DocShare")
             sharedoc.share_doctype = "Lead"
             sharedoc.share_name = doc.lead_id
-            sharedoc.user = lead_doc.contact_by
+            sharedoc.user = doc.contact_by
             sharedoc.read = 1
             sharedoc.write = 1
             sharedoc.share = 1
@@ -107,7 +108,7 @@ def after_insert(doc, methods):
             sharedoc = frappe.new_doc("DocShare")
             sharedoc.share_doctype = "Opportunity"
             sharedoc.share_name = doc.name
-            sharedoc.user = lead_doc.contact_by
+            sharedoc.user = doc.contact_by
             sharedoc.read = 1
             sharedoc.write = 1
             sharedoc.share = 1
@@ -118,14 +119,14 @@ def after_insert(doc, methods):
             print(lead_doc.status, doc.status, lead_doc.contact_by)
 
             todo = frappe.new_doc("ToDo")
-            todo.date = lead_doc.ends_on
-            todo.owner = lead_doc.contact_by
+            todo.date = doc.contact_date
+            todo.owner = doc.contact_by
             todo.description = "Please follow-up and complete the booking"
             todo.reference_type = "Opportunity"
             todo.reference_name = doc.name
 
             todo.save()
-            frappe.msgprint('Opportunity ' f'<a href="/app/opportunity/{doc.name}" target="blank">{doc.name} </a> assigned to {lead_doc.contact_by} ')
+            frappe.msgprint('Opportunity ' f'<a href="/app/opportunity/{doc.name}" target="blank">{doc.name} </a> assigned to {doc.contact_by} ')
 
             # frappe.msgprint(f"Opportunity {doc.name} assigned to {lead_doc.contact_by}")
       
@@ -179,13 +180,34 @@ def validate(doc, method):
                     # Check for conditions to determine amount
                     if frappe.db.exists("Tariff Details",{"customer":doc.party_name}):
                         tariff = frappe.get_doc("Tariff Details", {"customer":doc.party_name})
-                        for item in tariff.tariff_details_item:
-                            if ((item.from_city == from_zone and item.to_city == to_zone) or
-                                    (item.from_city == to_zone and item.to_city == from_zone)) and \
-                                    item.vehicle_type == doc.vehicle_type:
-                                amount = item.amount
-                            
-                                print(f"Matched! Amount: {amount}")  # Debug line
+                        if tariff.tariff_details_item:
+                            for item in tariff.tariff_details_item:
+                                if ((item.from_city == from_zone and item.to_city == to_zone) or
+                                        (item.from_city == to_zone and item.to_city == from_zone)) and \
+                                        item.vehicle_type == doc.vehicle_type:
+                                    amount = item.amount
+                                else:
+                                    if tariff.parent_tariff:
+                                        parent_tariff = frappe.get_doc("Tariff Details",tariff.parent_tariff)
+                                    
+                                        if parent_tariff.tariff_details_item:
+                                            for item in parent_tariff.tariff_details_item:
+                                                if ((item.from_city == from_zone and item.to_city == to_zone) or
+                                                        (item.from_city == to_zone and item.to_city == from_zone)) and \
+                                                        item.vehicle_type == doc.vehicle_type:
+                                                    amount = item.amount
+                        else:
+                            if tariff.parent_tariff:
+                                parent_tariff = frappe.get_doc("Tariff Details",tariff.parent_tariff)
+                              
+                                if parent_tariff.tariff_details_item:
+                                    for item in parent_tariff.tariff_details_item:
+                                        if ((item.from_city == from_zone and item.to_city == to_zone) or
+                                                (item.from_city == to_zone and item.to_city == from_zone)) and \
+                                                item.vehicle_type == doc.vehicle_type:
+                                            amount = item.amount
+
+                                  
                     else:
                         # Check if Tariff Details with is_standard=1 exists
                         tariff_exists = frappe.db.exists("Tariff Details", {"is_standard": 1})
@@ -261,54 +283,45 @@ def validate(doc, method):
             
    
     if doc.status != "Lost":
-        # if doc.booking_date and (doc.end_date == "" or doc.end_date is None):
-        #     # Convert booking_date string to a datetime object
-        #     booking_date = datetime.strptime(doc.booking_date, "%Y-%m-%d")
-
-        #     # Calculate end date as 24 hours plus booking date
-        #     end_date = booking_date + timedelta(hours=24)
-
-        #     # Convert end_date back to the required string format
-        #     formatted_end_date = end_date.strftime("%Y-%m-%d %H:%M:%S")
-
-        #     # Set the calculated end date to the document
-        #     doc.end_date = formatted_end_date
-            
+        if doc.booking_date and (doc.end_date == "" or doc.end_date is None):
+            doc.end_date=add_to_date((doc.booking_date),days=1,as_string=True)
+      
 
 
-        if doc._update_tariff_charges_for_additional_services == 1:
-            if doc.transit_charges:
-                for add in doc.transit_charges:
-                    if add.charges:
-                        if frappe.db.exists("Item", add.charges):
-                            item = frappe.get_doc("Item", add.charges)
-                            if item.item_group == "Additional Services":
-                                if frappe.db.exists("Tariff Details", {"customer": doc.party_name}):
-                                    tariff = frappe.get_doc("Tariff Details", {"customer": doc.party_name})
+
+        # if doc._update_tariff_charges_for_additional_services == 1:
+        #     if doc.transit_charges:
+        #         for add in doc.transit_charges:
+        #             if add.charges:
+        #                 if frappe.db.exists("Item", add.charges):
+        #                     item = frappe.get_doc("Item", add.charges)
+        #                     if item.item_group == "Additional Services":
+        #                         if frappe.db.exists("Tariff Details", {"customer": doc.party_name}):
+        #                             tariff = frappe.get_doc("Tariff Details", {"customer": doc.party_name})
                                     
-                                    existing_rows = [charge.additional_service for charge in tariff.additional_services]
+        #                             existing_rows = [charge.additional_service for charge in tariff.additional_services]
 
-                                    # Check if the add.charges is already in the existing_rows
-                                    if add.charges in existing_rows:
-                                        for charge in tariff.additional_services:
-                                            if charge.additional_service == add.charges:
-                                                cst = float(add.cost) / float(add.quantity)
-                                                if cst != charge.rate:
-                                                    charge.rate = cst
-                                                    charge.amount = cst
-                                    else:
-                                        cst = float(add.cost) / float(add.quantity)
-                                        tariff.append("additional_services", {
-                                            "additional_service": add.charges,
-                                            "quantity": 1,
-                                            "rate": cst,
-                                            "amount": cst
-                                        })
+        #                             # Check if the add.charges is already in the existing_rows
+        #                             if add.charges in existing_rows:
+        #                                 for charge in tariff.additional_services:
+        #                                     if charge.additional_service == add.charges:
+        #                                         cst = float(add.cost) / float(add.quantity)
+        #                                         if cst != charge.rate:
+        #                                             charge.rate = cst
+        #                                             charge.amount = cst
+        #                             else:
+        #                                 cst = float(add.cost) / float(add.quantity)
+        #                                 tariff.append("additional_services", {
+        #                                     "additional_service": add.charges,
+        #                                     "quantity": 1,
+        #                                     "rate": cst,
+        #                                     "amount": cst
+        #                                 })
 
-                                    # Save the changes to the tariff document
-                                    tariff.save()
-                                else:
-                                    frappe.throw("No Tariff added for this customer to update additional service charges")
+        #                             # Save the changes to the tariff document
+        #                             tariff.save()
+        #                         else:
+        #                             frappe.throw("No Tariff added for this customer to update additional service charges")
 
                 
             
@@ -830,45 +843,84 @@ def calculate_charges(selected_item, no_of_days, uom, customer, area, rate_month
 
 
                 return data
-            
+            else:
+                if tariff.parent_tariff:
+                    tariff=frappe.get_doc("Tariff Details",tariff.parent_tariff)
+                    if tariff.warehouse_space_rent_charges:
+                
+                        for itm in tariff.warehouse_space_rent_charges:
+                            rate=0
+                            if types == itm.cargo_type and uom == "Cubic Meter":
+                                if rate_month == "1":
+                                    rate = itm.rate_per_month
+                                elif rate_day == "1":
+                                    if itm.rate_per_day:
+                                        rate = itm.rate_per_day
+                                    else:
+                                        ratemonth= itm.rate_per_month
+                                        rate=(ratemonth/30)
+                                        print(rate)
+
+
+                                total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+                                data["total_amount"] = total_amount
+
+
+                            if uom == itm.uom:
+                                if rate_month == "1":
+                                    rate = itm.rate_per_month
+                                elif rate_day == "1":
+                                    if itm.rate_per_day:
+                                        rate = itm.rate_per_day
+                                    else:
+                                        ratemonth= itm.rate_per_month
+                                        rate=(ratemonth/30)
+                                    
+                                total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
+                                data["total_amount"] = total_amount
+
+
+                        return data
+        
         else:
-            if frappe.db.exists("Tariff Details",{"is_standard":1}):
-                tariff=frappe.get_doc("Tariff Details",{"is_standard":1})
-                if tariff.warehouse_space_rent_charges:
-            
-                    for itm in tariff.warehouse_space_rent_charges:
-                        rate=0
-                        if types == itm.cargo_type and uom == "Cubic Meter":
-                            if rate_month == "1":
-                                rate = itm.rate_per_month
-                            elif rate_day == "1":
-                                if itm.rate_per_day:
-                                    rate = itm.rate_per_day
-                                else:
-                                    ratemonth= itm.rate_per_month
-                                    rate=(ratemonth/30)
-                                    print(rate)
+               
+            tariff=frappe.get_doc("Tariff Details",{"is_standard":1})
+            if tariff.warehouse_space_rent_charges:
+        
+                for itm in tariff.warehouse_space_rent_charges:
+                    rate=0
+                    if types == itm.cargo_type and uom == "Cubic Meter":
+                        if rate_month == "1":
+                            rate = itm.rate_per_month
+                        elif rate_day == "1":
+                            if itm.rate_per_day:
+                                rate = itm.rate_per_day
+                            else:
+                                ratemonth= itm.rate_per_month
+                                rate=(ratemonth/30)
+                                print(rate)
 
 
-                            total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
-                            data["total_amount"] = total_amount
+                        total_amount = rate * float(area) if rate_month == 1 else (rate * no_of_days) * float(area)
+                        data["total_amount"] = total_amount
 
 
-                        if uom == itm.uom:
-                            if rate_month == "1":
-                                rate = itm.rate_per_month
-                            elif rate_day == "1":
-                                if itm.rate_per_day:
-                                    rate = itm.rate_per_day
-                                else:
-                                    ratemonth= itm.rate_per_month
-                                    rate=(ratemonth/30)
-                                
-                            total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
-                            data["total_amount"] = total_amount
+                    if uom == itm.uom:
+                        if rate_month == "1":
+                            rate = itm.rate_per_month
+                        elif rate_day == "1":
+                            if itm.rate_per_day:
+                                rate = itm.rate_per_day
+                            else:
+                                ratemonth= itm.rate_per_month
+                                rate=(ratemonth/30)
+                            
+                        total_amount = rate * float(area) if rate_month == "1" else (rate * no_of_days) * float(area)
+                        data["total_amount"] = total_amount
 
 
-                    return data
+                return data
+     
         
 
 
@@ -965,20 +1017,28 @@ def calculate_transportation_cost(customer, zone, vehicle_type,booking_type):
     if frappe.db.exists("Tariff Details", {"customer": customer}):
         tariff = frappe.get_doc("Tariff Details", {"customer": customer})
 
-
-        for item in tariff.tariff_details_item:
-            if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
-                data["amount"] = item.amount
-            elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
-                data["amount"]= item.amount    
-    else:
-        if frappe.db.exists("Tariff Details", {"is_standard": 1}):
-            tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+        if tariff.tariff_details_item:
             for item in tariff.tariff_details_item:
                 if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
-                    data["amount" ]= item.amount
+                    data["amount"] = item.amount
                 elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
-                   data[ "amount" ]= item.amount
+                    data["amount"]= item.amount    
+                else:
+                    if frappe.db.exists("Tariff Details", tariff.parent_tariff):
+                        tariff = frappe.get_doc("Tariff Details", tariff.parent_tariff)
+                        for item in tariff.tariff_details_item:
+                            if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+                                data["amount" ]= item.amount
+                            elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
+                                data[ "amount" ]= item.amount
+        else:
+            if frappe.db.exists("Tariff Details", tariff.parent_tariff):
+                tariff = frappe.get_doc("Tariff Details", tariff.parent_tariff)
+                for item in tariff.tariff_details_item:
+                    if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+                        data["amount" ]= item.amount
+                    elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
+                        data[ "amount" ]= item.amount
     return data  
 
 
@@ -1029,31 +1089,33 @@ def get_rate(itm, qty, customer):
             for add in tariff.additional_services:
                 if itm == add.additional_service:
                     print(add.rate)
-                    data["rate"] = add.rate
-                    amount = int(qty) * add.rate
+                    data["rate"] = add.amount
+                    amount = int(qty) * add.amount
                     data["amount"] = amount
+                else:
+                    if frappe.db.exists("Tariff Details",tariff.parent_tariff):
+                        tariff = frappe.get_doc("Tariff Details",tariff.parent_tariff)
+                        if tariff.additional_services:
+                            for add in tariff.additional_services:
+                                if itm == add.additional_service:
+                                    print(add.rate)
+                                    data["rate"] = add.amount
+                                    amount = int(qty) * add.amount
+                                    data["amount"] = amount
+
                 
         else:
-            if frappe.db.exists("Tariff Details", {"is_standard": 1}):
-                tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+            if frappe.db.exists("Tariff Details",tariff.parent_tariff):
+                tariff = frappe.get_doc("Tariff Details",tariff.parent_tariff)
                 if tariff.additional_services:
                     for add in tariff.additional_services:
                         if itm == add.additional_service:
                             print(add.rate)
-                            data["rate"] = add.rate
-                            amount = int(qty) * add.rate
+                            data["rate"] = add.amount
+                            amount = int(qty) * add.amount
                             data["amount"] = amount
 
-    else:
-        if frappe.db.exists("Tariff Details", {"is_standard": 1}):
-            tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
-            if tariff.additional_services:
-                for add in tariff.additional_services:
-                    if itm == add.additional_service:
-                        print(add.rate)
-                        data["rate"] = add.rate
-                        amount = int(qty) * add.rate
-                        data["amount"] = amount
+   
 
     return data
 

@@ -29,6 +29,9 @@ def after_insert(doc,methods):
                 frappe.msgprint('User ' f'<a href="/app/user/{user.name}" target="blank">{user.name} </a> Created Successfully ')
 
 def validate(doc, methods):
+    if doc.contact_by:
+        print(doc.contact_by)
+    
     print(datetime.now().time(), "@@@")
    
     if doc.transit_details_item and doc.booking_type and doc.booking_channel == "Mobile App":
@@ -125,6 +128,10 @@ def validate(doc, methods):
                         opportunity.party_name = customer.customer_name
                         opportunity.booking_channel = lead_doc.booking_channel
                         opportunity.booking_type = lead_doc.booking_type
+                        if lead_doc.contact_by:
+                            opportunity.contact_by = lead_doc.contact_by
+                        if lead_doc.contact_date:
+                            opportunity.contact_date = lead_doc.contact_date
                         current_date = today()
                         # opportunity.booking_channel = lead_doc.booking_channel
                         opportunity.booking_date = current_date
@@ -137,7 +144,7 @@ def validate(doc, methods):
                             for transit in doc.transit_details_item:
                                 receiver_info_data.append(
                                     {"transit_type": transit.transit_type, "zone": transit.zone,"latitude":transit.latitude,
-                                     "longitude":transit.longitude,"city":transit.city,"location":transit.location,
+                                     "longitude":transit.longitude,"city":transit.city,"location":transit.location,"quantity":transit.quantity,
                                      "address_line1":transit.address_line1,"address_line2":transit.address_line2}
                                 )
                                 # You can add more data as needed for each transit item
@@ -188,11 +195,19 @@ def validate(doc, methods):
                                 for vhcle in vehicle_data:
                                     opportunity.append("vehicle_details_item", vhcle)
                             
-                            
+                        if doc.additional_services:
+                            service_item = []
+                            for service in doc.additional_services:
+                                service_item.append({  
+                                    "charges": service.additional_service, "quantity": service.quantity, "cost": service.amount
+                                })
+                            for servc in service_item:
+                                opportunity.append("transit_charges", servc)
+
                         line_itms = []
                         # Initialize the opportunity_line_items list to store the aggregated data
                         opportunity_line_items = []
-
+                   
                         # Loop through the transit_charges_item
                         if doc.transit_charges_item:
 
@@ -246,7 +261,32 @@ def validate(doc, methods):
                                         "amount": cst,
                                         "average_rate":(cst/2)
                                     })
-                        
+                            if doc.additional_services:
+                                # Loop through the transit_charges_item
+                                for i in doc.additional_services:
+                                    qty = 0
+                                    cst = 0
+
+                                    # Check if i.charge is not in line_itms
+                                    if i.additional_service not in line_itms:
+                                        line_itms.append(i.additional_service)
+
+                                        # Iterate through the items again to aggregate values for the same charge
+                                        for j in doc.additional_services:
+                                            if i.additional_service == j.additional_service:
+                                                qty += j.quantity
+                                                cst += j.amount
+
+                                        print(qty, cst, "*************", line_itms)
+
+                                        # Append the aggregated data to the opportunity_line_items list
+                                        opportunity_line_items.append({
+                                            "item": i.additional_service,
+                                            "quantity": qty,
+                                            "amount": cst,
+                                            "average_rate":(cst/2)
+                                        })
+
                         
                         if doc.warehouse and doc.required_area:
                             if doc.warehouse_charges_item:
@@ -278,8 +318,12 @@ def validate(doc, methods):
                     else: 
                     
                         customer=frappe.new_doc("Customer")
-                        
-                        customer.customer_name=lead_doc.lead_name
+                        if lead_doc.company_name:
+                            customer.customer_name=lead_doc.company_name
+
+                        elif lead_doc.lead_name:
+                            customer.customer_name=lead_doc.lead_name
+
                         customer.mobile_number=lead_doc.mobile_number
                         if lead_doc.email_id:
                             customer.email=lead_doc.email_id
@@ -331,8 +375,8 @@ def validate(doc, methods):
                             else:
                                 customer.city="NIL"
 
-                        if lead_doc.add_select_tariff:
-                            customer.tariff = lead_doc.add_select_tariff
+                        # if lead_doc.add_select_tariff:
+                        #     customer.tariff = lead_doc.add_select_tariff
                         customer.insert()
                         print(customer.name)
                         customerr=frappe.get_doc("Customer",customer.name)
@@ -342,6 +386,10 @@ def validate(doc, methods):
                         opportunity.party_name = customer.customer_name
                         opportunity.booking_type = lead_doc.booking_type
                         opportunity.booking_channel = lead_doc.booking_channel
+                        if lead_doc.contact_by:
+                            opportunity.contact_by = lead_doc.contact_by
+                        if lead_doc.contact_date:
+                            opportunity.contact_date = lead_doc.contact_date
                         current_date = today()
                         opportunity.booking_date = current_date
                         opportunity.lead_id = lead_doc.name
@@ -353,7 +401,7 @@ def validate(doc, methods):
                             for transit in doc.transit_details_item:
                                 receiver_info_data.append(
                                     {"transit_type": transit.transit_type, "zone": transit.zone,"latitude":transit.latitude,
-                                     "longitude":transit.longitude,"city":transit.city,"location":transit.location,
+                                     "longitude":transit.longitude,"city":transit.city,"location":transit.location,"quantity":transit.quantity,
                                      "address_line1":transit.address_line1,"address_line2":transit.address_line2}
                                 )
                                 # You can add more data as needed for each transit item
@@ -405,7 +453,20 @@ def validate(doc, methods):
                             
                             
                         
-                        
+                             
+                       
+                        service_item = []
+                        if doc.additional_services:
+                                print(doc.additional_services)
+                                for service in doc.additional_services:
+                                    print(service)
+                                    service_item.append(
+                                        { "charges": service.additional_service, "quantity": service.quantity, "cost": service.amount}
+                                        )
+                                print(service_item)
+                                for servc in service_item:
+                                    opportunity.append("transit_charges", servc)
+                                    
                         line_itms = []
 
                         # Initialize the opportunity_line_items list to store the aggregated data
@@ -436,6 +497,32 @@ def validate(doc, methods):
                                         "amount": cst,
                                         "average_rate":(cst/2)
                                     })
+                        if doc.additional_services:
+                                # Loop through the transit_charges_item
+                                for i in doc.additional_services:
+                                    qty = 0
+                                    cst = 0
+
+                                    # Check if i.charge is not in line_itms
+                                    if i.additional_service not in line_itms:
+                                        line_itms.append(i.additional_service)
+
+                                        # Iterate through the items again to aggregate values for the same charge
+                                        for j in doc.additional_services:
+                                            if i.additional_service == j.additional_service:
+                                                qty += j.quantity
+                                                cst += j.amount
+
+                                        print(qty, cst, "*************", line_itms)
+
+                                        # Append the aggregated data to the opportunity_line_items list
+                                        opportunity_line_items.append({
+                                            "item": i.additional_service,
+                                            "quantity": qty,
+                                            "amount": cst,
+                                            "average_rate":(cst/2)
+                                        })
+
                         if doc.warehouse_charges_item:
                             # Loop through the transit_charges_item
                             for i in doc.warehouse_charges_item:
@@ -494,20 +581,34 @@ def validate(doc, methods):
 
 
 @frappe.whitelist()
-def service_charge (service,qty):
+def service_charge (service,qty,tariff_doc):
   
-    print(service,qty)  
+    print(service,qty,tariff_doc)  
     data = {}
-    if frappe.db.exists("Tariff Details",{"is_standard":1}) :
-        tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
-        if tariff.additional_services:
-            for add in tariff.additional_services:
-                if service == add.additional_service:
-                    print(add.rate)
-                    data["rate"] = add.rate
-                    amount = int(qty) * add.rate
-                    data["amount"] = amount
-    return data
+    if tariff_doc != "NIL":
+        print("l")
+        if frappe.db.exists("Tariff Details",tariff_doc) :
+            tariff_det = frappe.get_doc("Tariff Details", tariff_doc)
+            if tariff_det.additional_services:
+                for add in tariff_det.additional_services:
+                    if service == add.additional_service:
+                        print(tariff_det,service,add.additional_service,add.rate,"LLLLLLLLLLL")
+                        data["rate"] = add.amount
+                        amount = int(qty) * add.amount
+                        data["amount"] = amount
+        return data
+
+    else:
+        if frappe.db.exists("Tariff Details",{"is_standard":1}) :
+            tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
+            if tariff.additional_services:
+                for add in tariff.additional_services:
+                    if service == add.additional_service:
+                        print(add.rate)
+                        data["rate"] = add.amount
+                        amount = int(qty) * add.amount
+                        data["amount"] = amount
+        return data
 
     
     
@@ -528,9 +629,9 @@ def get_location(doc):
 
 import json
 @frappe.whitelist()
-def calculate_transportation_cost(zone, vehicle_type,booking_type):
+def calculate_transportation_cost(zone, vehicle_type,booking_type,tariff_doc):
     zone_list = json.loads(zone)
-    print(zone_list,"@@@@@@@@@@@@")
+    print(zone_list,"@@@@@@@@@@@@",tariff_doc)
     amount = 0
     data ={}
     if booking_type:
@@ -543,9 +644,19 @@ def calculate_transportation_cost(zone, vehicle_type,booking_type):
     # if len(zone_list) != 2:
     #     return 0  # Return 0 if it's not a pair
 
+    if tariff_doc != "NIL":
+        if frappe.db.exists("Tariff Details",tariff_doc):
+            tariff = frappe.get_doc("Tariff Details", tariff_doc)
+            for item in tariff.tariff_details_item:
+                if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:
+                    data["amount"] = item.amount
+                elif item.from_city == zone_list[1] and item.to_city == zone_list[0] and item.vehicle_type == vehicle_type:
+                    data["amount"] = item.amount
+        print(amount,"$$$$$$$$$$$$")
+        return data 
+                
 
-
-    if frappe.db.exists("Tariff Details", {"is_standard": 1}):
+    elif frappe.db.exists("Tariff Details", {"is_standard": 1}):
         tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
         for item in tariff.tariff_details_item:
             if item.from_city == zone_list[0] and item.to_city == zone_list[1] and item.vehicle_type == vehicle_type:

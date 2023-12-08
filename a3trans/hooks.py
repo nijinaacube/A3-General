@@ -139,6 +139,7 @@ doctype_js = {
    "Address":"a3trans/client_scripts/address.js",
    "Vehicle":"a3trans/client_scripts/vehicle.js",
    "Sales Order": "a3trans/client_scripts/sales_order.js",
+    "Customer": "a3trans/client_scripts/customer.js",
 
   
 }
