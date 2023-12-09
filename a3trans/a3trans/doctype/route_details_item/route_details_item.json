@@ -50,7 +50,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Pending\nArrived\nCompleted"
+   "options": "Pending\nIn-Transit\nArrived\nCompleted"
   },
   {
    "fieldname": "actual_arrival_time",
@@ -225,7 +225,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2023-11-02 16:30:35.517812",
+ "modified": "2023-12-09 12:23:25.181795",
  "modified_by": "Administrator",
  "module": "A3Trans",
  "name": "Route Details Item",
