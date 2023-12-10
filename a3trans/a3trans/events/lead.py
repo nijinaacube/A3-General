@@ -328,7 +328,8 @@ def validate(doc, methods):
                         if lead_doc.email_id:
                             customer.email=lead_doc.email_id
 
-
+                        if lead_doc.add_select_tariff:
+                            customer.tariff =  lead_doc.add_select_tariff
                         customer.customer_group="Individual"
                         customer.territory="Rest Of The World"
                         if lead_doc.name:

@@ -15,7 +15,7 @@ def after_insert(doc,method):
 
     if doc.lead_name:
         lead=frappe.get_doc("Lead",doc.lead_name)
-        print(lead.add_select_tariff,"llllllllll")
+        print(lead,lead.add_select_tariff,"llllllllll")
         if lead.add_select_tariff:   
             new_tariff = frappe.new_doc("Tariff Details")
             new_tariff.parent_tariff = lead.add_select_tariff
@@ -55,6 +55,49 @@ def after_insert(doc,method):
             if frappe.db.exists("Tariff Details",{"customer":doc.name}):
                 tar = frappe.get_doc("Tariff Details",{"customer":doc.name})
                 doc.tariff = tar.name
+
+        else:
+            if doc.tariff: 
+                new_tariff = frappe.new_doc("Tariff Details")
+                new_tariff.parent_tariff =  doc.tariff
+                new_tariff.customer = doc.name
+                parent_tariff = frappe.get_doc("Tariff Details",  doc.tariff )
+                if parent_tariff.tariff_details_item:
+                    for parent_transit in parent_tariff.tariff_details_item:
+                        if lead.transit_charges_item:
+                            for add in lead.transit_charges_item:
+
+                                if ((parent_transit.from_city == add.from_location and parent_transit.to_city == add.to) or
+                                                (parent_transit.from_city == add.to and parent_transit.to_city == add.from_location)) and \
+                                                parent_transit.vehicle_type == add.vehicle_type:
+                                    if parent_transit.amount != add.cost:
+                                        new_tariff.append("tariff_details_item",{
+                                            "from_city":add.from_location,
+                                            "to_city":add.to,
+                                            "vehicle_type":add.vehicle_type,
+                                            "amount":add.cost
+                                        }) 
+                if parent_tariff.additional_services:
+                    for parent_service in parent_tariff.additional_services:
+                        if lead.additional_services:
+                            for add_service in lead.additional_services:
+                                    if add_service.additional_service:
+                                            if  add_service.additional_service == parent_service.additional_service:
+                                                if add_service.rate != parent_service.amount:
+                                                    new_tariff.append("additional_services",
+                                                        {
+                                                        "additional_service":add_service.additional_service,
+                                                        "quantity":1,
+                                                        "amount":add_service.rate
+                                                        }
+                                                    )
+                                                    
+                new_tariff.save()
+                if frappe.db.exists("Tariff Details",{"customer":doc.name}):
+                    tar = frappe.get_doc("Tariff Details",{"customer":doc.name})
+                    doc.tariff = tar.name
+
+        
     else:
         if doc.tariff:
             new_tariff = frappe.new_doc("Tariff Details")
