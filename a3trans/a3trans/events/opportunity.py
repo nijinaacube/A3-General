@@ -219,7 +219,7 @@ def validate(doc, method):
                                         (item.from_city == to_zone and item.to_city == from_zone)) and \
                                         item.vehicle_type == doc.vehicle_type:
                                     amount = item.amount
-                                    print(amount,"}}}}}}}}}}}")
+                                   
                                     print(f"Matched! Amount: {amount}")  # Debug line
 
                     print(amount, "::::")
