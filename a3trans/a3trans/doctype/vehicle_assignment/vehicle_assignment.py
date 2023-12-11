@@ -25,7 +25,7 @@ class VehicleAssignment(Document):
                 # If no matching vehicle type with empty fields is found,
                 # update the first row with empty fields for the same vehicle type
                 for data in opportunity.vehicle_details_item:
-                    if data.vehicle_type == vehicle.vehicle_type:
+                    if data.vehicle_type != vehicle.vehicle_type:
                         if not data.vehicle_number or not data.vehicle_assignment:
                             data.vehicle_number = self.vehicle_id
                             data.vehicle_assignment = self.name
