@@ -613,4 +613,6 @@ def get_arriving_vehicles(zone):
                         data["msg"] = "No Vehicles Found"
                         return data
             
-
+@frappe.whitelist()
+def get_vehicle_assignments(user):
+    print(user)

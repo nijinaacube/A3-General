@@ -5,31 +5,32 @@ from frappe.model.document import Document
 import math
 from frappe.utils import get_datetime, time_diff
 
-
 class VehicleAssignment(Document):
     def after_insert(self):
-        if self.order and self.assigned_vehicle:
-            
-
+        if self.order and self.vehicle_id:
             opportunity = frappe.get_doc("Opportunity", self.order)
-            if opportunity.multiple_vehicles == 1:
-                # # opportunity.vehicle_details_item.clear()
-                # found = False
-                # for data in opportunity.vehicle_details_item:
-                #     if data.vehicle_type == self.assigned_vehicle:
-                #         data.vehicle_number = self.vehicle_id
-                #         data.vehicle_assignment = self.name
-                #         found = True
-                #         break
-                # if not found:
-                    
-                opportunity.append("vehicle_details_item", {
-                    "vehicle_type": self.assigned_vehicle,
-                    "vehicle_number": self.vehicle_id,
-                    "vehicle_assignment": self.name
-                })
+            vehicle = frappe.get_doc("Vehicle", self.vehicle_id)
 
-                opportunity.save()
+            if opportunity.multiple_vehicles == 1:
+                for data in opportunity.vehicle_details_item:
+                    if data.vehicle_type == vehicle.vehicle_type:
+                        # Update existing row for the matching vehicle type with empty fields
+                        if not data.vehicle_number or not data.vehicle_assignment:
+                            data.vehicle_number = self.vehicle_id
+                            data.vehicle_assignment = self.name
+                            opportunity.save()
+                            return  # Exit the function after updating
+                        
+
+                # If no matching vehicle type with empty fields is found,
+                # update the first row with empty fields for the same vehicle type
+                for data in opportunity.vehicle_details_item:
+                    if data.vehicle_type == vehicle.vehicle_type:
+                        if not data.vehicle_number or not data.vehicle_assignment:
+                            data.vehicle_number = self.vehicle_id
+                            data.vehicle_assignment = self.name
+                            opportunity.save()
+                            return  # Exit the function after updating
 
         
         
