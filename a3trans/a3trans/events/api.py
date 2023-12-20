@@ -64,6 +64,7 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
     lead.lead_owner = "Administrator"
     lead.remarks = data["remarks"]
     lead.multiple_vehicles = 1
+    lead.packing_list = data["file_path"]
     tariff = frappe.get_doc("Tariff Details", {"is_standard": 1})
     for service in data["addition_service"]["services"]:
         for item in tariff.additional_services:
@@ -148,6 +149,7 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
     opp.booking_type = booking_type.name
     opp.booking_date = datetime.datetime.today()
     opp.multiple_vehicles = 1
+    opp.packing_list = data["file_path"]
     opp.append("shipment_details", {
         "item"      : data["commodity"],
         "weight"    : data["prod_weight"],
