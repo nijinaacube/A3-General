@@ -91,25 +91,25 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
         lead.uom = data["uom"]
     
     if booking_type.location_required == 1:
-        # lead.vehicle_type = data["vehicle_type"]
-        lead.append("shipment_details", {
-            "item"      : data["commodity"],
-            "weight"    : data["prod_weight"],
-            "uom"       : data["prod_uom"],
-            "quantity"  : data["no_of_pack"],
-            "packaging_type":   data["package_type"]
-        })
-        lead.append("transit_details_item", {
-            "transit_type": data["pick_transit_type"],
-            "zone": data["pick_zone"],
-            "quantity": data["pick_quantity"],
-            "address_line1": data["pick_address_line1"],
-            "address_line2": data["pick_address_line2"],
-            "location": data["pick_location"],
-            "city": data["pick_city"],
-            "latitude": data["pick_latitude"],
-            "longitude": data["pick_longitude"],
-        })
+        if data["commodity"] is not None and data["prod_weight"] is not None:
+            lead.append("shipment_details", {
+                "item"      : data["commodity"],
+                "weight"    : data["prod_weight"],
+                "uom"       : data["prod_uom"],
+                "quantity"  : data["no_of_pack"],
+                "packaging_type":   data["package_type"]
+            })
+            lead.append("transit_details_item", {
+                "transit_type": data["pick_transit_type"],
+                "zone": data["pick_zone"],
+                "quantity": data["pick_quantity"],
+                "address_line1": data["pick_address_line1"],
+                "address_line2": data["pick_address_line2"],
+                "location": data["pick_location"],
+                "city": data["pick_city"],
+                "latitude": data["pick_latitude"],
+                "longitude": data["pick_longitude"],
+            })
         for stop in data["stop_address"]["stops"]:
             lead.append("transit_details_item", {
                 "transit_type": stop["type"],
@@ -149,13 +149,14 @@ def create_new_opportunity(data: dict, booking_type: BookingType):
     opp.booking_date = datetime.datetime.today()
     opp.multiple_vehicles = 1
     opp.packing_list = data["file_path"]
-    opp.append("shipment_details", {
-        "item"      : data["commodity"],
-        "weight"    : data["prod_weight"],
-        "uom"       : data["prod_uom"],
-        "quantity"  : data["no_of_pack"],
-        "packaging_type":   data["package_type"]
-    })
+    if data["commodity"] is not None and data["prod_weight"] is not None:
+        opp.append("shipment_details", {
+            "item"      : data["commodity"],
+            "weight"    : data["prod_weight"],
+            "uom"       : data["prod_uom"],
+            "quantity"  : data["no_of_pack"],
+            "packaging_type":   data["package_type"]
+        })
     for vehicle_type in data["vehicle_type"]["vehicle_selected"]:
         opp.append("vehicle_details_item", {
             "vehicle_type"      : vehicle_type["vehicle"],
