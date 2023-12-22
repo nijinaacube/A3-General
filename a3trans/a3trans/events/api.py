@@ -89,27 +89,28 @@ def create_new_lead(data: dict, booking_type: BookingType, hasPrev: bool):
         lead.required_area = data["required_area"]
         lead.booked_upto = data["booked_upto"]
         lead.uom = data["uom"]
+
+    if data["commodity"] is not None and data["prod_weight"] is not None:
+        lead.append("shipment_details", {
+            "item"      : data["commodity"],
+            "weight"    : data["prod_weight"],
+            "uom"       : data["prod_uom"],
+            "quantity"  : data["no_of_pack"],
+            "packaging_type":   data["package_type"]
+        })
     
     if booking_type.location_required == 1:
-        if data["commodity"] is not None and data["prod_weight"] is not None:
-            lead.append("shipment_details", {
-                "item"      : data["commodity"],
-                "weight"    : data["prod_weight"],
-                "uom"       : data["prod_uom"],
-                "quantity"  : data["no_of_pack"],
-                "packaging_type":   data["package_type"]
-            })
-            lead.append("transit_details_item", {
-                "transit_type": data["pick_transit_type"],
-                "zone": data["pick_zone"],
-                "quantity": data["pick_quantity"],
-                "address_line1": data["pick_address_line1"],
-                "address_line2": data["pick_address_line2"],
-                "location": data["pick_location"],
-                "city": data["pick_city"],
-                "latitude": data["pick_latitude"],
-                "longitude": data["pick_longitude"],
-            })
+        lead.append("transit_details_item", {
+            "transit_type": data["pick_transit_type"],
+            "zone": data["pick_zone"],
+            "quantity": data["pick_quantity"],
+            "address_line1": data["pick_address_line1"],
+            "address_line2": data["pick_address_line2"],
+            "location": data["pick_location"],
+            "city": data["pick_city"],
+            "latitude": data["pick_latitude"],
+            "longitude": data["pick_longitude"],
+        })
         for stop in data["stop_address"]["stops"]:
             lead.append("transit_details_item", {
                 "transit_type": stop["type"],
